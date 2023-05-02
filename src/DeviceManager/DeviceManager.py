@@ -52,3 +52,4 @@ class DeviceManager:
 
     def wait_for_device(self):  # 等待设备可用
         pass
+
