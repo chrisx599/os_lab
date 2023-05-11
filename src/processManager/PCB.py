@@ -11,12 +11,16 @@ class PCB:
 
     PROCESS_READY = 'ready'
     PROCESS_RUNNING = 'running'
-    PROCESS_WAIT = 'wait'
+    PROCESS_BLOCK = 'block'
     PROCESS_NEW = 'new'
     PROCESS_EXIT = 'exit'
 
     # 进程唯一标识
     __PID = 0
+
+    # 进程名
+    __name = ""
+
     # 进程优先级
     __priority = 0
     # 进程状态
@@ -35,9 +39,9 @@ class PCB:
     # 界限寄存器
     __limit_mem_reg = 0
 
-    def __init__(self):
+    def __init__(self, name):
         self.__PID = IDGenerator.create_id(IDGenerator)
-        self.__priority = random.randint(1, 32)
+        self.__name = name
 
     def set_state(self, state):
         self.__state = state
@@ -86,6 +90,19 @@ class PCB:
 
     def get_limit_reg(self):
         return self.__limit_mem_reg
+
+    def get_name(self):
+        return self.__name
+
+    def set_name(self, name):
+        self.__name = name
+
+    def get_priority(self):
+        return self.__priority
+
+    def set_priority(self, priority):
+        self.__priority = priority
+
 
 if __name__ == "__main__":
     run_code = 0
