@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (QApplication, QSizePolicy, QWidget)
 
 from qfluentwidgets import (ListView, PushButton)
 
+
 class Ui_DeviceManager(object):
     def setupUi(self, DeviceManager):
         if not DeviceManager.objectName():
@@ -27,7 +28,11 @@ class Ui_DeviceManager(object):
         self.retranslateUi(DeviceManager)
 
         QMetaObject.connectSlotsByName(DeviceManager)
-    # setupUi
+
+        self.AddDeviceButton.clicked.connect(self.add_device)
+        self.DelDeviceButton.clicked.connect(self.del_device)
+
+
 
     def retranslateUi(self, DeviceManager):
         DeviceManager.setWindowTitle(QCoreApplication.translate("DeviceManager", u"Form", None))
