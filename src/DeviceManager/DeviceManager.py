@@ -14,19 +14,20 @@ from utils.logger import logger
 from utils.Container import *
 from processManager.PCB import PCB
 
+@inject("interrupt_event","interrupt_pcb_queue")
 def run(dcb):
     #参数interrupt_event, interrupt_pcb_queue
     while True:
         if dcb.status == "idle":
             pcb = dcb.get_dcb_queue()
             if pcb != None:
+                dcb.status = "busy"
                 execute_operation(pcb, dcb.dev_type, dcb.dev_id)
                 time.sleep(3)
+                release_dev(dcb.dev_type,dcb.dev_id)
                 pcb.set_event = 1
                 # interrupt_pcb_queue.put(pcb)
                 # interrupt_event.set()
-
-#t=threading.Thread(target=run, name=name)
 
 #处理请求，调用设备
 def use_dev(drq,dst):
@@ -79,9 +80,15 @@ if __name__ == "__main__":
     dst = DeviceStatusTable()
     drq = DeviceRequestQueue()
 
+    dev_list = ['1 keyboard','2 printer']
+    for dev in dev_list:
+        d_id = int(dev.split()[0])
+        d_type = dev.split()[1]
+        dst.add_dev(d_type,d_id)
+
     # 添加设备到设备状态表
-    dst.add_dev("keyboard",1)
-    dst.add_dev("printer", 2)
+    # dst.add_dev("keyboard",1)
+    # dst.add_dev("printer", 2)
 
 
     #查看所有设备
@@ -95,9 +102,14 @@ if __name__ == "__main__":
     #添加设备申请
     pcb = PCB("aaa")
     drq.add_request(pcb,"printer",2)
-    use_dev(drq,dst)
-    t = threading.Thread(target=run, args=[dst.get_dev(2)], name="keyboard")
-
+    use_dev(drq, dst)
+    drq.add_request(pcb, "printer", 2)
+    use_dev(drq, dst)
+    drq.add_request(pcb, "keyboard", 1)
+    use_dev(drq, dst)
+    t = threading.Thread(target=run, args=[dst.get_dev(1)], name="keyboard")
+    t.start()
+    t = threading.Thread(target=run, args=[dst.get_dev(2)], name="printer")
     t.start()
     # 处理设备请求
     #while True:
