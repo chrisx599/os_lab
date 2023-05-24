@@ -77,36 +77,6 @@
 #     view.show()
 #     sys.exit(app.exec())
 
-# import sys
-# from PyQt6.QtWidgets import QApplication, QMainWindow, QPlainTextEdit
-# from PyQt6.QtCore import QProcess, QIODevice
-
-# class MainWindow(QMainWindow):
-#     def __init__(self):
-#         super().__init__()
-
-#         self.output_widget = QPlainTextEdit(self)
-#         self.setCentralWidget(self.output_widget)
-
-#         self.process = QProcess(self)
-#         self.process.readyReadStandardOutput.connect(self.handle_output)
-
-#         self.run_command("ls -l")  # 示例命令
-
-#     def run_command(self, command):
-#         self.output_widget.clear()
-#         self.process.start(command)
-
-#     def handle_output(self):
-#         output = self.process.readAllStandardOutput().data().decode()
-#         self.output_widget.appendPlainText(output)
-
-# if __name__ == "__main__":
-#     app = QApplication(sys.argv)
-#     window = MainWindow()
-#     window.show()
-#     sys.exit(app.exec())
-
 
 from treelib import Tree, Node
 import pickle

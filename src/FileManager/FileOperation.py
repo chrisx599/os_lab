@@ -3,7 +3,7 @@ from FileCore import *
 
 class FileSystem():
     def __init__(self) -> None:
-        self.state = False  # 
+        self.state = False
         self.root = None
         self.disk = []
         self.f_table = []

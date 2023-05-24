@@ -1,3 +1,6 @@
+"""
+Writen by Liang Zhengyang
+"""
 import pickle
 from PyQt6 import QtGui
 from PyQt6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QLabel
@@ -18,6 +21,7 @@ sys.path.append(current_path + "\src\ProcessManager")
 from DeviceUI import DeviceManager
 from System import System
 from MemoryUI import MemoryUI
+from ProcessUI import ProcessUI
 
 class CommandLineWindow(QMainWindow):
     def __init__(self):
@@ -135,7 +139,8 @@ class CommandLineWindow(QMainWindow):
         elif tokens[0] == "clear":
             pass
         elif tokens[0] == "jobs":
-            pass
+            self.jobs_ui = ProcessUI()
+            self.jobs_ui.window.show()
         elif tokens[0] == "mem":
             self.mem_ui = MemoryUI()
             self.mem_ui.window.show()
@@ -167,6 +172,9 @@ class CommandLineWindow(QMainWindow):
         super().closeEvent(event)
 
 class Stream:
+    """
+    重定向终端文件到qt窗口中
+    """
     def __init__(self, stdout=None):
         self.stdout = stdout
 
