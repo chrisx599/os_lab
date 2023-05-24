@@ -9,6 +9,9 @@ from DeviceUI import DeviceManager
 class CommandLineWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        
+        self.init_system()
+
         self.setWindowTitle("PowerOS")
         self.resize(1000, 650)
 
@@ -65,6 +68,9 @@ class CommandLineWindow(QMainWindow):
         }""")
 
         self.cmdInput.setFocus()
+
+    def init_system(self):
+        pass
     
     def runCommand(self):
         cmd = self.cmdInput.text()
