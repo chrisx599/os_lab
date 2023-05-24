@@ -13,6 +13,7 @@ import time
 from utils.logger import logger
 from utils.Container import *
 from processManager.PCB import PCB
+from MemoryManager.Memory import *
 
 @inject("interrupt_event","interrupt_pcb_queue")
 def run(dcb):
@@ -42,13 +43,15 @@ def use_dev(drq,dst):
         time.sleep(1)  # 暂停一段时间，等待下一次设备请求
 
 #执行设备操作
-def execute_operation(pcb,dev_type,dev_num):
+@inject("memory")
+def execute_operation(pcb,dev_type,dev_num, memory):
     print("Device" + str(dev_type) + "is using by " + str(pcb.get_PID()))
     if dev_num == 1:
         input_tmp = input("请在键盘上输入\n")
+        buffer_list = memory.write_buffer(input_tmp)
         # 确认input长度，写入内存
-        pcb.set_buffer_size()
-        pcb.set_buffer_adderss()
+        pcb.set_buffer_size(buffer_list[1])
+        pcb.set_buffer_adderss(buffer_list[0])
     elif dev_num == 2:
         print("***模拟操作系统打印机***")
         print(pcb.get_buffer_content())
