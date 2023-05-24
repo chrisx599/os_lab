@@ -9,6 +9,10 @@ class DeviceStatusTable:
     def add_dev(self, dev_type, dev_id):
         self.table[dev_id] = DeviceControlBlock(dev_type, dev_id)
 
+    #删除设备控制块
+    def del_dev(self,dev_type,dev_id):
+        self.table.pop(dev_id)
+
     # 获取设备控制块
     def get_dev(self, dev_id):
         return self.table.get(dev_id)
