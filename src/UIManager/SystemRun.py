@@ -28,6 +28,7 @@ class CommandLineWindow(QMainWindow):
         super().__init__()
         
         self.system = System()
+        
 
         self.setWindowTitle("PowerOS")
         self.resize(1000, 650)
@@ -133,7 +134,12 @@ class CommandLineWindow(QMainWindow):
         elif tokens[0] == "cat":
             self.system.file_manager.read_File(tokens[1])
         elif tokens[0] == "write":
-            self.system.file_manager.write_File(tokens[1], tokens[2])
+            if tokens[1] == "--file":
+                self.system.file_manager.write_File(tokens[2], tokens[3])
+            elif tokens[1] == "--dev":
+                self.system.file_manager.write_Device(tokens[2])
+            elif tokens[1] == "--command":
+                self.system.file_manager.write_Order(tokens[2])
         elif tokens[0] == "clear":
             self.cmdOutput.clear()
         elif tokens[0] == "jobs":
@@ -151,7 +157,9 @@ class CommandLineWindow(QMainWindow):
             self.cmdOutput.appendPlainText('       > rename <filename> <newname>:rename file name')
             self.cmdOutput.appendPlainText('       > rm <filename>:delete file')
             self.cmdOutput.appendPlainText('       > ls:show file tree')
-            self.cmdOutput.appendPlainText('       > ls:show file tree')
+            self.cmdOutput.appendPlainText('       > write [--file] <filename> <content>:write file')
+            self.cmdOutput.appendPlainText('       > write [--dev] <content>:write device')
+            self.cmdOutput.appendPlainText('       > write [--command] <content>:write command')
         else:
             self.cmdOutput.appendPlainText('Result > '
                                             + "Error:Please check your command, \""

@@ -10,11 +10,14 @@ from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PyQt6.QtWidgets import (QApplication, QSizePolicy, QWidget)
+from PyQt6.QtWidgets import (QApplication, QSizePolicy, QWidget, QTableView)
 
-from qfluentwidgets import (ListView, PushButton)
+
+from qfluentwidgets import (ListView, PushButton, TableView)
 
 from DeviceAdd import DeviceAdd
+
+
 
 
 class Ui_DeviceManager(object):
@@ -22,19 +25,20 @@ class Ui_DeviceManager(object):
         if not DeviceManager.objectName():
             DeviceManager.setObjectName(u"DeviceManager")
         DeviceManager.resize(500, 600)
-        self.DeviceList = ListView(DeviceManager)
-        self.DeviceList.setObjectName(u"DeviceList")
-        self.DeviceList.setGeometry(QRect(0, 0, 500, 550))
         self.AddDeviceButton = PushButton(DeviceManager)
         self.AddDeviceButton.setObjectName(u"AddDeviceButton")
         self.AddDeviceButton.setGeometry(QRect(90, 560, 102, 32))
         self.DelDeviceButton = PushButton(DeviceManager)
         self.DelDeviceButton.setObjectName(u"DelDeviceButton")
         self.DelDeviceButton.setGeometry(QRect(290, 560, 102, 32))
+        self.TableView = TableView(DeviceManager)
+        self.TableView.setObjectName(u"TableView")
+        self.TableView.setGeometry(QRect(0, 0, 500, 550))
 
         self.retranslateUi(DeviceManager)
 
         QMetaObject.connectSlotsByName(DeviceManager)
+    # setupUi
 
     def retranslateUi(self, DeviceManager):
         DeviceManager.setWindowTitle(QCoreApplication.translate("DeviceManager", u"Form", None))

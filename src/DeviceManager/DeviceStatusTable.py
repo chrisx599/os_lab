@@ -1,15 +1,18 @@
 ﻿from DeviceControlBlock import *
 from utils.logger import logger
+from FileManager.FileOperation import FileSystem
 
 # 设备状态表类
 class DeviceStatusTable:
     def __init__(self):
         self.table = {}  # 设备状态表，用字典实现
+        # FileSystem.read_Device()
         logger.info('Successfully initialized device_status_table.')
 
     # 添加设备控制块
     def add_dev(self, dev_type, dev_id):
         self.table[dev_id] = DeviceControlBlock(dev_type, dev_id)
+        
         logger.info('Successfully added device:'+str(dev_id)+' '+dev_type+'.')
 
     #删除设备控制块

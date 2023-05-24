@@ -89,13 +89,13 @@ class FileSystem:
         message = self.filecore.pathToObj(name, {"operator": "writeFile", "content": content}, self.disk)
         # 文件不存在
         if message == 0:
-            return 0
+            print('write_Order Failed!File Does Not Exist!')
         # 同目录文件重名
         elif message == -1:
-            return -1
+            print('write_Order Failed!Permission Denied!')
         # 成功,返回对象是文件内容
         else:
-            return 1
+            print('write succuessful!')
 
     # 写入设备
     def write_Device(self, name):
