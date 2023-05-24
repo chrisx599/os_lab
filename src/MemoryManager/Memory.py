@@ -52,7 +52,7 @@ class Memory:
         ins_list = ()
         page_num = addr / PAGE_SIZE
         page_offset = addr % PAGE_SIZE
-        self.program_list[program_num].program_page_table.check_page_interruption(page_num)
+        # self.program_list[program_num].program_page_table.check_page_interruption(page_num)
         #处理完了，可以用了
         physical_block = self.program_list[program_num].program_page_table.page_table_list[page_num].physical_block_num
         for i in range(PAGE_SIZE):
