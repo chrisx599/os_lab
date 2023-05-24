@@ -60,6 +60,11 @@ dst.add_dev("printer", 2)
 #查看所有设备
 dst.print_all_devs()
 
+#删除指定设备
+dst.del_dev("dsik",1)
+
+dst.print_all_devs()
+
 #添加设备申请
 drq.add_request(1,"printer",2)
 
