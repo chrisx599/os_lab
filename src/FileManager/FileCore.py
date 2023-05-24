@@ -134,6 +134,7 @@ def getPath(is_folder: bool, target_folder: Folder = None, target_file: UserFile
 
     if not is_folder:
         path_now = target_file.file_name
+        path_now = target_file.file_name
         parent_node = target_file.parent_node
     else:
         path_now = target_folder.folder_name
