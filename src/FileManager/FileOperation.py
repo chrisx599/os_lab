@@ -30,13 +30,13 @@ class FileSystem:
         if isinstance(message, int):
             # 文件不存在
             if message == 0:
-                return 0
+                print('read_File Failed!File Does Not Exist!')
             # 同目录文件重名
             if message == -1:
-                return -1
+                print('read_File Failed!Permission Denied!')
         # 成功,返回对象是文件内容
         else:
-            return message
+            print(message)
 
     # 读命令
     def read_Order(self, name):
@@ -74,16 +74,13 @@ class FileSystem:
                                           self.disk)
         # 文件不存在
         if message == 0:
-            return 0
-            # print('write_File Failed!File Does Not Exist!')
+            print('write_File Failed!File Does Not Exist!')
         # 同目录文件重名
         elif message == -1:
-            return -1
-            # print('write_File Failed!Permission Denied!')
+            print('write_File Failed!Permission Denied!')
         # 成功,返回对象是文件内容
         else:
-            return 1
-            # print('write_File Success!')
+            print('write_File Success!')
 
     # 写入命令
     def write_Order(self, name):
