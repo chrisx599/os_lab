@@ -116,14 +116,11 @@ class Memory:
         return temp_list
 
 
-
-    def write_memory(self, addr, write_list):
+    def program_write_memory(self, program_num, addr, write_str):
         page_num = addr / PAGE_SIZE
         page_offset = addr % page_num
-        count = len(write_list)
-        for i in range(count):
-            self.physical_memory[page_num][page_offset] = write_list[i]
-
+        block_num = self.program_list[program_num].page_table_list[page_num].physical_block_num
+        self.physical_memory[block_num][page_offset] = write_str
         return 1
 
 
