@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DeviceManager</class>
+ <widget class="QWidget" name="DeviceManager">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="ListView" name="DeviceList">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>500</width>
+     <height>550</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="PushButton" name="AddDeviceButton">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>560</y>
+     <width>102</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>添加设备</string>
+   </property>
+  </widget>
+  <widget class="PushButton" name="DelDeviceButton">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>560</y>
+     <width>102</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>删除设备</string>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PushButton</class>
+   <extends>QPushButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>ListView</class>
+   <extends>QListView</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

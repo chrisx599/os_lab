@@ -1,50 +1,19 @@
-"""
-目录逻辑结构：树形
-目录物理结构：连续形
-
-"""
-import math
-import datetime
-import random
-from enum import Enum
-
-
-class FileOperation(Enum):
-    Read = 0
-    Write = 1
-    Create = 2
-    Rename = 3
-    Delete = 4
-
-
-class FileAuthority(Enum):
+"""""
+文件权限：
     Default = 0
     ReadOnly = 1
     WriteOnly = 2
-
-
-def uniqueNum():
-    """
-    生成唯一的随机数用于ID号
-    :return:随机数
-    """
-    for i in range(0, 10):
-        nowTime = datetime.datetime.now().strftime("%M%S")  # 生成当前时间
-        randomNum = random.randint(0, 99)  # 生成的随机整数
-        if randomNum < 10:
-            randomNum = str(0) + str(randomNum)
-        return str(nowTime) + str(randomNum)
+"""
 
 
 class Folder:
     def __init__(self, folder_name: str, parent_folder, child_nodes: list):
         """
-        文件夹数据结构，请注意，文件夹为逻辑结构，因此不会占用物理磁盘空间
+        文件夹数据结构，文件夹为逻辑结构，因此不会占用物理磁盘空间
         :param folder_name:文件夹名
         :param parent_folder:父节点，一定是文件夹，注意，根节点没有父节点，该属性为None
         :param child_nodes:子节点。可能有多个，且可能是文件夹，也可能是文件
         """
-        self.id = uniqueNum()
         self.folder_name = folder_name
         self.parent_node = parent_folder
         self.child_nodes = child_nodes
@@ -54,8 +23,7 @@ class Folder:
 
 
 class UserFile:
-    def __init__(self, file_name: str, parent_folder, data,
-                 authority: FileAuthority = FileAuthority.Default):
+    def __init__(self, file_name: str, parent_folder, data, authority: int = 0):
         """
         文件数据结构
         :param file_name:文件名
@@ -63,7 +31,6 @@ class UserFile:
         :param data:文件数据
         :param authority:文件权限
         """
-        self.id = uniqueNum()
         self.file_name = file_name
         self.parent_node = parent_folder
         self.data = data
@@ -99,7 +66,7 @@ def contiguousAllocation(file_to_allocated: UserFile, Disk: list):
             if space_counter >= file_to_allocated.size:  # 情况符合
                 i = 0
                 for j in range(start_index, start_index + file_to_allocated.size):
-                    Disk[j] = file_to_allocated.data[i]  # 把id填满磁盘
+                    Disk[j] = file_to_allocated.data[i]  # 填满磁盘
                     i = i+1
                 return start_index
         else:
@@ -218,18 +185,21 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
                 if not path_node_list[i] in child_node_names:
                     return 0
                 target = parent_node.child_nodes[child_node_names.index(path_node_list[i])]
+
                 # 读文件
                 if IR["operator"] == "readFile":
                     # 权限不够
-                    if target.authority == FileAuthority.WriteOnly:
+                    if target.authority == 2:
                         return -1
                     # 读数据
                     else:
                         return target.data
+
                 # 写文件
                 elif IR["operator"] == "writeFile":
+                    print(target.authority)
                     # 权限不够
-                    if target.authority == FileAuthority.ReadOnly:
+                    if target.authority == 1:
                         return -1
                     # 写数据
                     else:
@@ -238,6 +208,7 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
                         target.size = len(IR["content"])
                         target.disk_position = contiguousAllocation(target, Disk)
                         return 1
+
                 elif IR["operator"] == "delFile":
                     if isinstance(target, Folder):
                         return 0
@@ -246,6 +217,7 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
                         file_table.remove(target)
                         target.parent_node.child_nodes.remove(target)
                         return 1
+
                 elif IR["operator"] == "renameFile":
                     if IR["newName"] in child_node_names:
                         print('新名称在同路径下冲突')
@@ -253,6 +225,7 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
                     else:
                         target.file_name = IR["newName"]
                         return 1
+
                 elif IR["operator"] == "renameFolder":
                     if IR["newName"] in child_node_names:
                         print('新名称在同路径下冲突')
@@ -260,6 +233,15 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
                     else:
                         target.folder_name = IR["newName"]
                         return 1
+
+                elif IR["operator"] == "changeFileAuthority":
+                    if isinstance(target, Folder):
+                        return 0
+                    else:
+                        target.authority = int(IR["newAuthority"])
+                        print(target.authority)
+                        return 1
+
         elif path_node_list[i] in child_node_names:
             parent_node = parent_node.child_nodes[child_node_names.index(path_node_list[i])]
             child_node_names = list(map(str, parent_node.child_nodes))
@@ -270,28 +252,11 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
 def clearFileInDisk(target_file: UserFile, Disk: list):
     """
     在物理磁盘中删除文件信息
-
     :param Disk: 文件系统磁盘
     :param target_file:欲删除的文件
     """
     for i in range(target_file.disk_position, target_file.disk_position + target_file.size):
         Disk[i] = -1
-
-
-def findFileById(file_id: int, file_table: list):
-    """
-    通过文件id返回文件对象
-    该函数常用于磁盘索引文件，因为在本项目中磁盘仅需读取文件标识符（id）即可找到文件对象
-
-    :param file_table: 文件表
-    :param file_id:文件标识符
-    :return:文件对象。若返回-1表明没有找到对应标识符的文件
-    """
-
-    for f in file_table:
-        if f.id == file_id:
-            return f
-    return -1
 
 
 def findObjByName(name: str, parent_node):
@@ -318,125 +283,6 @@ def findObjByName(name: str, parent_node):
         return None
 
 
-def renameFolder(old_name: str, new_name: str, root: Folder):
-    """
-    重命名文件夹
-
-    :param root: 文件系统根节点
-    :param old_name:旧名称
-    :param new_name:新名称
-    :return:0表示找不到文件夹，-1表示新名字重名，1表示改名成功
-    """
-    folder_obj = findObjByName(old_name, root)
-    if folder_obj is None:
-        print('找不到该文件夹')
-        return 0
-
-    child_node_names = list(map(str, folder_obj.parent_node.child_nodes))
-    if new_name in child_node_names:
-        print('新名称在同路径下冲突')
-        return -1
-    else:
-        folder_obj.folder_name = new_name
-        return 1
-
-
-def renameFile(old_name: str, new_name: str, root: Folder):
-    """
-    重命名文件
-
-    :param root: 文件系统根节点
-    :param old_name:旧名称
-    :param new_name:新名称
-    :return:0表示找不到文件，-1表示新名字重名，1表示改名成功
-    """
-    file_obj = findObjByName(old_name, root)
-    if file_obj is None:
-        print('找不到该文件')
-        return 0
-
-    child_node_names = list(map(str, file_obj.parent_node.child_nodes))
-    if new_name in child_node_names:
-        print('新名称在同路径下冲突')
-        return -1
-    else:
-        file_obj.file_name = new_name
-        return 1
-
-
-def writeFile(file_name: str, content: str, root: Folder, Disk: list):
-    """
-    写文件内容（原先内容会删除）
-
-    :param Disk: 文件系统磁盘
-    :param root: 文件系统根节点
-    :param file_name:文件名
-    :param content:新内容
-    :return:返回1表示成功写入，返回0表示写入失败，返回-1表示文件没有写权限
-    """
-    target_file = findObjByName(file_name, root)
-
-    if target_file is None or isinstance(target_file, Folder):
-        print('文件不存在')
-        return 0
-
-    assert isinstance(target_file, UserFile)
-    if target_file.authority == FileAuthority.ReadOnly:
-        print('文件权限不足')
-        return -1
-    else:  # 可以写入
-
-        clearFileInDisk(target_file, Disk)
-        target_file.data = content
-        target_file.size = len(content)
-        target_file.disk_position = contiguousAllocation(target_file, Disk)
-        return 1
-
-
-def readFile(file_name: str, root: Folder):
-    """
-    读取文件
-
-    :param root: 文件系统根节点
-    :param file_name:文件名称
-    :return:返回文件数据字符串，若返回0表明文件不存在，返回-1表明文件权限不足
-    """
-    target_file = findObjByName(file_name, root)
-    if target_file is None or isinstance(target_file, Folder):
-        print('文件不存在')
-        return 0
-
-    assert isinstance(target_file, UserFile)
-    if target_file.authority == FileAuthority.WriteOnly:
-        print('文件权限不足')
-        return -1
-    else:
-        return target_file.data
-
-
-def delFile(file_name: str, file_table: list, root: Folder, Disk: list):
-    """
-    彻底删除文件，包括磁盘和文件表的记录
-
-    :param Disk: 文件系统磁盘
-    :param root: 文件系统根节点
-    :param file_table: 文件表
-    :param file_name:文件名
-    :return:返回0表示无法找到对应文件，返回1表明删除成功
-    """
-    target_file = findObjByName(file_name, root)
-    if target_file is None or isinstance(target_file, Folder):
-        print('文件不存在')
-        return 0
-
-    assert isinstance(target_file, UserFile)
-    clearFileInDisk(target_file, Disk)
-    file_table.remove(target_file)
-    target_file.parent_node.child_nodes.remove(target_file)
-
-    return 1
-
-
 def initFileSystem(DiskSize: int = 256, state: bool = False):
     """
     文件系统初始化
@@ -446,7 +292,7 @@ def initFileSystem(DiskSize: int = 256, state: bool = False):
     :return:状态标志，文件根节点，文件系统磁盘，文件表
     """
 
-    disk = [-1 for _ in range(DiskSize)]  # 磁盘，存储文件的id
+    disk = [-1 for _ in range(DiskSize)]  # 磁盘
 
     f_table = []  # 文件表，存储所有已经建立的文件
 
@@ -476,5 +322,3 @@ def FileTree(parent_node):
         return {parent_node.__str__(): data}
     elif isinstance(parent_node, UserFile):
         return {parent_node.__str__(): 0}
-
-

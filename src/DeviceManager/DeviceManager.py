@@ -1,55 +1,68 @@
-import queue
+﻿from DeviceControlBlock import *
+from DeviceStatusTable import *
+from DeviceRequestQueue import *
+import time
 
-class Device:
-    def __init__(self, device_id, device_type): #初始化设备类，包括设备的ID、类型等信息
-        self.device_id = device_id
-        self.device_type = device_type
-        self.is_busy = False
+#处理请求，调用设备
+def use_dev():
+    # 获取设备请求
+    request = drq.get_request()
+    print(request)
+    if request is not None:
+        pid, dev_type, dev_num = request
+        dcb = dst.get_dev(dev_num)
+        if dcb is not None and dcb.status == "idle":
+            dcb.status = "busy"  # 更新设备状态为忙碌
+            # 执行设备操作
+            execute_operation(pid, dev_type, dev_num)
+        else:
+            dcb.queue.append(request)  # 将进程加入设备队列
+    else:
+        time.sleep(1)  # 暂停一段时间，等待下一次设备请求
 
-    def get_id(self):   #获取设备的ID
-        return self.device_id
+#执行设备操作
+def execute_operation(pid,dev_type,dev_num):
+    time.sleep(5)
+    if dev_type == "printer":
+        print("***模拟操作系统打印机***")
+    elif dev_type == "keyboard":
+        input_tmp = input("请在键盘上输入\n")
 
-    def get_type(self): #获取设备的类型
-        return self.device_type
+#释放设备
+def release_dev(dev_type,dev_num):
+    dcb = dst.get_dev(dev_type)
+    if dcb is not None:
+        dcb.status = "idle"
 
-    def is_available(self): #判断设备是否可用
-        return not self.is_busy
+# 中断处理程序
+def interrupt_handler(dev_id):
+    dcb = dst.get_dev(dev_id)
+    if dcb is not None:
+        dcb.status = "idle"  # 更新设备状态为闲置
+        # 唤醒等待该设备资源的进程
+        while len(dcb.queue) > 0:
+            pid, dev_type, dev_num = dcb.queue.pop(0)
+            ready_queue.append((pid, dev_type, dev_num))
 
-    def use(self):  #使用设备
-        self.is_busy = True
 
-    def release(self):  #释放设备
-        self.is_busy = False
 
-class DeviceManager:
-    def __init__(self): #初始化设备管理类，包括初始化设备列表、设备队列
-        self.devices = []
-        self.device_queue = queue.Queue()
 
-    def add_device(self, device):   #向设备管理类中添加一个设备
-        self.devices.append(device)
-        self.device_queue.put(device)
+#************测试************
 
-    def remove_device(self, device):    #从设备管理类中移除一个设备
-        self.devices.remove(device)
-        if not device.is_busy:
-            self.device_queue.get()
+# 初始化设备状态表和设备请求队列
+dst = DeviceStatusTable()
+drq = DeviceRequestQueue()
 
-    def request_device(self, device_type):  #请求一个指定类型的设备，并返回该设备的引用
-        while True:
-            for device in self.devices:
-                if device.get_type() == device_type and device.is_available():
-                    device.use()
-                    self.device_queue.get()
-                    return device
-            else:
-                # 如果没有可用设备，则等待
-                self.wait_for_device()
+# 添加设备到设备状态表
+dst.add_dev("disk", 1)
+dst.add_dev("printer", 2)
 
-    def release_device(self, device):   #释放一个设备，并将该设备重新加入设备队列
-        device.release()
-        self.device_queue.put(device)
+#查看所有设备
+dst.print_all_devs()
 
-    def wait_for_device(self):  # 等待设备可用
-        pass
+#添加设备申请
+drq.add_request(1,"printer",2)
 
+# 处理设备请求
+while True:
+    use_dev()
