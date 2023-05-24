@@ -1,7 +1,11 @@
-﻿from DeviceControlBlock import *
+﻿import sys
+sys.path.append('..')
+from DeviceControlBlock import *
 from DeviceStatusTable import *
 from DeviceRequestQueue import *
 import time
+from ...lib.logger import logger
+from utils.Container import *
 
 #处理请求，调用设备
 def use_dev():
@@ -21,12 +25,22 @@ def use_dev():
         time.sleep(1)  # 暂停一段时间，等待下一次设备请求
 
 #执行设备操作
-def execute_operation(pid,dev_type,dev_num):
+@inject("interrupt_event","interrupt_type_queue","interrupt_ack_event")
+def execute_operation(pid,dev_type,dev_num,interrupt_event,interrupt_type_queue,interrupt_ack_event):
     time.sleep(5)
+    interrupt_event.set()
     if dev_type == "printer":
+        interrupt_ack_event.wait()
         print("***模拟操作系统打印机***")
+        interrupt_type_queue.put(4)
+        print(interrupt_type_queue.get())
     elif dev_type == "keyboard":
         input_tmp = input("请在键盘上输入\n")
+        interrupt_type_queue.put(3)
+        interrupt_type_queue.put(input_tmp)
+
+    interrupt_event.clear()
+    interrupt_ack_event.clear()
 
 #释放设备
 def release_dev(dev_type,dev_num):

@@ -1,4 +1,7 @@
-﻿from DeviceControlBlock import *
+﻿import sys
+sys.path.append('..')
+from DeviceControlBlock import *
+from ...lib.logger import logger
 
 # 设备状态表类
 class DeviceStatusTable:
@@ -8,6 +11,7 @@ class DeviceStatusTable:
     # 添加设备控制块
     def add_dev(self, dev_type, dev_id):
         self.table[dev_id] = DeviceControlBlock(dev_type, dev_id)
+        logger.info('Successfully added device')
 
     #删除设备控制块
     def del_dev(self,dev_type,dev_id):
