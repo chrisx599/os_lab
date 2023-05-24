@@ -4,20 +4,19 @@ Device界面
 """
 
 from PyQt6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
+    QMetaObject, QObject, QPoint, QRect, 
     QSize, QTime, QUrl, Qt)
-from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
+from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QStandardItemModel,
+    QFont, QFontDatabase, QGradient, QIcon, QStandardItem,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PyQt6.QtWidgets import (QApplication, QSizePolicy, QWidget, QTableView)
+from PyQt6.QtWidgets import (QApplication, QSizePolicy, QWidget, QTableView, QHeaderView,
+                             QVBoxLayout)
 
 
 from qfluentwidgets import (ListView, PushButton, TableView)
 
 from DeviceAdd import DeviceAdd
-
-
 
 
 class Ui_DeviceManager(object):
@@ -56,19 +55,37 @@ class DeviceManager():
 
         self.signal()
 
+        self.show_device()
+
     def signal(self):
         self.ui.AddDeviceButton.clicked.connect(self.add_device)
         self.ui.DelDeviceButton.clicked.connect(self.del_device)
 
     def add_device(self):
-        self.dev_add = DeviceAdd(self.device_st)
+        self.dev_add = DeviceAdd(self)
         self.dev_add.window.show()
 
     def del_device(self):
-        pass
+        selected_row = self.ui.TableView.selectionModel().selectedRows()
+        self.device_st.del_dev(int(selected_row[0].data()))
+        self.show_device()
+
 
     def show_device(self):
-        pass
+        # 创建 QStandardItemModel 模型
+        model = QStandardItemModel()
+
+        # 设置表头
+        header_labels = ["编号", "类型", "状态"]
+        model.setHorizontalHeaderLabels(header_labels)
+
+        # 添加数据行
+        for key in self.device_st.table.keys():
+            items = [QStandardItem(item) for item in [str(key), self.device_st.table[key].dev_type
+                                     , self.device_st.table[key].status]]
+            model.appendRow(items)
+            
+        self.ui.TableView.setModel(model)
 
 if __name__ == "__main__":
     app = QApplication([])

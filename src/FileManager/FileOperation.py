@@ -53,20 +53,20 @@ class FileSystem:
             message_list = message.split("\n")
             return message_list
 
-    # 读设备
-    def read_Device(self, name):
-        message = self.filecore.pathToObj(name, {"operator": "readDevice"}, self.disk)
-        if isinstance(message, int):
-            # 文件不存在
-            if message == 0:
-                return 0
-            # 同目录文件重名
-            if message == -1:
-                return -1
-        # 成功,返回对象是文件内容
-        else:
-            message_list = message.split("\n")
-            return message_list
+    # # 读设备
+    # def read_Device(self, name):
+    #     message = self.filecore.pathToObj(name, {"operator": "readDevice"}, self.disk)
+    #     if isinstance(message, int):
+    #         # 文件不存在
+    #         if message == 0:
+    #             return 0
+    #         # 同目录文件重名
+    #         if message == -1:
+    #             return -1
+    #     # 成功,返回对象是文件内容
+    #     else:
+    #         message_list = message.split("\n")
+    #         return message_list
 
     # 写文件
     def write_File(self, name, content):
@@ -97,20 +97,20 @@ class FileSystem:
         else:
             print('write succuessful!')
 
-    # 写入设备
-    def write_Device(self, name):
-        with open("Device.txt") as f:
-            content = f.read()
-        message = self.filecore.pathToObj(name, {"operator": "writeFile", "content": content},self.disk)
-        # 文件不存在
-        if message == 0:
-            return 0
-        # 同目录文件重名
-        elif message == -1:
-            return -2
-        # 成功,返回对象是文件内容
-        else:
-            return 1
+    # # 写入设备
+    # def write_Device(self, name):
+    #     with open("Device.txt") as f:
+    #         content = f.read()
+    #     message = self.filecore.pathToObj(name, {"operator": "writeFile", "content": content},self.disk)
+    #     # 文件不存在
+    #     if message == 0:
+    #         return 0
+    #     # 同目录文件重名
+    #     elif message == -1:
+    #         return -2
+    #     # 成功,返回对象是文件内容
+    #     else:
+    #         return 1
 
     # 重命名文件
     def rename_File(self, name, newName):
