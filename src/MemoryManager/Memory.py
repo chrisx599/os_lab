@@ -139,3 +139,4 @@ class Memory:
 #CPU调用检查中断函数 check
 #若有缺页中断，则进行换页 replace or allocate
 #CPU调用换页函数之后再读或写内存 read or write
+# 666
