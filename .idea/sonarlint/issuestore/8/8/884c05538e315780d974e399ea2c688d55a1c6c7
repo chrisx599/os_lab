@@ -1,0 +1,23 @@
+
+dpython:S2208"GImport only needed names or import the module and then use its members.(ºõ¼Åÿÿÿÿÿ
+rpython:S1542"URename function "init_FileSystem" to match the regular expression ^[a-z_][a-z0-9_]*$.(£ø¢úÿÿÿÿ
+upython:S117"YRename this local variable "filePath" to match the regular expression ^[_a-z][a-z0-9_]*$.(ÿçÚ›úÿÿÿÿ
+kpython:S1542"SRename function "create_Folder" to match the regular expression ^[a-z_][a-z0-9_]*$.(ëˆ£
+ppython:S117"YRename this local variable "filePath" to match the regular expression ^[_a-z][a-z0-9_]*$.(ªêûø
+ipython:S1542"QRename function "create_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(úˆ§
+ppython:S117,"YRename this local variable "filePath" to match the regular expression ^[_a-z][a-z0-9_]*$.(‡ĞÓ
+gpython:S1542+"ORename function "read_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(·ˆÔ‘
+ppython:S117<"YRename this local variable "filePath" to match the regular expression ^[_a-z][a-z0-9_]*$.(š·»¿
+mpython:S1542;"PRename function "write_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(€‚İ‚øÿÿÿÿ
+ppython:S117L"YRename this local variable "filePath" to match the regular expression ^[_a-z][a-z0-9_]*$.(‡™ƒ§
+opython:S117M"XRename this local variable "newName" to match the regular expression ^[_a-z][a-z0-9_]*$.(³ˆÊ
+kpython:S1542K"SRename function "rename_Folder" to match the regular expression ^[a-z_][a-z0-9_]*$.(ì °Š
+upython:S117\"YRename this local variable "filePath" to match the regular expression ^[_a-z][a-z0-9_]*$.(òÉ†Çøÿÿÿÿ
+opython:S117]"XRename this local variable "newName" to match the regular expression ^[_a-z][a-z0-9_]*$.(³ˆÊ
+ipython:S1542["QRename function "rename_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(ãÂ–Ï
+upython:S117l"YRename this local variable "filePath" to match the regular expression ^[_a-z][a-z0-9_]*$.(Óßş±úÿÿÿÿ
+fpython:S1542k"NRename function "del_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(ê×ò‘
+lpython:S117v"PRename this parameter "Disk" to match the regular expression ^[_a-z][a-z0-9_]*$.(”Ğªÿÿÿÿÿ
+ppython:S117v"TRename this parameter "DiskSize" to match the regular expression ^[_a-z][a-z0-9_]*$.(”Ğªÿÿÿÿÿ
+mpython:S1542v"PRename function "check_Disk" to match the regular expression ^[a-z_][a-z0-9_]*$.(”Ğªÿÿÿÿÿ
+7python:S125•"Remove this commented out code.(³•öÎ
