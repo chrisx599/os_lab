@@ -73,11 +73,4 @@ class DeviceAdd():
 
     def not_add(self):
         self.window.close()
-    
 
-if __name__ == "__main__":
-    app = QApplication([])
-    window = DeviceAdd()
-    window.window.show()
-    
-    app.exec()

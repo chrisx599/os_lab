@@ -13,16 +13,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="ListView" name="DeviceList">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>500</width>
-     <height>550</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="PushButton" name="AddDeviceButton">
    <property name="geometry">
     <rect>
@@ -49,6 +39,16 @@
     <string>删除设备</string>
    </property>
   </widget>
+  <widget class="TableView" name="TableView">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>500</width>
+     <height>550</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
@@ -57,8 +57,8 @@
    <header>qfluentwidgets</header>
   </customwidget>
   <customwidget>
-   <class>ListView</class>
-   <extends>QListView</extends>
+   <class>TableView</class>
+   <extends>QTableView</extends>
    <header>qfluentwidgets</header>
   </customwidget>
  </customwidgets>

@@ -1,3 +1,6 @@
+from Memory import *
+from linklist import *
+from PageTableItem import *
 # 页表类，每个程序都一有一个相应的页表
 class PageTable:
     page_table_list = ()  # 页表管理虚拟内存
@@ -196,3 +199,4 @@ class PageTable:
         self.page_table_list[page_num].item_state = 1
         self.page_table_list[page_num].page_num = page_num
         real_memory.load_memory(self.instruction_list, self.list_location, page_num)
+        return page_num
