@@ -24,6 +24,7 @@ class Operation:
     rename_File()
     del_File()
 
+    print_filetree()
     print_disk()
     check_Disk()
     saveDisk()
