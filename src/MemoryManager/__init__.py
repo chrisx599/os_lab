@@ -1,4 +1,7 @@
 import random
+from utils.Container import *
+from FileManager.FileSystem import *
+from FileManager.FileCore import *
 
 PAGE_TABLE_LEVEL = 2 # 四级页表
 PAGE_ITEM_SIZE = 32 # 一个页表里可以储存32个页表项
@@ -29,7 +32,7 @@ class linklist:
         cur_node = self.head
         while(cur_node != None):
             count = count + 1
-            cur_node = curNode.next
+            cur_node = cur_node.next
         return count
 
 
@@ -59,7 +62,7 @@ class linklist:
         return 0
 
 
-    # 物理内存类，memory_size代表物理内存大小,block_size代表一个块(页)的大小，64B,memory_space则是一个二维的列表,256个块(页),每页又有64B/4,16条指令
+# 物理内存类，memory_size代表物理内存大小,block_size代表一个块(页)的大小，64B,memory_space则是一个二维的列表,256个块(页),每页又有64B/4,16条指令
 class PhysicalMemory:
     memory_size = pow(2, 14) #物理内存总大小
     block_size = pow(2, 6) #一个块的大小
@@ -74,11 +77,11 @@ class PhysicalMemory:
         self.memory_space = [list() for i in range(self.block_num)]
         #二维代表一个物理内存块是多少字节，block_size是64，列表有64个元素，一个元素代表着一个字节(byte)
         for j in range(self.block_num):
-            memory_space[j] = [list() for i in range(self.block_size)]
+            self.memory_space[j] = [list() for i in range(self.block_size)]
         #每个块都初始化一下，置0
         for i in range(self.block_num):
             for j in range(self.block_size):
-                memory_space[i][j] = 0
+                self.memory_space[i][j] = 0
 
     # 从未分配的页中选择一页分配,返回分配的块号给虚拟内存的分配，虚拟内存将其存储到对应的页中,完成从虚拟内存到物理内存的映射
     def allocate_physical_memory(self):
@@ -118,20 +121,18 @@ real_memory = PhysicalMemory()
 # 程序类,每有一个程序创建,就创建一个程序类,其属性有程序id,以及其页表
 class Program:
 
-    program_table = 0
-    program_page_table = PageTable()
+    program_table = None
 
     def __init__(self):
         program_id = PROGRAM_CNT
-        PROGRAM_CNT = PROGRAM_CNT + 1
+        PROGRAM_cnt = PROGRAM_CNT + 1
         program_table = PageTable()
 
     def end_program(self):
         self.program_table.recycle_physical_memory()
 
+
 # 页表类，每个程序都一有一个相应的页表
-
-
 class PageTable:
 
     page_table_list = () # 页表管理虚拟内存
@@ -142,14 +143,17 @@ class PageTable:
     used_block_num = None # 记录该程序已经实际使用了多少物理块
     lru_list = None # lru的列表，是一个链表，其中每个节点代表一个页
     page_num = PAGE_ITEM_SIZE * PAGE_ITEM_SIZE # 一共有多少页
+    interrupt_event = None
     # 创建一个指令列表，每当程序运行时，将指令读入列表中，程序暂停时，记录指令执行的位置，以便重新运行。程序终止后，清空该列表。
     instruction_list = [list() for i in range(INSTRCUTION_MAX_NUM)]
     list_location = 0
     # 初始化页表列表
-    def __init__(self):
+    @inject("interrupt_event", "interrupt_type_queue")
+    def __init__(self,interrupt_event, interrupt_type_queue):
         # 一个页表列表里存放所有页表项，一个页表项对应着一个页面
         page_table_list = [PageTableItem() for i in range(self.page_num)]
-
+        self.interrupt_event = interrupt_event
+        self.interrupt_type_queue = interrupt_type_queue
         # for j in range(PAGE_ITEM_SIZE):
         #     page_table_list[j] = PageTableItem()
         # for i in range(PAGE_ITEM_SIZE):
@@ -198,10 +202,10 @@ class PageTable:
                         if(self.load_instrution() == 1):
                             self.page_table_list[i].physical_block_num = real_memory.allocate_physical_memory()
                             real_memory.load_memory(self.instruction_list, self.list_location,self.page_table_list[i].physical_block_num)
-                            page_count = page_count - 1;
+                            page_count = page_count - 1
                     else:
                     #检查内存，发现用户区已经没有空闲内存块了，无法进行分配，停止分配
-                        print(申请失败,没有空闲块)
+                        print('申请失败,没有空闲块')
                         error = 1
                         break
             #对要求的几页装入内存，剩下的只在页表中留下痕迹，说明要用到，但并不映射到物理块
@@ -259,7 +263,7 @@ class PageTable:
                 out_value = temp_node.next.value
                 visited_page_list.head = temp_node.next
                 temp_node.next = None
-                head.value = page_num
+                visited_page_list.head.value = page_num
                 return out_value
         else:
             #需要的页在LRU链表中，只需要将其放在链表头部即可
@@ -276,22 +280,28 @@ class PageTable:
                     cur_node = cur_node.next
                 goal_node = cur_node
                 prev_node.next = goal_node.next
-                goal_node.next = head
+                goal_node.next = visited_page_list.head
                 head = goal_node
                 return -1
 
     #处理访存,若out_page为1，即需要缺页中断，否则只是更新LRU链表
 
     def check_page_interruption(self,page_num):
-        out_page = lru_switch(lru_list,page_num)
+        out_page = self.lru_switch(self.lru_list,page_num)
         #访问页替代淘汰也，占用其物理块，并且重新映射
         if(out_page > 0):
+            self.interrupt_event.set()
+            self.interrupt_type_queue.put(2)
             self.replace_page(page_num,out_page)
+            self.interrupt_event.clear()
         elif(out_page == -1):
             print('update LRU')
         elif(out_page == -2):
             # 还要分配一个页,给页号为page_num的页表项分配一个物理页
-            send_interruption
+            self.interrupt_event.set()
+            self.interrupt_type_queue.put(2)
+
+            self.interrupt_event.clear()
 
     def load_instrution(self):
         #检查instrution_list的状态,通过磁盘接口把命令都读入了，这里检查并确认一下,可以的话,返回1
@@ -325,12 +335,3 @@ class PageTableItem:
     access = 0 #访问位
     modify = 0 #修改位
     interrupt = 0 #中断位
-
-    # def __init__(self):
-
-        # item_num
-        # item_num2 = 0
-        # item_state = 0
-        # physical_block_num = 0
-        # is_write = 0
-        # is_read = 0
