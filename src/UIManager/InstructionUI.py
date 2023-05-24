@@ -4,9 +4,22 @@ from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtCore import Qt, QDir
 import os
 
+from DeviceUI import DeviceManager
+
+# 导入自定义包
+import sys
+import os
+current_path = os.getcwd()
+sys.path.append(current_path + "\src")
+sys.path.append(current_path + "\src\DeviceManager")
+from System import System
+
 class CommandLineWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        
+        self.system = System()
+
         self.setWindowTitle("PowerOS")
         self.resize(1000, 650)
 
@@ -106,7 +119,8 @@ class CommandLineWindow(QMainWindow):
         elif tokens[0] == "mem":
             pass
         elif tokens[0] == "dev":
-            pass
+            self.dev_ui = DeviceManager(self.system.device_st)
+            self.dev_ui.window.show()
         elif tokens[0] == "help":
             pass
         else:

@@ -13,8 +13,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # demo of how to use
-logger.debug('debug message')
-logger.info('info message')
-logger.warning('warning message')
-logger.error('error message')
-logger.critical('critial message')
+# logger.debug('debug message')
+# logger.info('info message')
+# logger.warning('warning message')
+# logger.error('error message')
+# logger.critical('critial message')

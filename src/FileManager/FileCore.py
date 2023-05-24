@@ -4,6 +4,7 @@
     ReadOnly = 1
     WriteOnly = 2
 """
+import os
 
 
 class Folder:
@@ -39,7 +40,7 @@ class UserFile:
         size是文件占据的磁盘空间，为了方便前端表示，单位为1字节，一个英文字符一个字节，
         注意每次更改file内容时应当要更新该值
         """
-        self.disk_position = -1  # 文件在磁盘中的位置
+        self.disk_position = 'x'  # 文件在磁盘中的位置
         self.authority = authority
 
     def __str__(self):
@@ -54,12 +55,12 @@ def contiguousAllocation(file_to_allocated: UserFile, Disk: list):
     :param file_to_allocated:需要分配磁盘空间的文件
     :return:返回文件所存储的磁盘位置（起始下标），若返回-1说明磁盘空间不足
     """
-    start_index = -1  # 文件首地址
+    start_index = 'x'  # 文件首地址
     space_counter = 0  # 空间计算器
     for i in range(len(Disk)):
         # 主要思想是，找到磁盘中连续且符合文件大小的几个块，且从磁盘头部遍历查找，这样有利于减少外部碎片
-        if Disk[i] == -1:  # 搜索到一个空位
-            if start_index == -1:  # 首位空
+        if Disk[i] == 'x':  # 搜索到一个空位
+            if start_index == 'x':  # 首位空
                 start_index = i
             space_counter += 1
 
@@ -67,10 +68,10 @@ def contiguousAllocation(file_to_allocated: UserFile, Disk: list):
                 i = 0
                 for j in range(start_index, start_index + file_to_allocated.size):
                     Disk[j] = file_to_allocated.data[i]  # 填满磁盘
-                    i = i+1
+                    i = i + 1
                 return start_index
         else:
-            start_index = -1
+            start_index = 'x'
             space_counter = 0
     return -1
 
@@ -111,7 +112,7 @@ def creatFileOrFolder(is_folder: bool, name: str, parent_folder: Folder, file_ta
         new_file = UserFile(name, parent_folder, data)
         file_table.append(new_file)
         new_file.disk_position = contiguousAllocation(new_file, Disk)
-        if new_file.disk_position == -1:
+        if new_file.disk_position == 'x':
             print('磁盘空间分配错误')
             return -2
         parent_folder.child_nodes.append(new_file)
@@ -132,6 +133,7 @@ def getPath(is_folder: bool, target_folder: Folder = None, target_file: UserFile
         return '/root'
 
     if not is_folder:
+        path_now = target_file.file_name
         path_now = target_file.file_name
         parent_node = target_file.parent_node
     else:
@@ -256,7 +258,7 @@ def clearFileInDisk(target_file: UserFile, Disk: list):
     :param target_file:欲删除的文件
     """
     for i in range(target_file.disk_position, target_file.disk_position + target_file.size):
-        Disk[i] = -1
+        Disk[i] = 'x'
 
 
 def findObjByName(name: str, parent_node):
@@ -291,8 +293,12 @@ def initFileSystem(DiskSize: int = 256, state: bool = False):
     :param state:状态标志
     :return:状态标志，文件根节点，文件系统磁盘，文件表
     """
-
-    disk = [-1 for _ in range(DiskSize)]  # 磁盘
+    is_Disk_exist = os.path.exists('Disk.txt')
+    if is_Disk_exist:
+        with open("Disk.txt", "r") as tf:
+            disk = tf.read().split(' ')  # 磁盘文件存在 读入磁盘
+    else:
+        disk = ['x' for _ in range(DiskSize)]  # 磁盘不存在 新建磁盘
 
     f_table = []  # 文件表，存储所有已经建立的文件
 
