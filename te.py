@@ -45,36 +45,67 @@
 #     sys.exit(app.exec())
 
 
-import sys
-from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene
-from PyQt6.QtGui import QPainter, QBrush, QPen, QColor
-from PyQt6.QtCore import Qt
+# import sys
+# from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene
+# from PyQt6.QtGui import QPainter, QBrush, QPen, QColor
+# from PyQt6.QtCore import Qt
 
-class GanttChartView(QGraphicsView):
+# class GanttChartView(QGraphicsView):
+#     def __init__(self):
+#         super().__init__()
+#         self.init_ui()
+
+#     def init_ui(self):
+#         scene = QGraphicsScene(self)
+#         self.setScene(scene)
+
+#         # 绘制甘特图条形
+#         rect1 = scene.addRect(50, 50, 200, 50)
+#         rect1.setBrush(QBrush(QColor("blue")))
+
+#         rect2 = scene.addRect(100, 150, 150, 50)
+#         rect2.setBrush(QBrush(QColor("red")))
+
+#         rect3 = scene.addRect(250, 100, 100, 50)
+#         rect3.setBrush(QBrush(QColor("green")))
+
+#         self.setWindowTitle("Gantt Chart")
+
+# if __name__ == "__main__":
+#     app = QApplication(sys.argv)
+#     view = GanttChartView()
+#     view.show()
+#     sys.exit(app.exec())
+
+import sys
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPlainTextEdit
+from PyQt6.QtCore import QProcess, QIODevice
+
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.init_ui()
 
-    def init_ui(self):
-        scene = QGraphicsScene(self)
-        self.setScene(scene)
+        self.output_widget = QPlainTextEdit(self)
+        self.setCentralWidget(self.output_widget)
 
-        # 绘制甘特图条形
-        rect1 = scene.addRect(50, 50, 200, 50)
-        rect1.setBrush(QBrush(QColor("blue")))
+        self.process = QProcess(self)
+        self.process.readyReadStandardOutput.connect(self.handle_output)
 
-        rect2 = scene.addRect(100, 150, 150, 50)
-        rect2.setBrush(QBrush(QColor("red")))
+        self.run_command("ls -l")  # 示例命令
 
-        rect3 = scene.addRect(250, 100, 100, 50)
-        rect3.setBrush(QBrush(QColor("green")))
+    def run_command(self, command):
+        self.output_widget.clear()
+        self.process.start(command)
 
-        self.setWindowTitle("Gantt Chart")
+    def handle_output(self):
+        output = self.process.readAllStandardOutput().data().decode()
+        self.output_widget.appendPlainText(output)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    view = GanttChartView()
-    view.show()
+    window = MainWindow()
+    window.show()
     sys.exit(app.exec())
+
 
 

@@ -7,7 +7,8 @@ class FileSystem():
         self.disk = []
         self.f_table = []
 
-        
+        self.tree = tree
+
         self.state, self.root, self.disk, self.f_table = initFileSystem()
         self.message = FileTree(self.root)
 
@@ -244,6 +245,5 @@ class FileSystem():
 
     # 将文件树保存到文件
     def saveTree(self):
-        f = open("FileTree.txt", "w")
-        f.writelines(str(FileTree(self.root)))
-        f.close()
+        self.tree.save2file("tree.txt")
+

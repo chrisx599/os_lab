@@ -12,6 +12,7 @@ current_path = os.getcwd()
 sys.path.append(current_path + "\src")
 sys.path.append(current_path + "\src\DeviceManager")
 sys.path.append(current_path + "\src\FileManager")
+sys.path.append(current_path + "\src\ProcessManager")
 from DeviceUI import DeviceManager
 from System import System
 from MemoryUI import MemoryUI
@@ -78,6 +79,10 @@ class CommandLineWindow(QMainWindow):
         }""")
 
         self.cmdInput.setFocus()
+
+        # 重定向标准输出流至QPlainTextEdit
+        sys.stdout = Stream(stdout=self.cmdOutput)
+
     
     def runCommand(self):
         cmd = self.cmdInput.text()
@@ -102,8 +107,8 @@ class CommandLineWindow(QMainWindow):
         #     #                                    "Error:Please check your path")
         #     pass
         if tokens[0] == "ls":
-            filetree = self.system.file_manager.print_filetree()
-            self.cmdOutput.appendPlainText('Result > ' + str(filetree))
+            self.cmdOutput.appendPlainText('')
+            self.system.file_manager.tree.show()
         elif tokens[0] == "mkdir":
             state = self.system.file_manager.create_Folder(tokens[1])
             if state:
@@ -152,6 +157,13 @@ class CommandLineWindow(QMainWindow):
         if event.type() == QKeyEvent.Type.KeyPress and event.key() == Qt.Key.Key_Tab:
             return True
         return super().eventFilter(obj, event)
+
+class Stream:
+    def __init__(self, stdout=None):
+        self.stdout = stdout
+
+    def write(self, text):
+        self.stdout.insertPlainText(text)
 
 if __name__ == '__main__':
     app = QApplication([])
