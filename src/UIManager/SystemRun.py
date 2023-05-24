@@ -131,11 +131,11 @@ class CommandLineWindow(QMainWindow):
             else:
                 self.cmdOutput.appendPlainText('Result > Error command!')
         elif tokens[0] == "cat":
-            pass
-        elif tokens[0] == "echo":
-            pass
+            self.system.file_manager.read_File(tokens[1])
+        elif tokens[0] == "write":
+            self.system.file_manager.write_File(tokens[1], tokens[2])
         elif tokens[0] == "clear":
-            pass
+            self.cmdOutput.clear()
         elif tokens[0] == "jobs":
             self.jobs_ui = ProcessUI()
             self.jobs_ui.window.show()
@@ -147,7 +147,7 @@ class CommandLineWindow(QMainWindow):
             self.dev_ui.window.show()
         elif tokens[0] == "help":
             self.cmdOutput.appendPlainText('Result > new <parentfile> <childrenfile>:show file tree')
-            self.cmdOutput.appendPlainText('       > mkdir:create new file')
+            self.cmdOutput.appendPlainText('       > cat <filename>:view file content')
             self.cmdOutput.appendPlainText('       > rename <filename> <newname>:rename file name')
             self.cmdOutput.appendPlainText('       > rm <filename>:delete file')
             self.cmdOutput.appendPlainText('       > ls:show file tree')
