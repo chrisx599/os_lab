@@ -1,6 +1,3 @@
-import sys
-sys.path.append('..')
-sys.path.append('../DeviceManager/')
 from DeviceManager.DeviceManager import *
 
 class System():

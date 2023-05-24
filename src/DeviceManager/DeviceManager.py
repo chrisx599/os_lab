@@ -1,6 +1,4 @@
-﻿# import sys
-# sys.path.append('..')
-from DeviceControlBlock import *
+﻿from DeviceControlBlock import *
 from DeviceStatusTable import *
 from DeviceRequestQueue import *
 import time

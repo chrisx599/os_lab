@@ -13,8 +13,6 @@ from PyQt6.QtWidgets import (QApplication, QLabel, QSizePolicy, QWidget)
 
 from qfluentwidgets import (LineEdit, PushButton)
 
-import sys
-sys.path.append("..")
 
 class Ui_DeviceAdd(object):
     def setupUi(self, DeviceAdd):
