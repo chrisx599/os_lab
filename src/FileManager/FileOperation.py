@@ -1,108 +1,77 @@
 import pickle
 from FileCore import *
 
-class FileSystem():
+
+class FileSystem:
     def __init__(self) -> None:
-        self.state = False  # 
+        self.state = False
         self.root = None
         self.disk = []
-        self.f_table = []
-
         self.filecore = FileCore()
-
-        self.root, self.disk, self.f_table = self.filecore.initFileSystem()
-        self.message = self.filecore.FileTree(self.root)
-
-    # 创建目录
-    def create_Folder(self, filePath):
-        message = self.filecore.pathToObj(filePath, {"operator": "createFolder"}, self.f_table
-                            , self.disk, self.root)
-        if message == -1:
-            # 目录重名
-            return False
-            # print('create_Folder Failed!Folder Already Exists!')
-        # 成功
-        else:
-            return True
-            # print('create_Folder Success!Folder Created!')
+        self.disk = self.filecore.initFileSystem()
 
     # 创建文件
-    def create_File(self, filePath):
-        message = self.filecore.pathToObj(filePath, {"operator": "createFile", "content": ""}
-                            , self.f_table, self.disk, self.root)
-
+    def create_File(self, name, content):
+        message = self.filecore.pathToObj(name, {"operator": "createFile", "content": content},self.disk)
         if isinstance(message, int):
             # 同目录文件重名
             if message == -1:
                 return -1
-                # print('create_File Failed!Folder Already Exists!')
             # 磁盘读写错误
             elif message == -2:
                 return -2
-                # print('create_File Failed!Disk Allocation Fault!')
         # 成功
         else:
             return 1
-            # print('create_File Success!File Created!')
 
     # 读文件
-    def read_File(self, filePath):
-        message = self.filecore.pathToObj(filePath, {"operator": "readFile"}
-                            , self.f_table, self.disk, self.root)
+    def read_File(self, name):
+        message = self.filecore.pathToObj(name, {"operator": "readFile"},self.disk)
         if isinstance(message, int):
             # 文件不存在
             if message == 0:
                 return 0
-                # print('read_File Failed!File Does Not Exist!')
             # 同目录文件重名
             if message == -1:
                 return -1
-                # print('read_File Failed!Permission Denied!')
         # 成功,返回对象是文件内容
         else:
-            return 1
-            # print('read_File Success!', message)
+            return message
 
     # 读命令
-    def read_Order(self, filePath):
-        message = self.filecore.pathToObj(filePath, {"operator": "readFile"}, self.f_table, self.disk, self.root)
+    def read_Order(self, name):
+        message = self.filecore.pathToObj(name, {"operator": "readOrder"}, self.disk)
         if isinstance(message, int):
             # 文件不存在
             if message == 0:
                 return 0
-                # print('read_Order Failed!File Does Not Exist!')
             # 同目录文件重名
             if message == -1:
                 return -1
-                # print('read_Order Failed!Permission Denied!')
         # 成功,返回对象是文件内容
         else:
             message_list = message.split("\n")
             return message_list
-            # print('read_Order Success!')
 
     # 读设备
-    def read_Device(self, filePath):
-        message = self.filecore.pathToObj(filePath, {"operator": "readFile"}, self.f_table, self.disk, self.root)
+    def read_Device(self, name):
+        message = self.filecore.pathToObj(name, {"operator": "readDevice"}, self.disk)
         if isinstance(message, int):
             # 文件不存在
             if message == 0:
                 return 0
-                # print('read_Device Failed!File Does Not Exist!')
             # 同目录文件重名
             if message == -1:
                 return -1
-                # print('read_Device Failed!Permission Denied!')
         # 成功,返回对象是文件内容
         else:
             message_list = message.split("\n")
             return message_list
-            # print('read_Device Success!')
 
     # 写文件
-    def write_File(self, filePath, content):
-        message = self.filecore.pathToObj(filePath, {"operator": "writeFile", "content": content},
-                            self.f_table, self.disk, self.root)
+    def write_File(self, name, content):
+        message = self.filecore.pathToObj(name, {"operator": "writeFile", "content": content},
+                                          self.disk)
         # 文件不存在
         if message == 0:
             return 0
@@ -117,99 +86,56 @@ class FileSystem():
             # print('write_File Success!')
 
     # 写入命令
-    def write_Order(self, filePath):
+    def write_Order(self, name):
         with open("sample.txt") as f:
             content = f.read()
-        message = self.filecore.pathToObj(filePath, {"operator": "writeFile", "content": content},
-                            self.f_table, self.disk, self.root)
+        message = self.filecore.pathToObj(name, {"operator": "writeFile", "content": content}, self.disk)
         # 文件不存在
         if message == 0:
             return 0
-            # print('write_Order Failed!File Does Not Exist!')
         # 同目录文件重名
         elif message == -1:
             return -1
-            # print('write_Order Failed!Permission Denied!')
         # 成功,返回对象是文件内容
         else:
             return 1
-            # print('write_Order Success!')
 
     # 写入设备
-    def write_Device(self, filePath):
+    def write_Device(self, name):
         with open("Device.txt") as f:
             content = f.read()
-        message = self.filecore.pathToObj(filePath, {"operator": "writeFile", "content": content},
-                            self.f_table, self.disk, self.root)
+        message = self.filecore.pathToObj(name, {"operator": "writeFile", "content": content},self.disk)
         # 文件不存在
         if message == 0:
             return 0
-            # print('write_Device Failed!File Does Not Exist!')
         # 同目录文件重名
         elif message == -1:
             return -2
-            # print('write_Device Failed!Permission Denied!')
         # 成功,返回对象是文件内容
         else:
             return 1
-            # print('write_Device Success!')
-
-    # 重命名目录
-    def rename_Folder(self, filePath,newName):
-        message = self.filecore.pathToObj(filePath, {"operator": "renameFolder", "newName": newName},
-                            self.f_table, self.disk, self.root)
-        # 文件不存在
-        if message == 0:
-            return 0
-            # print('rename_Folder Failed!File Does Not Exist!')
-        # 同目录文件重名
-        elif message == -1:
-            return -1
-            # print('rename_Folder Failed!Permission Denied!')
-            # 成功,返回对象是文件内容
-        else:
-            return 1
-            # print('rename_Folder Success!')
 
     # 重命名文件
-    def rename_File(self, filePath,newName):
-        message = self.filecore.pathToObj(filePath, {"operator": "renameFile", "newName": newName},
-                            self.f_table, self.disk, self.root)
+    def rename_File(self, name, newName):
+        message = self.filecore.pathToObj(name, {"operator": "renameFile", "newName": newName},self.disk)
         # 文件不存在
         if message == 0:
             return 0
-            # print('rename_File Failed!File Does Not Exist!')
         # 同目录文件重名
         elif message == -1:
             return -1
-            # print('rename_File Failed!Permission Denied!')
             # 成功,返回对象是文件内容
         else:
             return 1
-            # print('Rename File Success!')
 
     # 删文件
     def del_File(self, filePath):
-        message = self.filecore.pathToObj(filePath, {"operator": "delFile"}, self.f_table, self.disk, self.root)
+        message = self.filecore.pathToObj(filePath, {"operator": "delFile"}, self.disk)
         # 文件不存在
         if message == 0:
             return 0
-            # print('Delete File Failed!File Does Not Exist!')
         else:
             return 1
-            # print('Delete File Success!')
-
-    # 更改权限
-    def change_Authority(self,filePath,newAuthority):
-        message = self.filecore.pathToObj(filePath, {"operator": "changeFileAuthority", "newAuthority": newAuthority},
-                            self.f_table, self.disk, self.root)
-        # 文件不存在
-        if message == 0:
-            return 0
-            # print('change File Authority Failed!File Does Not Exist!')
-        else:
-            return 1
-            # print('change File Authority Success!')
 
     # 查看磁盘占比
     def check_Disk(self, DiskSize: int = 256):
@@ -219,20 +145,6 @@ class FileSystem():
                 full = full + 1
         rate = full / DiskSize
         print('Disk rate:{:.2%}'.format(rate))
-
-    # 查找文件路径
-    def find_file(self, name):
-        a = self.filecore.findObjByName(name, self.root)
-        print(self.filecore.getPath(False, None, a))
-
-    # 查找文件夹路径
-    def find_folder(self, name):
-        a = self.filecore.findObjByName(name, self.root)
-        print(self.filecore.getPath(True, a, None))
-
-    # 打印文件树
-    def print_filetree(self):
-        return self.filecore.FileTree(self.root)
 
     # 打印磁盘
     def print_disk(self):
@@ -244,7 +156,7 @@ class FileSystem():
         for line in self.disk:
             f.write(" " + str(line))
 
+    # 将目录树保存到文件
     def save(self):
         with open('tree.pkl', 'wb') as file:
             pickle.dump(self.filecore.tree, file)
-

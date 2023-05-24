@@ -52,6 +52,11 @@ class Ui_Form(object):
         self.StopProButton = PushButton(parent=self.widget)
         self.StopProButton.setObjectName("StopProButton")
         self.verticalLayout.addWidget(self.StopProButton)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.verticalLayout.addItem(spacerItem3)
+        self.ViewButton = PushButton(parent=self.widget)
+        self.ViewButton.setObjectName("ViewButton")
+        self.verticalLayout.addWidget(self.ViewButton)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -64,4 +69,5 @@ class Ui_Form(object):
         self.label_3.setText(_translate("Form", "代码大小:"))
         self.CreateProButton.setText(_translate("Form", "创建进程"))
         self.StopProButton.setText(_translate("Form", "终止进程"))
+        self.ViewButton.setText(_translate("Form", "查看进程并发"))
 from qfluentwidgets import LineEdit, PushButton, TableView
