@@ -5,7 +5,7 @@ from PageTableItem import *
 from PhysicalMemory import *
 from Program import *
 from ProgramVirtualMem import *
-from FileManager.FileSystem import *
+from FileManager.FileOperation import *
 from FileManager.FileCore import *
 from DeviceManager.DeviceManager import *
 
@@ -122,13 +122,6 @@ class Memory:
         block_num = self.program_list[program_num].page_table_list[page_num].physical_block_num
         self.physical_memory[block_num][page_offset] = write_str
         return 1
-
-
-
-
-#123123
-
-
 
 
 # 1.运行一个程序从，文件系统返回一个代码
