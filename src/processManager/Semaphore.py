@@ -1,5 +1,7 @@
+import sys
+sys.path.append('..')
 import queue
-from lib.logger import logger
+from utils.logger import logger
 from Process import Process
 
 class Semaphore():
@@ -34,3 +36,6 @@ class Semaphore():
             # remove a process P from queue
             # wakeup(P)
             pass
+
+
+test = Semaphore(4)
