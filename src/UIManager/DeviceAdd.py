@@ -1,12 +1,6 @@
-# -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'DeviceAddoMPSKw.ui'
-##
-## Created by: Qt User Interface Compiler version 6.4.3
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
+"""
+添加设备窗口界面
+"""
 
 from PyQt6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
@@ -27,12 +21,12 @@ class Ui_DeviceAdd(object):
         self.TrueAddButton = PushButton(DeviceAdd)
         self.TrueAddButton.setObjectName(u"TrueAddButton")
         self.TrueAddButton.setGeometry(QRect(80, 220, 102, 32))
-        self.LineEdit = LineEdit(DeviceAdd)
-        self.LineEdit.setObjectName(u"LineEdit")
-        self.LineEdit.setGeometry(QRect(140, 70, 128, 33))
-        self.LineEdit_2 = LineEdit(DeviceAdd)
-        self.LineEdit_2.setObjectName(u"LineEdit_2")
-        self.LineEdit_2.setGeometry(QRect(140, 140, 128, 33))
+        self.DevTypeEdit = LineEdit(DeviceAdd)
+        self.DevTypeEdit.setObjectName(u"LineEdit")
+        self.DevTypeEdit.setGeometry(QRect(140, 70, 128, 33))
+        self.DevIDEdit = LineEdit(DeviceAdd)
+        self.DevIDEdit.setObjectName(u"LineEdit_2")
+        self.DevIDEdit.setGeometry(QRect(140, 140, 128, 33))
         self.DevTypelabel = QLabel(DeviceAdd)
         self.DevTypelabel.setObjectName(u"DevTypelabel")
         self.DevTypelabel.setGeometry(QRect(70, 80, 71, 20))
@@ -47,8 +41,6 @@ class Ui_DeviceAdd(object):
 
         QMetaObject.connectSlotsByName(DeviceAdd)
 
-        self.TrueAddButton.clicked.connect()
-        self.NotAddButton.clicked.connect()
 
     def retranslateUi(self, DeviceAdd):
         DeviceAdd.setWindowTitle(QCoreApplication.translate("DeviceAdd", u"Form", None))
@@ -58,11 +50,31 @@ class Ui_DeviceAdd(object):
         self.NotAddButton.setText(QCoreApplication.translate("DeviceAdd", u"\u53d6\u6d88\u6dfb\u52a0", None))
     # retranslateUi
 
+class DeviceAdd():
+    def __init__(self) -> None:
+        super().__init__()
+        self.window = QWidget()
+        self.ui = Ui_DeviceAdd()
+        self.ui.setupUi(self.window)
+
+        self.signal()
+
+    def signal(self):
+        self.ui.TrueAddButton.clicked.connect(self.true_add)
+        self.ui.NotAddButton.clicked.connect(self.not_add)
+
+    def true_add(self):
+        dev_type = self.ui.DevTypeEdit.text()
+        dev_id = self.ui.DevIDEdit.text()
+        print(dev_type, dev_id)
+
+    def not_add(self):
+        self.window.close()
+    
+
 if __name__ == "__main__":
     app = QApplication([])
-    window = QWidget()
-    ui = Ui_DeviceAdd()
-    ui.setupUi(window)
-    window.show()
+    window = DeviceAdd()
+    window.window.show()
     
     app.exec()
