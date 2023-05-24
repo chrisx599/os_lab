@@ -13,7 +13,7 @@ class Dispatcher:
 
     __LEVEL = 3
 
-    @inject("ready_pcb_queue", "block_pcb_queue")
+    # @inject("ready_pcb_queue", "block_pcb_queue")
     def __init__(self, ready_pcb_queue, block_pcb_queue):
         self.__ready_pcb_queue = ready_pcb_queue
         self.__block_pcb_queue = block_pcb_queue
@@ -40,17 +40,8 @@ class Dispatcher:
     # 多级反馈算法
     def multi_feedback_dispatch(self, pcb):
         if pcb != None:
-            if False:
-                # 进程销毁
-                pass
-            elif pcb.get_state() == pcb.PROCESS_BLOCK:
-                pass
-            else:
-                self.to_ready(pcb)
-                self.move_to_next_queue(pcb=pcb)
+            self.move_to_next_queue(pcb)
         next_pcb = self.get_next_pcb()
-        if next_pcb == None:
-            return False
         return next_pcb
 
 
