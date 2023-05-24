@@ -9,7 +9,7 @@ class DeviceRequestQueue:
     # 添加设备请求
     def add_request(self, pcb, dev_type, dev_num):
         self.queue.append((pcb, dev_type, dev_num))
-        logger.info('Successfully added device request to queue:'+str(pcb.get_PID())+' '+str(dev_num)+' '+dev_type+'.')
+        logger.info('Successfully added device request to queue:'+' '+str(dev_num)+' '+dev_type+'.')
 
     # 获取设备请求
     def get_request(self):
