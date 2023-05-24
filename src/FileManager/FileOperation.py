@@ -196,10 +196,10 @@ def change_Authority():
 
 
 # 查看磁盘占比
-def check_Disk(Disk: list,DiskSize: int = 256):
+def check_Disk(DiskSize: int = 256):
     full = 0
     for i in range(DiskSize):
-        if Disk[i] != 'x':
+        if disk[i] != 'x':
             full = full+1
     rate = full/DiskSize
     print('Disk rate:{:.2%}'.format(rate))
@@ -217,6 +217,16 @@ def find_folder():
     name = input("Find folder,Please input folder name:")
     a = findObjByName(name, root)
     print(getPath(True, a, None))
+
+
+# 打印文件树
+def print_filetree():
+    print(FileTree(root))
+
+
+# 打印磁盘
+def print_disk():
+    print(disk)
 
 
 # 将磁盘保存到文件
