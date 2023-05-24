@@ -7,6 +7,7 @@ import threading
 from utils.Container import *
 from processManager.PCB import *
 import treelib
+import threading
 
 class OS:
     cpu = None
@@ -64,6 +65,8 @@ class OS:
             if not self.timeout_event.is_set():
                 self.timeout_event.wait()
             self.running_event.clear()
+            once_time = self.os_timer_messager.get()
+            self.running_pcb.set_total_time(self.running_pcb.get_total_time + once_time)
             if self.process_over_event.is_set():
                 self.running_pcb.set_state(PCB.PROCESS_EXIT)
             with self.atom_lock:
