@@ -5,12 +5,16 @@ from PyQt6.QtCore import Qt, QDir
 import os
 
 from DeviceUI import DeviceManager
+# import sys
+# sys.path.append('..')
+# sys.path.append('../DeviceManager/')
+from System import System
 
 class CommandLineWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.init_system()
+        self.system = System()
 
         self.setWindowTitle("PowerOS")
         self.resize(1000, 650)
@@ -68,9 +72,6 @@ class CommandLineWindow(QMainWindow):
         }""")
 
         self.cmdInput.setFocus()
-
-    def init_system(self):
-        pass
     
     def runCommand(self):
         cmd = self.cmdInput.text()
@@ -114,8 +115,8 @@ class CommandLineWindow(QMainWindow):
         elif tokens[0] == "mem":
             pass
         elif tokens[0] == "dev":
-            self.dev = DeviceManager()
-            self.dev.window.show()
+            self.dev_ui = DeviceManager(self.system.device_st)
+            self.dev_ui.window.show()
         elif tokens[0] == "help":
             pass
         else:

@@ -44,10 +44,11 @@ class Ui_DeviceManager(object):
 
 
 class DeviceManager():
-    def __init__(self) -> None:
+    def __init__(self, device_st) -> None:
         self.window = QWidget()
         self.ui = Ui_DeviceManager()
         self.ui.setupUi(self.window)
+        self.device_st = device_st
 
         self.signal()
 
@@ -56,7 +57,7 @@ class DeviceManager():
         self.ui.DelDeviceButton.clicked.connect(self.del_device)
 
     def add_device(self):
-        self.dev_add = DeviceAdd()
+        self.dev_add = DeviceAdd(self.device_st)
         self.dev_add.window.show()
 
     def del_device(self):

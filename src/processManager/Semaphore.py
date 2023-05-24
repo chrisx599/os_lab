@@ -1,5 +1,5 @@
 import sys
-sys.path.append('..')
+sys.path.append("..")
 import queue
 from utils.logger import logger
 from Process import Process

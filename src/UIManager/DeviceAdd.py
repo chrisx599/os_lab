@@ -13,6 +13,9 @@ from PyQt6.QtWidgets import (QApplication, QLabel, QSizePolicy, QWidget)
 
 from qfluentwidgets import (LineEdit, PushButton)
 
+import sys
+sys.path.append("..")
+
 class Ui_DeviceAdd(object):
     def setupUi(self, DeviceAdd):
         if not DeviceAdd.objectName():
@@ -51,11 +54,12 @@ class Ui_DeviceAdd(object):
     # retranslateUi
 
 class DeviceAdd():
-    def __init__(self) -> None:
+    def __init__(self, device_st) -> None:
         super().__init__()
         self.window = QWidget()
         self.ui = Ui_DeviceAdd()
         self.ui.setupUi(self.window)
+        self.device_st = device_st
 
         self.signal()
 
@@ -66,6 +70,7 @@ class DeviceAdd():
     def true_add(self):
         dev_type = self.ui.DevTypeEdit.text()
         dev_id = self.ui.DevIDEdit.text()
+        self.device_st.add_dev(dev_type, dev_id)
         print(dev_type, dev_id)
 
     def not_add(self):

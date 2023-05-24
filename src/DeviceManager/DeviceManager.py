@@ -46,28 +46,28 @@ def interrupt_handler(dev_id):
 
 
 
+if __name__ == "__main__":
+    #************测试************
 
-#************测试************
+    # 初始化设备状态表和设备请求队列
+    dst = DeviceStatusTable()
+    drq = DeviceRequestQueue()
 
-# 初始化设备状态表和设备请求队列
-dst = DeviceStatusTable()
-drq = DeviceRequestQueue()
+    # 添加设备到设备状态表
+    dst.add_dev("disk", 1)
+    dst.add_dev("printer", 2)
 
-# 添加设备到设备状态表
-dst.add_dev("disk", 1)
-dst.add_dev("printer", 2)
+    #查看所有设备
+    dst.print_all_devs()
 
-#查看所有设备
-dst.print_all_devs()
+    #删除指定设备
+    dst.del_dev("dsik",1)
 
-#删除指定设备
-dst.del_dev("dsik",1)
+    dst.print_all_devs()
 
-dst.print_all_devs()
+    #添加设备申请
+    drq.add_request(1,"printer",2)
 
-#添加设备申请
-drq.add_request(1,"printer",2)
-
-# 处理设备请求
-while True:
-    use_dev()
+    # 处理设备请求
+    while True:
+        use_dev()
