@@ -31,7 +31,7 @@ class Memory:
     def __init__(self):
         self.physical_memory = real_memory
         self.program_list = [Program() for i in range(MAX_PROGRAM)]
-        self.program_num = 0
+        self.program_num = None
 
     def get_memory_size(self):
         return self.physical_memory.memory_size
@@ -41,8 +41,9 @@ class Memory:
         return self.physical_memory.block_num
     def get_core_block_num(self):
         return self.physical_memory.core_block_num
-    def create_program(self):
-        self.program_list[self.program_num].program_id = self.program_num
+    def create_program(self,program_num):
+        self.program_list[program_num].program_id = program_num
+        return len(self.program_list[program_num].program_page_table.instruction_list) * 4
     def load_program(self,program_num,instruction_list):
         self.program_list[program_num].program_page_table.__init__()
         self.program_list[program_num].program_page_table.instruction_list = instruction_list
@@ -55,8 +56,8 @@ class Memory:
         # self.program_list[program_num].program_page_table.check_page_interruption(page_num)
         #处理完了，可以用了
         physical_block = self.program_list[program_num].program_page_table.page_table_list[page_num].physical_block_num
-        for i in range(PAGE_SIZE):
-            ins_list.append(self.physical_memory[physical_block][i])
+        for i in range(4):
+            ins_list.append(self.physical_memory[physical_block][page_offset + i])
         return ins_list
 
 
@@ -77,15 +78,20 @@ class Memory:
 
     def program_check_page_fault(self,page_num,program_num):
         out_page = self.program_list[program_num].program_page_table.check_page_interruption(page_num)
-        if(out_page != -2):
-            return out_page
+        return out_page
+
+    def program_deal_page_fault(self,page_num,program_num,out_page):
+        if(out_page >= 0):
+            self.program_replace_vm_page(page_num,program_num,out_page)
         else:
-            print('update page!')
-    def program_replace_vm_page(self,page,num,program_num,out_page):
+            self.program_lru_allocate_page(page_num,program_num)
+
+    def program_replace_vm_page(self,page_num,program_num,out_page):
         self.program_list[program_num].program_page_table.replace_page(page_num,out_page)
 
     def program_lru_allocate_page(self,page_num,program_num):
         self.program_list[program_num].program_page_table.lru_allocate_page(page_num)
+
 
     def program_recycle_physcial_memory(self,program_num):
         for i in range(self.program_list[program_num].program_page_table.page_num):
@@ -98,13 +104,18 @@ class Memory:
                 self.program_list[program_num].program_page_table.page_table_list[i].item_state = 0
                 self.program_list[program_num].program_page_table.page_table_list[i].page_num = None
 
-    def write_buffer(self,write_list):
+    def write_buffer(self,write_str):
         buffer_page = 0
-        list_len = len(write_list)
-        if(list_len / PAGE_SIZE):
-            for i in range(list_len):
-                self.physical_memory[buffer_page][i] = write_list[i]
-        return {0,list_len}
+        temp_list = ()
+        for i in range(PAGE_SIZE):
+            if(self.physical_memory[buffer_page][i] == 0):
+                self.physical_memory[buffer_page][i] = write_str
+                temp_list.append(i)
+                temp_list.append(1)
+                break
+        return temp_list
+
+
 
     def write_memory(self, addr, write_list):
         page_num = addr / PAGE_SIZE

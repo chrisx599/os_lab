@@ -196,3 +196,4 @@ class PageTable:
         self.page_table_list[page_num].item_state = 1
         self.page_table_list[page_num].page_num = page_num
         real_memory.load_memory(self.instruction_list, self.list_location, page_num)
+        return page_num
