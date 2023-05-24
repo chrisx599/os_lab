@@ -4,7 +4,6 @@ from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtCore import Qt, QDir
 import os
 
-from DeviceUI import DeviceManager
 
 # 导入自定义包
 import sys
@@ -12,7 +11,10 @@ import os
 current_path = os.getcwd()
 sys.path.append(current_path + "\src")
 sys.path.append(current_path + "\src\DeviceManager")
+sys.path.append(current_path + "\src\FileManager")
+from DeviceUI import DeviceManager
 from System import System
+from MemoryUI import MemoryUI
 
 class CommandLineWindow(QMainWindow):
     def __init__(self):
@@ -79,29 +81,41 @@ class CommandLineWindow(QMainWindow):
     
     def runCommand(self):
         cmd = self.cmdInput.text()
-        self.currentDir = QDir.currentPath()
+        # self.currentDir = QDir.currentPath()
+        self.cmdOutput.appendPlainText('Result > ' + cmd)
         self.cmd_implement(cmd)
-        self.cmdOutput.appendPlainText(self.currentDir + '> ' + cmd)
+        # self.cmdOutput.appendPlainText(self.currentDir + '> ' + cmd)
+        # self.cmdOutput.appendPlainText('Result > ' + cmd)
         self.cmdInput.clear()
 
 
     def cmd_implement(self, cmd):
         cmd = str(cmd)
         tokens = cmd.split(" ")
-        if tokens[0] == "cd":
-            # 检查路径是否存在
-            if os.path.exists(tokens[1]):
-                os.chdir(tokens[1])
-                self.currentDir = QDir.currentPath()
-            else:
-                self.cmdOutput.appendPlainText(self.currentDir + '> ' + 
-                                               "Error:Please check your path")
-        elif tokens[0] == "ls":
-            pass
+        # if tokens[0] == "cd":
+        #     # 检查路径是否存在
+        #     # if os.path.exists(tokens[1]):
+        #     #     os.chdir(tokens[1])
+        #     #     self.currentDir = QDir.currentPath()
+        #     # else:
+        #     #     self.cmdOutput.appendPlainText(self.currentDir + '> ' + 
+        #     #                                    "Error:Please check your path")
+        #     pass
+        if tokens[0] == "ls":
+            filetree = self.system.file_manager.print_filetree()
+            self.cmdOutput.appendPlainText('Result > ' + str(filetree))
         elif tokens[0] == "mkdir":
-            pass
+            state = self.system.file_manager.create_Folder(tokens[1])
+            if state:
+                self.cmdOutput.appendPlainText('Result > Successfully create!')
+            else:
+                self.cmdOutput.appendPlainText('Result > Failed create!')
         elif tokens[0] == "touch":
-            pass
+            state = self.system.file_manager.create_File(tokens[1])
+            if state:
+                self.cmdOutput.appendPlainText('Result > Successfully create!')
+            else:
+                self.cmdOutput.appendPlainText('Result > Failed create!')
         elif tokens[0] == "rm":
             pass
         elif tokens[0] == "mv":
@@ -117,14 +131,20 @@ class CommandLineWindow(QMainWindow):
         elif tokens[0] == "jobs":
             pass
         elif tokens[0] == "mem":
-            pass
+            self.mem_ui = MemoryUI()
+            self.mem_ui.window.show()
         elif tokens[0] == "dev":
             self.dev_ui = DeviceManager(self.system.device_st)
             self.dev_ui.window.show()
         elif tokens[0] == "help":
-            pass
+            self.cmdOutput.appendPlainText('Result > ls:show file tree')
+            self.cmdOutput.appendPlainText('       > mkdir:create new file')
+            self.cmdOutput.appendPlainText('       > touch:create new file')
+            self.cmdOutput.appendPlainText('       > rm:delete file')
+            self.cmdOutput.appendPlainText('       > ls:show file tree')
+            self.cmdOutput.appendPlainText('       > ls:show file tree')
         else:
-            self.cmdOutput.appendPlainText(self.currentDir + '> '
+            self.cmdOutput.appendPlainText('Result > '
                                             + "Error:Please check your command, \""
                                             + cmd + "\" not a available command, use help to check")
 
