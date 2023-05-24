@@ -12,7 +12,7 @@ from DeviceRequestQueue import *
 import time
 from utils.logger import logger
 from utils.Container import *
-from processManager import PCB
+from processManager.PCB import PCB
 
 def run(dcb):
     #参数interrupt_event, interrupt_pcb_queue
@@ -23,8 +23,8 @@ def run(dcb):
                 execute_operation(pcb, dcb.dev_type, dcb.dev_id)
                 time.sleep(3)
                 pcb.set_event = 1
-                interrupt_pcb_queue.put(pcb)
-                interrupt_event.set()
+                # interrupt_pcb_queue.put(pcb)
+                # interrupt_event.set()
 
 #t=threading.Thread(target=run, name=name)
 
@@ -36,13 +36,13 @@ def use_dev(drq,dst):
         pcb, dev_type, dev_num = request
         dcb = dst.get_dev(dev_num)
         if dcb is not None:
-            dcb.queue.append(pcb)  # 将进程加入设备队列
+            dcb.queue.put(pcb)  # 将进程加入设备队列
     else:
         time.sleep(1)  # 暂停一段时间，等待下一次设备请求
 
 #执行设备操作
 def execute_operation(pcb,dev_type,dev_num):
-    print("Device" + dev_type + "is using by " + pcb.get_PID())
+    print("Device" + str(dev_type) + "is using by " + str(pcb.get_PID()))
     if dev_num == 1:
         input_tmp = input("请在键盘上输入\n")
         # 确认input长度，写入内存
@@ -82,15 +82,13 @@ if __name__ == "__main__":
     # 添加设备到设备状态表
     dst.add_dev("keyboard",1)
     dst.add_dev("printer", 2)
-    t = threading.Thread(target=run,args=[dst.get_dev(1)],name="keyboard")
 
-    t.start()
 
     #查看所有设备
     dst.print_all_devs()
 
     #删除指定设备
-    dst.del_dev("disk",1)
+    #dst.del_dev("disk",2)
 
     dst.print_all_devs()
 
@@ -98,7 +96,9 @@ if __name__ == "__main__":
     pcb = PCB("aaa")
     drq.add_request(pcb,"printer",2)
     use_dev(drq,dst)
+    t = threading.Thread(target=run, args=[dst.get_dev(2)], name="keyboard")
 
+    t.start()
     # 处理设备请求
     #while True:
         #use_dev()
