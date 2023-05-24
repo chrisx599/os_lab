@@ -3,7 +3,7 @@
 # @Time     : 2023/5/18 10:39
 # @Author   : qingyao
 import threading
-from lib.logger import logger
+from utils.logger import logger
 from processManager.PCB import PCB
 from utils.Container import *
 from DeviceManager.DeviceManager import *
@@ -11,12 +11,13 @@ from processManager import PCB
 interrupt_vector = []
 class Interrput(threading.Thread):
 
-    @inject("ready_pcb_queue", "interrupt_pcb_queue", "interrupt_event", "interrupt_message_queue", "")
-    def __init__(self,ready_pcb_queue, interrupt_pcb_queue, interrupt_event, interrupt_message_queue):
+    @inject("ready_pcb_queue", "interrupt_pcb_queue", "interrupt_event", "interrupt_message_queue", "process_over_event")
+    def __init__(self,ready_pcb_queue, interrupt_pcb_queue, interrupt_event, interrupt_message_queue, process_over_event):
         self.ready_pcb_queue = ready_pcb_queue
         self.interrupt_event = interrupt_event
         self.interrupt_pcb_queue = interrupt_pcb_queue
         self.interrupt_message_queue = interrupt_message_queue
+        self.process_over_event = process_over_event
         file = open("interrupt_vector_table")
         for line in file:
             interrupt_vector.append(line)
@@ -31,6 +32,7 @@ class Interrput(threading.Thread):
                 if type == 1:# ok
                     self.interrupt_pcb.set_state(PCB.PROCESS_READY)
                     self.ready_pcb_queue.put(self.interrupt_pcb)
+                    self.interrupt_event.clear()
                 elif type == 2:# page fault
                     do_page_fault()
                     address = self.interrupt_message_queue.get()
@@ -40,7 +42,9 @@ class Interrput(threading.Thread):
                     do_page_fault()
                 else:
                     do_IRQ(self.interrupt_pcb.get_device_id())
-                self.interrupt_event.clear()
+                    self.interrupt_pcb.set_state(PCB.PROCESS_BLOCK)
+                    self.process_over_event.set()
+                    self.interrupt_event.clear()
 
 def do_page_fault():
     pass
