@@ -1,6 +1,11 @@
 ﻿import sys
+import os
+current_path = os.getcwd()
+print(current_path)
+sys.path.append(current_path + "\..")
+sys.path.append(current_path + "\..\processManager")
+
 import threading
-sys.path.append('..')
 from DeviceControlBlock import *
 from DeviceStatusTable import *
 from DeviceRequestQueue import *
@@ -13,10 +18,9 @@ def run(dcb):
     #参数interrupt_event, interrupt_pcb_queue
     while True:
         if dcb.status == "idle":
-            dcb_request = dcb.get_dcb_queue()
-            pcb,dev_type,dev_num = dcb_request
+            pcb = dcb.get_dcb_queue()
             if pcb != None:
-                execute_operation(pcb, dev_type, dev_num)
+                execute_operation(pcb, dcb.dev_type, dcb.dev_id)
                 time.sleep(3)
                 pcb.set_event = 1
                 interrupt_pcb_queue.put(pcb)
@@ -32,7 +36,7 @@ def use_dev(drq,dst):
         pcb, dev_type, dev_num = request
         dcb = dst.get_dev(dev_num)
         if dcb is not None:
-            dcb.queue.append(request)  # 将进程加入设备队列
+            dcb.queue.append(pcb)  # 将进程加入设备队列
     else:
         time.sleep(1)  # 暂停一段时间，等待下一次设备请求
 
@@ -49,7 +53,6 @@ def execute_operation(pcb,dev_type,dev_num):
         print(pcb.get_buffer_content())
     else:
         pass
-
 
 #释放设备
 def release_dev(dev_type,dev_num):
@@ -80,6 +83,7 @@ if __name__ == "__main__":
     dst.add_dev("keyboard",1)
     dst.add_dev("printer", 2)
     t = threading.Thread(target=run,args=[dst.get_dev(1)],name="keyboard")
+
     t.start()
 
     #查看所有设备
@@ -91,9 +95,10 @@ if __name__ == "__main__":
     dst.print_all_devs()
 
     #添加设备申请
-    pcb = PCB
+    pcb = PCB("aaa")
     drq.add_request(pcb,"printer",2)
+    use_dev(drq,dst)
 
     # 处理设备请求
-    while True:
-        use_dev()
+    #while True:
+        #use_dev()
