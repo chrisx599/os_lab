@@ -1,3 +1,4 @@
+from Memory import *
 # 物理内存类，memory_size代表物理内存大小,block_size代表一个块(页)的大小，64B,memory_space则是一个二维的列表,256个块(页),每页又有64B/4,16条指令
 class PhysicalMemory:
     memory_size = pow(2, 14)  # 物理内存总大小

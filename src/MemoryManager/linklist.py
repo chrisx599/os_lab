@@ -1,3 +1,4 @@
+from Memory import *
 class Node:
     value = 0
     next = None

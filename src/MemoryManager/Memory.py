@@ -5,7 +5,7 @@ from PageTableItem import *
 from PhysicalMemory import *
 from Program import *
 from ProgramVirtualMem import *
-from FileManager.FileSystem import *
+from FileManager.FileOperation import *
 from FileManager.FileCore import *
 from DeviceManager.DeviceManager import *
 
@@ -124,14 +124,6 @@ class Memory:
         return 1
 
 
-
-
-
-
-
-
-
-
 # 1.运行一个程序从，文件系统返回一个代码
 # 2.把代码放入内存中
 # 3.CPU开始执行代码，通过地址取指令
@@ -139,3 +131,4 @@ class Memory:
 #CPU调用检查中断函数 check
 #若有缺页中断，则进行换页 replace or allocate
 #CPU调用换页函数之后再读或写内存 read or write
+# 666
