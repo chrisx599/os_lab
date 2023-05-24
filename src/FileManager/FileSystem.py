@@ -56,6 +56,23 @@ def read_File():
         print('read_File Success!', message)
 
 
+# 读命令
+def read_Order():
+    filePath = input("Read Order,Please input path:")
+    message = pathToObj(filePath, {"operator": "readFile"}, f_table, disk, root)
+    if isinstance(message, int):
+        # 文件不存在
+        if message == 0:
+            print('read_Order Failed!File Does Not Exist!')
+        # 同目录文件重名
+        if message == -1:
+            print('read_Order Failed!Permission Denied!')
+    # 成功,返回对象是文件内容
+    else:
+        message_list = message.split("\n")
+        print('read_Order Success!', message_list)
+
+
 # 写文件
 def write_File():
     filePath = input("Write File,Please input path:")
@@ -70,6 +87,23 @@ def write_File():
     # 成功,返回对象是文件内容
     else:
         print('write_File Success!')
+
+
+# 写入命令
+def write_Order():
+    filePath = input("Write Order,Please input path:")
+    with open("sample.txt") as f:
+        content = f.read()
+    message = pathToObj(filePath, {"operator": "writeFile", "content": content}, f_table, disk, root)
+    # 文件不存在
+    if message == 0:
+        print('write_Order Failed!File Does Not Exist!')
+    # 同目录文件重名
+    elif message == -1:
+        print('write_Order Failed!Permission Denied!')
+    # 成功,返回对象是文件内容
+    else:
+        print('write_Order Success!')
 
 
 # 重命名目录
@@ -131,7 +165,7 @@ def change_Authority():
 def check_Disk(Disk: list,DiskSize: int = 256):
     full = 0
     for i in range(DiskSize):
-        if Disk[i] != -1:
+        if Disk[i] != 'x':
             full = full+1
     rate = full/DiskSize
     print('Disk rate:{:.2%}'.format(rate))
@@ -155,7 +189,7 @@ def find_folder():
 def saveDisk():
     f = open("Disk.txt", "w")
     for line in disk:
-        f.write(str(line))
+        f.write(" "+str(line))
 
 
 # 将文件树保存到文件
@@ -166,22 +200,24 @@ def saveTree():
 
 
 init_FileSystem()
-create_Folder()
-create_File()
 # print(FileTree(root))
+print(disk)
+# create_Folder()
+create_File()
+write_Order()
+read_Order()
 # find_file()
 # find_folder()
 # change_Authority()
-write_File()
+# write_File()
 # read_File()
 # print(FileTree(root))
 # print(disk)
 # rename_Folder()
 # rename_File()
-del_File()
-write_File()
+# del_File()
+# write_File()
 print(FileTree(root))
-print(disk)
 check_Disk(disk)
 saveDisk()
 saveTree()
