@@ -70,6 +70,9 @@ class PCB:
     # 进程运行完毕是否立即被释放
     release = 0
 
+    # page_num
+    page_num = 0
+
     # 累计运行时间
     total_time = 0
 
@@ -82,6 +85,12 @@ class PCB:
 
     def set_PID(self, PID):
         self.PID = PID
+
+    def get_page_num(self):
+        return self.page_num
+
+    def set_page_num(self, page_num):
+        return self.page_num
 
     def set_buffer_address(self, address):
         self.buffer_address = address
