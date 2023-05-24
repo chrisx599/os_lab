@@ -1,3 +1,4 @@
+import pickle
 from FileCore import *
 
 class FileSystem():
@@ -7,13 +8,14 @@ class FileSystem():
         self.disk = []
         self.f_table = []
 
-        
-        self.state, self.root, self.disk, self.f_table = initFileSystem()
-        self.message = FileTree(self.root)
+        self.filecore = FileCore()
+
+        self.root, self.disk, self.f_table = self.filecore.initFileSystem()
+        self.message = self.filecore.FileTree(self.root)
 
     # 创建目录
     def create_Folder(self, filePath):
-        message = pathToObj(filePath, {"operator": "createFolder"}, self.f_table
+        message = self.filecore.pathToObj(filePath, {"operator": "createFolder"}, self.f_table
                             , self.disk, self.root)
         if message == -1:
             # 目录重名
@@ -26,7 +28,7 @@ class FileSystem():
 
     # 创建文件
     def create_File(self, filePath):
-        message = pathToObj(filePath, {"operator": "createFile", "content": ""}
+        message = self.filecore.pathToObj(filePath, {"operator": "createFile", "content": ""}
                             , self.f_table, self.disk, self.root)
 
         if isinstance(message, int):
@@ -45,7 +47,7 @@ class FileSystem():
 
     # 读文件
     def read_File(self, filePath):
-        message = pathToObj(filePath, {"operator": "readFile"}
+        message = self.filecore.pathToObj(filePath, {"operator": "readFile"}
                             , self.f_table, self.disk, self.root)
         if isinstance(message, int):
             # 文件不存在
@@ -63,7 +65,7 @@ class FileSystem():
 
     # 读命令
     def read_Order(self, filePath):
-        message = pathToObj(filePath, {"operator": "readFile"}, self.f_table, self.disk, self.root)
+        message = self.filecore.pathToObj(filePath, {"operator": "readFile"}, self.f_table, self.disk, self.root)
         if isinstance(message, int):
             # 文件不存在
             if message == 0:
@@ -81,7 +83,7 @@ class FileSystem():
 
     # 读设备
     def read_Device(self, filePath):
-        message = pathToObj(filePath, {"operator": "readFile"}, self.f_table, self.disk, self.root)
+        message = self.filecore.pathToObj(filePath, {"operator": "readFile"}, self.f_table, self.disk, self.root)
         if isinstance(message, int):
             # 文件不存在
             if message == 0:
@@ -99,7 +101,7 @@ class FileSystem():
 
     # 写文件
     def write_File(self, filePath, content):
-        message = pathToObj(filePath, {"operator": "writeFile", "content": content},
+        message = self.filecore.pathToObj(filePath, {"operator": "writeFile", "content": content},
                             self.f_table, self.disk, self.root)
         # 文件不存在
         if message == 0:
@@ -118,7 +120,7 @@ class FileSystem():
     def write_Order(self, filePath):
         with open("sample.txt") as f:
             content = f.read()
-        message = pathToObj(filePath, {"operator": "writeFile", "content": content},
+        message = self.filecore.pathToObj(filePath, {"operator": "writeFile", "content": content},
                             self.f_table, self.disk, self.root)
         # 文件不存在
         if message == 0:
@@ -137,7 +139,7 @@ class FileSystem():
     def write_Device(self, filePath):
         with open("Device.txt") as f:
             content = f.read()
-        message = pathToObj(filePath, {"operator": "writeFile", "content": content},
+        message = self.filecore.pathToObj(filePath, {"operator": "writeFile", "content": content},
                             self.f_table, self.disk, self.root)
         # 文件不存在
         if message == 0:
@@ -154,7 +156,7 @@ class FileSystem():
 
     # 重命名目录
     def rename_Folder(self, filePath,newName):
-        message = pathToObj(filePath, {"operator": "renameFolder", "newName": newName},
+        message = self.filecore.pathToObj(filePath, {"operator": "renameFolder", "newName": newName},
                             self.f_table, self.disk, self.root)
         # 文件不存在
         if message == 0:
@@ -171,7 +173,7 @@ class FileSystem():
 
     # 重命名文件
     def rename_File(self, filePath,newName):
-        message = pathToObj(filePath, {"operator": "renameFile", "newName": newName},
+        message = self.filecore.pathToObj(filePath, {"operator": "renameFile", "newName": newName},
                             self.f_table, self.disk, self.root)
         # 文件不存在
         if message == 0:
@@ -188,7 +190,7 @@ class FileSystem():
 
     # 删文件
     def del_File(self, filePath):
-        message = pathToObj(filePath, {"operator": "delFile"}, self.f_table, self.disk, self.root)
+        message = self.filecore.pathToObj(filePath, {"operator": "delFile"}, self.f_table, self.disk, self.root)
         # 文件不存在
         if message == 0:
             return 0
@@ -199,7 +201,7 @@ class FileSystem():
 
     # 更改权限
     def change_Authority(self,filePath,newAuthority):
-        message = pathToObj(filePath, {"operator": "changeFileAuthority", "newAuthority": newAuthority},
+        message = self.filecore.pathToObj(filePath, {"operator": "changeFileAuthority", "newAuthority": newAuthority},
                             self.f_table, self.disk, self.root)
         # 文件不存在
         if message == 0:
@@ -220,17 +222,17 @@ class FileSystem():
 
     # 查找文件路径
     def find_file(self, name):
-        a = findObjByName(name, self.root)
-        print(getPath(False, None, a))
+        a = self.filecore.findObjByName(name, self.root)
+        print(self.filecore.getPath(False, None, a))
 
     # 查找文件夹路径
     def find_folder(self, name):
-        a = findObjByName(name, self.root)
-        print(getPath(True, a, None))
+        a = self.filecore.findObjByName(name, self.root)
+        print(self.filecore.getPath(True, a, None))
 
     # 打印文件树
     def print_filetree(self):
-        return FileTree(self.root)
+        return self.filecore.FileTree(self.root)
 
     # 打印磁盘
     def print_disk(self):
@@ -242,8 +244,7 @@ class FileSystem():
         for line in self.disk:
             f.write(" " + str(line))
 
-    # 将文件树保存到文件
-    def saveTree(self):
-        f = open("FileTree.txt", "w")
-        f.writelines(str(FileTree(self.root)))
-        f.close()
+    def save(self):
+        with open('tree.pkl', 'wb') as file:
+            pickle.dump(self.filecore.tree, file)
+

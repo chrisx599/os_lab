@@ -1,3 +1,5 @@
+import pickle
+from PyQt6 import QtGui
 from PyQt6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QLabel
 from PyQt6.QtWidgets import QLineEdit, QPlainTextEdit
 from PyQt6.QtGui import QKeyEvent
@@ -12,6 +14,7 @@ current_path = os.getcwd()
 sys.path.append(current_path + "\src")
 sys.path.append(current_path + "\src\DeviceManager")
 sys.path.append(current_path + "\src\FileManager")
+sys.path.append(current_path + "\src\ProcessManager")
 from DeviceUI import DeviceManager
 from System import System
 from MemoryUI import MemoryUI
@@ -78,6 +81,10 @@ class CommandLineWindow(QMainWindow):
         }""")
 
         self.cmdInput.setFocus()
+
+        # 重定向标准输出流至QPlainTextEdit
+        sys.stdout = Stream(stdout=self.cmdOutput)
+
     
     def runCommand(self):
         cmd = self.cmdInput.text()
@@ -102,8 +109,7 @@ class CommandLineWindow(QMainWindow):
         #     #                                    "Error:Please check your path")
         #     pass
         if tokens[0] == "ls":
-            filetree = self.system.file_manager.print_filetree()
-            self.cmdOutput.appendPlainText('Result > ' + str(filetree))
+            self.system.file_manager.filecore.tree.show()
         elif tokens[0] == "mkdir":
             state = self.system.file_manager.create_Folder(tokens[1])
             if state:
@@ -152,6 +158,23 @@ class CommandLineWindow(QMainWindow):
         if event.type() == QKeyEvent.Type.KeyPress and event.key() == Qt.Key.Key_Tab:
             return True
         return super().eventFilter(obj, event)
+    
+    def closeEvent(self, event):
+        # 在窗口关闭时执行的操作
+        # 保存文件树结构
+        # self.system.file_manager.save()
+        # 调用父类的 closeEvent() 方法以确保窗口正常关闭
+        super().closeEvent(event)
+
+class Stream:
+    def __init__(self, stdout=None):
+        self.stdout = stdout
+
+    def write(self, text):
+        self.stdout.appendPlainText(text)
+
+    def flush(self):
+        pass  # 这里可以添加适当的刷新操作
 
 if __name__ == '__main__':
     app = QApplication([])
