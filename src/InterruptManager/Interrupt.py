@@ -11,13 +11,17 @@ from processManager import PCB
 interrupt_vector = []
 class Interrput(threading.Thread):
 
-    @inject("ready_pcb_queue", "interrupt_pcb_queue", "interrupt_event", "interrupt_message_queue", "process_over_event")
-    def __init__(self,ready_pcb_queue, interrupt_pcb_queue, interrupt_event, interrupt_message_queue, process_over_event):
+    @inject("ready_pcb_queue", "interrupt_pcb_queue", "interrupt_event",
+            "interrupt_message_queue", "process_over_event", "memory", "block_pcb_queue")
+    def __init__(self, ready_pcb_queue, interrupt_pcb_queue, interrupt_event,
+                 interrupt_message_queue, process_over_event, memory, block_pcb_queue):
         self.ready_pcb_queue = ready_pcb_queue
         self.interrupt_event = interrupt_event
         self.interrupt_pcb_queue = interrupt_pcb_queue
         self.interrupt_message_queue = interrupt_message_queue
         self.process_over_event = process_over_event
+        self.memory = memory
+        self.block_pcb_queue = block_pcb_queue
         file = open("interrupt_vector_table")
         for line in file:
             interrupt_vector.append(line)
@@ -28,26 +32,25 @@ class Interrput(threading.Thread):
             if not self.interrupt_event.is_set():
                 self.interrupt_event.wait()
                 self.interrupt_pcb = self.interrupt_pcb_queue.get()
-                type = self.interrupt_pcb.get_event()
+                type = 0
+                if self.interrupt_pcb != None:
+                    type = self.interrupt_pcb.get_event()
                 if type == 1:# ok
                     self.interrupt_pcb.set_state(PCB.PROCESS_READY)
                     self.ready_pcb_queue.put(self.interrupt_pcb)
                     self.interrupt_event.clear()
-                elif type == 2:# page fault
-                    do_page_fault()
-                    address = self.interrupt_message_queue.get()
-                    page_num = self.interrupt_message_queue.get()
-
-                elif type == 3:# page fault
-                    do_page_fault()
-                else:
+                elif type == 2:
                     do_IRQ(self.interrupt_pcb.get_device_id())
                     self.interrupt_pcb.set_state(PCB.PROCESS_BLOCK)
+                    self.block_pcb_queue.put(self.interrupt_pcb)
                     self.process_over_event.set()
                     self.interrupt_event.clear()
-
-def do_page_fault():
-    pass
+                else:
+                    page_num = self.interrupt_message_queue.get()
+                    program_num = self.interrupt_message_queue.get()
+                    out_page = self.interrupt_message_queue.get()
+                    self.memory.program_deal_page_fault(page_num, program_num, out_page)
+                    self.interrupt_event.clear()
 
 @inject("device_request_queue", "device_status_table")
 def do_IRQ(pcb, device: int, device_request_queue, device_status_table):

@@ -24,9 +24,9 @@ class OS:
 
 
     @inject("cpu", "process", "interrupt", "timeout_event",
-            "atom_lock", "running_event", "process_over_event", "new_process_event")
+            "atom_lock", "running_event", "process_over_event", "new_process_event", "os_timer_messager")
     def __init__(self, cpu, process, interrupt, system_time, timeout_event,
-                 atom_lock, running_event, process_over_event, new_process_event):
+                 atom_lock, running_event, process_over_event, new_process_event, os_timer_messager):
         self.cpu = cpu
         self.interrupt = interrupt
         self.process = process
@@ -37,6 +37,7 @@ class OS:
         self.running_event = running_event
         self.process_over_event = process_over_event
         self.new_process_event = new_process_event
+        self.os_timer_messager = os_timer_messager
 
 
     def dispatch_func(self):
@@ -55,6 +56,7 @@ class OS:
         if next_running_pcb == None:
             self.new_process_event.wait()
             next_running_pcb = self.process.get_next_pcb()
+            self.cpu.running_pcb = next_running_pcb
             self.new_process_event.clear()
         self.running_pcb = next_running_pcb
         # 恢复上下文环境
@@ -64,6 +66,7 @@ class OS:
         self.cpu.set_PC(pc)
         ir = self.running_pcb.get_IR()
         self.cpu.get_IR(ir)
+        self.cpu.set_PID(self.running_pcb.get_PID())
 
     def dispatch_process(self):
         while True:

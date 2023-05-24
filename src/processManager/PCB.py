@@ -40,6 +40,9 @@ class PCB:
     # 基址寄存器
     base_mem_reg = 0
 
+    # code_size
+    code_size = 0
+
     # 数据区起始地址
     data_start_location = 0
 
@@ -85,6 +88,12 @@ class PCB:
 
     def set_PID(self, PID):
         self.PID = PID
+
+    def set_code_size(self, code_size):
+        self.code_size = code_size
+
+    def get_code_size(self):
+        return self.code_size
 
 
     def get_page_num(self):

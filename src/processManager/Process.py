@@ -12,11 +12,12 @@ class Process:
     exit_pcb_queue = None
 
 
-    @inject("ready_pcb_queue", "block_pcb_queue", "exit_pcb_queue")
-    def __init__(self, ready_pcb_queue, block_pcb_queue, exit_pcb_queue):
+    @inject("ready_pcb_queue", "block_pcb_queue", "exit_pcb_queue", "memory")
+    def __init__(self, ready_pcb_queue, block_pcb_queue, exit_pcb_queue, memory):
         self.ready_pcb_queue = ready_pcb_queue
         self.block_pcb_queue = block_pcb_queue
         self.exit_pcb_queue = exit_pcb_queue
+        self.memory = memory
 
     # 进程调度
     def dispatch_process(self, pcb):
@@ -36,14 +37,8 @@ class Process:
     # 创建新进程
     def create_process(self, name):
         new_pcb = PCB(name)
-        # 申请内存
-        # 根据申请内存API的返还值修改new_pcb内容
-        # if apply_memory is OK:
-        # new_pcb.set_state(PCB.PROCESS_READY)
-        # new_pcb.set_base_mem_reg()
-        # new_pcb.set_limit_mem_reg()
-        # else:
-        # 抛异常
+        new_pcb.set_code_size(self.memory.create_program(new_pcb.get_PID()))
+        new_pcb.set_state(PCB.PROCESS_READY)
         self.ready_pcb_queue.put(new_pcb)
         return new_pcb
 

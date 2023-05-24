@@ -77,11 +77,16 @@ class Memory:
 
     def program_check_page_fault(self,page_num,program_num):
         out_page = self.program_list[program_num].program_page_table.check_page_interruption(page_num)
-        if(out_page != -2):
-            return out_page
+        return out_page
+
+    def program_deal_page_fault(self, page_num, program_num, out_page):
+        if out_page == -1:
+            self.program_lru_allocate_page(page_num, out_page)
         else:
-            print('update page!')
-    def program_replace_vm_page(self,page,num,program_num,out_page):
+            self.program_replace_vm_page(page_num, program_num, out_page)
+
+
+    def program_replace_vm_page(self,page_num,program_num,out_page):
         self.program_list[program_num].program_page_table.replace_page(page_num,out_page)
 
     def program_lru_allocate_page(self,page_num,program_num):
