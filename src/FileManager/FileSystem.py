@@ -1,10 +1,11 @@
-from FileSystem import *
+from FileCore import *
 
 state, root, disk, f_table = False, None, [], []
 
 
 def init_FileSystem():  # 初始化文件系统 地址是根目录，创建一个新的资源
     global state, root, disk, f_table
+
     state, root, disk, f_table = initFileSystem()
     message = FileTree(root)
     print(message)
@@ -114,6 +115,18 @@ def del_File():
         print('Delete File Success!')
 
 
+# 更改权限
+def change_Authority():
+    filePath = input("change File Authority,Please input path:")
+    newAuthority = input("input newAuthority:")
+    message = pathToObj(filePath, {"operator": "changeFileAuthority", "newAuthority": newAuthority}, f_table, disk, root)
+    # 文件不存在
+    if message == 0:
+        print('change File Authority Failed!File Does Not Exist!')
+    else:
+        print('change File Authority Success!')
+
+
 # 查看磁盘占比
 def check_Disk(Disk: list,DiskSize: int = 256):
     full = 0
@@ -138,17 +151,37 @@ def find_folder():
     print(getPath(True, a, None))
 
 
+# 将磁盘保存到文件
+def saveDisk():
+    f = open("Disk.txt", "w")
+    for line in disk:
+        f.write(str(line))
+
+
+# 将文件树保存到文件
+def saveTree():
+    f = open("FileTree.txt", "w")
+    f.writelines(str(FileTree(root)))
+    f.close()
+
+
 init_FileSystem()
 create_Folder()
 create_File()
-print(FileTree(root))
-find_file()
-find_folder()
+# print(FileTree(root))
+# find_file()
+# find_folder()
+# change_Authority()
 write_File()
-
 # read_File()
+# print(FileTree(root))
+# print(disk)
 # rename_Folder()
 # rename_File()
-# del_File()
+del_File()
+write_File()
+print(FileTree(root))
 print(disk)
 check_Disk(disk)
+saveDisk()
+saveTree()

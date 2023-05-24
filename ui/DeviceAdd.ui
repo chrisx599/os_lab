@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DeviceAdd</class>
+ <widget class="QWidget" name="DeviceAdd">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="PushButton" name="TrueAddButton">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>220</y>
+     <width>102</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>确认添加</string>
+   </property>
+  </widget>
+  <widget class="LineEdit" name="LineEdit">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>70</y>
+     <width>128</width>
+     <height>33</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="LineEdit" name="LineEdit_2">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>140</y>
+     <width>128</width>
+     <height>33</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="DevTypelabel">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>80</y>
+     <width>71</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>设备类型</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="DevIDlabel">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>150</y>
+     <width>41</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>设备ID</string>
+   </property>
+  </widget>
+  <widget class="PushButton" name="NotAddButton">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>220</y>
+     <width>102</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>取消添加</string>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PushButton</class>
+   <extends>QPushButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>LineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
