@@ -10,17 +10,6 @@ class FileSystem:
         self.filecore = FileCore()
         self.disk = self.filecore.initFileSystem()
 
-    # 创建目录
-    def create_Folder(self, name, content):
-        message = self.filecore.pathToObj(name, {"operator": "createFolder", "content": content},
-                                          self.disk)
-        if message == -1:
-            # 目录重名
-            return False
-        # 成功
-        else:
-            return True
-
     # 创建文件
     def create_File(self, name, content):
         message = self.filecore.pathToObj(name, {"operator": "createFile", "content": content},self.disk)
@@ -126,19 +115,6 @@ class FileSystem:
         else:
             return 1
 
-    # 重命名目录
-    def rename_Folder(self, name, newName):
-        message = self.filecore.pathToObj(name, {"operator": "renameFolder", "newName": newName},self.disk)
-        # 文件不存在
-        if message == 0:
-            return 0
-        # 同目录文件重名
-        elif message == -1:
-            return -1
-            # 成功,返回对象是文件内容
-        else:
-            return 1
-
     # 重命名文件
     def rename_File(self, name, newName):
         message = self.filecore.pathToObj(name, {"operator": "renameFile", "newName": newName},self.disk)
@@ -180,6 +156,7 @@ class FileSystem:
         for line in self.disk:
             f.write(" " + str(line))
 
+    # 将目录树保存到文件
     def save(self):
         with open('tree.pkl', 'wb') as file:
             pickle.dump(self.filecore.tree, file)

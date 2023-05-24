@@ -7,7 +7,7 @@
 import os
 import pickle
 from treelib import Tree, Node
-
+import sys
 
 class File:
     def __init__(self, data):
@@ -51,7 +51,7 @@ class FileCore:
                 space_counter = 0
         return -1
 
-    def creatFileOrFolder(self, name: str, parent_name: str, Disk: list, data):
+    def creatFileOrFolder(self, name: str, parent_name: str, Disk: list, data="1"):
         """
         创建文件或文件夹
         :param parent_name: 父节点名称
@@ -81,15 +81,12 @@ class FileCore:
         :return:文件/文件夹对象。若查找错误，返回0
         """
         node = self.tree.get_node(name)
-        file = File(None)
+        file = File("1")
 
         if IR is None:
             return -1
         elif IR["operator"] == "createFile":
-            return self.creatFileOrFolder(IR['content'], name, Disk, None)
-
-        elif IR["operator"] == "createFolder":
-            return self.creatFileOrFolder(IR['content'], name, Disk, None)
+            return self.creatFileOrFolder(IR['content'], name, Disk)
 
         else:
             # 读文件
@@ -107,15 +104,11 @@ class FileCore:
 
             elif IR["operator"] == "delFile":
                 self.clearFileInDisk(file, Disk)
-                self.tree.remove_node(node)
+                self.tree.remove_node(name)
                 return 1
 
             # 重命名
             elif IR["operator"] == "renameFile":
-                self.tree.update_node(node, nid=IR["newName"])
-                return 1
-
-            elif IR["operator"] == "renameFolder":
                 self.tree.update_node(node, nid=IR["newName"])
                 return 1
 
@@ -144,8 +137,8 @@ class FileCore:
             disk = ['x' for _ in range(DiskSize)]  # 磁盘不存在 新建磁盘
 
         if not os.path.exists('tree.pkl'):
-            self.creatFileOrFolder('root', None, Disk=disk, data=None)
-            self.creatFileOrFolder('folder1', 'root', Disk=disk, data=None)
-            self.creatFileOrFolder('folder2', 'root', Disk=disk, data=None)
+            self.creatFileOrFolder('root', None, Disk=disk)
+            self.creatFileOrFolder('folder1', 'root', Disk=disk)
+            self.creatFileOrFolder('folder2', 'root', Disk=disk)
 
         return disk

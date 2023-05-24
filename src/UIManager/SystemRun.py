@@ -103,35 +103,33 @@ class CommandLineWindow(QMainWindow):
     def cmd_implement(self, cmd):
         cmd = str(cmd)
         tokens = cmd.split(" ")
-        # if tokens[0] == "cd":
-        #     # 检查路径是否存在
-        #     # if os.path.exists(tokens[1]):
-        #     #     os.chdir(tokens[1])
-        #     #     self.currentDir = QDir.currentPath()
-        #     # else:
-        #     #     self.cmdOutput.appendPlainText(self.currentDir + '> ' + 
-        #     #                                    "Error:Please check your path")
-        #     pass
         if tokens[0] == "ls":
             self.system.file_manager.filecore.tree.show()
-        elif tokens[0] == "mkdir":
-            state = self.system.file_manager.create_Folder(tokens[1])
-            if state:
-                self.cmdOutput.appendPlainText('Result > Successfully create!')
-            else:
-                self.cmdOutput.appendPlainText('Result > Failed create!')
-        elif tokens[0] == "touch":
-            state = self.system.file_manager.create_File(tokens[1])
+        elif tokens[0] == "new":
+            state = self.system.file_manager.create_File(tokens[1], tokens[2])
             if state:
                 self.cmdOutput.appendPlainText('Result > Successfully create!')
             else:
                 self.cmdOutput.appendPlainText('Result > Failed create!')
         elif tokens[0] == "rm":
-            pass
-        elif tokens[0] == "mv":
-            pass
-        elif tokens[0] == "cp":
-            pass
+            state = self.system.file_manager.del_File(tokens[1])
+            if state:
+                self.cmdOutput.appendPlainText('Result > Successfully delete!')
+            else:
+                self.cmdOutput.appendPlainText('Result > Failed delete!')
+        elif tokens[0] == "rename":
+            state = self.system.file_manager.del_File(tokens[1], tokens[2])
+            if state:
+                self.cmdOutput.appendPlainText('Result > Successfully rename!')
+            else:
+                self.cmdOutput.appendPlainText('Result > Failed rename!')
+        elif tokens[0] == "disk":
+            if tokens[1] == "--rate":
+                self.system.file_manager.check_Disk()
+            elif tokens[1] == "--content":
+                self.system.file_manager.print_disk()
+            else:
+                self.cmdOutput.appendPlainText('Result > Error command!')
         elif tokens[0] == "cat":
             pass
         elif tokens[0] == "echo":
@@ -148,10 +146,10 @@ class CommandLineWindow(QMainWindow):
             self.dev_ui = DeviceManager(self.system.device_st)
             self.dev_ui.window.show()
         elif tokens[0] == "help":
-            self.cmdOutput.appendPlainText('Result > ls:show file tree')
+            self.cmdOutput.appendPlainText('Result > new <parentfile> <childrenfile>:show file tree')
             self.cmdOutput.appendPlainText('       > mkdir:create new file')
-            self.cmdOutput.appendPlainText('       > touch:create new file')
-            self.cmdOutput.appendPlainText('       > rm:delete file')
+            self.cmdOutput.appendPlainText('       > rename <filename> <newname>:rename file name')
+            self.cmdOutput.appendPlainText('       > rm <filename>:delete file')
             self.cmdOutput.appendPlainText('       > ls:show file tree')
             self.cmdOutput.appendPlainText('       > ls:show file tree')
         else:
@@ -167,7 +165,8 @@ class CommandLineWindow(QMainWindow):
     def closeEvent(self, event):
         # 在窗口关闭时执行的操作
         # 保存文件树结构
-        # self.system.file_manager.save()
+        self.system.file_manager.save()
+        self.system.file_manager.saveDisk()
         # 调用父类的 closeEvent() 方法以确保窗口正常关闭
         super().closeEvent(event)
 
