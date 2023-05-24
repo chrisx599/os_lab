@@ -1,4 +1,10 @@
 1
-disk
+keyboard
 2
 printer
+3
+A
+4
+B
+5
+C

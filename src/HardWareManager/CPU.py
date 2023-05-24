@@ -59,6 +59,10 @@ class CPU(threading.Thread):
 
     def fetch_instruction(self):
         pass
+        # instruction = get from mem()
+        # if instruction == None:
+            # interrupt
+            #
 
     def analysis_and_execute_instruction(self):
         opt = int(self.IR[:8])
