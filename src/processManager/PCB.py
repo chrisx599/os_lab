@@ -55,6 +55,12 @@ class PCB:
     # IO传输的数据量大小
     buffer_size = 0
 
+    # IO内容
+    buffer_content = ""
+
+    # 缓冲区首地址
+    buffer_address = 0
+
     # 需要使用的设备的逻辑号
     device_id = -1
 
@@ -63,6 +69,9 @@ class PCB:
 
     # 进程运行完毕是否立即被释放
     release = 0
+
+    # page_num
+    page_num = 0
 
     # 累计运行时间
     total_time = 0
@@ -76,6 +85,30 @@ class PCB:
 
     def set_PID(self, PID):
         self.PID = PID
+
+    def get_page_num(self):
+        return self.page_num
+
+    def set_page_num(self, page_num):
+        return self.page_num
+
+    def set_buffer_address(self, address):
+        self.buffer_address = address
+
+    def get_buffer_address(self):
+        return self.buffer_address
+
+    def set_buffer_content(self, content):
+        self.buffer_content = content
+
+    def get_buffer_content(self):
+        return self.buffer_content
+
+    def get_total_time(self):
+        return self.total_time
+
+    def set_total_time(self, total_time):
+        self.total_time = total_time
 
     def set_data_start_location(self, location):
         self.data_start_location = location

@@ -5,6 +5,9 @@
     WriteOnly = 2
 """
 import os
+from treelib import Tree, Node
+
+tree = Tree()
 
 
 class Folder:
@@ -97,13 +100,14 @@ def creatFileOrFolder(is_folder: bool, name: str, parent_folder: Folder, file_ta
             for node in parent_folder.child_nodes:
                 if str(node) == name and isinstance(node, Folder):  # 判断是否已存在
                     return -1
-
+        else:
+            tree.create_node('root','root')
         new_folder = Folder(name, parent_folder, child_nodes)
         if not name == 'root':
             parent_folder.child_nodes.append(new_folder)
+            tree.create_node(name,name, parent=str(parent_folder)) # 创建子节点
         return new_folder
     else:
-
         for node in parent_folder.child_nodes:
             if str(node) == name and isinstance(node, UserFile):
                 # 同路径重名
@@ -116,6 +120,7 @@ def creatFileOrFolder(is_folder: bool, name: str, parent_folder: Folder, file_ta
             print('磁盘空间分配错误')
             return -2
         parent_folder.child_nodes.append(new_file)
+        tree.create_node(name,name, parent=str(parent_folder))
 
         return new_file
 
@@ -218,6 +223,7 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
                         clearFileInDisk(target, Disk)
                         file_table.remove(target)
                         target.parent_node.child_nodes.remove(target)
+                        tree.remove_node(str(target))
                         return 1
 
                 elif IR["operator"] == "renameFile":
@@ -225,6 +231,7 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
                         print('新名称在同路径下冲突')
                         return -1
                     else:
+                        tree.update_node(str(target), tag=IR["newName"])
                         target.file_name = IR["newName"]
                         return 1
 
@@ -233,6 +240,7 @@ def pathToObj(path: str, IR: dict, file_table: list, Disk: list, root: Folder):
                         print('新名称在同路径下冲突')
                         return -1
                     else:
+                        tree.update_node(str(target), tag=IR["newName"])
                         target.folder_name = IR["newName"]
                         return 1
 
@@ -306,15 +314,18 @@ def initFileSystem(DiskSize: int = 256, state: bool = False):
 
     if not state:
         state = True
+
         default_folder_1 = creatFileOrFolder(True, 'folder1', root_node, data=None, Disk=disk,
                                              file_table=f_table)
         default_folder_2 = creatFileOrFolder(True, 'folder2', root_node, data=None, Disk=disk,
                                              file_table=f_table)
         default_folder_3 = creatFileOrFolder(True, 'folder3', root_node, data=None, Disk=disk,
                                              file_table=f_table)
+
         creatFileOrFolder(False, 'test', default_folder_1, data='test_content', Disk=disk,
                           file_table=f_table)
         root_node.child_nodes = [default_folder_1, default_folder_2, default_folder_3]
+        tree.show()
     return state, root_node, disk, f_table
 
 
