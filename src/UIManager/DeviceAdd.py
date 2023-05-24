@@ -53,6 +53,7 @@ class Ui_DeviceAdd(object):
         self.NotAddButton.setText(QCoreApplication.translate("DeviceAdd", u"\u53d6\u6d88\u6dfb\u52a0", None))
     # retranslateUi
 
+
 class DeviceAdd():
     def __init__(self, device_st) -> None:
         super().__init__()
@@ -71,7 +72,6 @@ class DeviceAdd():
         dev_type = self.ui.DevTypeEdit.text()
         dev_id = self.ui.DevIDEdit.text()
         self.device_st.add_dev(dev_type, dev_id)
-        print(dev_type, dev_id)
 
     def not_add(self):
         self.window.close()

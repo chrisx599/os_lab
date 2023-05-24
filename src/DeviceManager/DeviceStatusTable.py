@@ -1,7 +1,7 @@
 ﻿import sys
 sys.path.append('..')
 from DeviceControlBlock import *
-from ...lib.logger import logger
+from utils.logger import logger
 
 # 设备状态表类
 class DeviceStatusTable:

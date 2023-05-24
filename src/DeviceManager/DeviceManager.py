@@ -1,10 +1,9 @@
-﻿import sys
-sys.path.append('..')
+﻿# import sys
+# sys.path.append('..')
 from DeviceControlBlock import *
 from DeviceStatusTable import *
 from DeviceRequestQueue import *
 import time
-from ...lib.logger import logger
 from utils.Container import *
 
 #处理请求，调用设备

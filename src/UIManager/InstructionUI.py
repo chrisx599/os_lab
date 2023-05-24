@@ -5,9 +5,9 @@ from PyQt6.QtCore import Qt, QDir
 import os
 
 from DeviceUI import DeviceManager
-# import sys
-# sys.path.append('..')
-# sys.path.append('../DeviceManager/')
+import sys
+sys.path.append('..')
+sys.path.append('../DeviceManager/')
 from System import System
 
 class CommandLineWindow(QMainWindow):
