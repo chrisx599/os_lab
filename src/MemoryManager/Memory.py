@@ -47,7 +47,7 @@ class Memory:
     def load_program(self,program_num,instruction_list):
         self.program_list[program_num].program_page_table.__init__()
         self.program_list[program_num].program_page_table.instruction_list = instruction_list
-        self.program_list[program_num].program_page_table.allocate_virtual_memory(instruction_size,1)
+        self.program_list[program_num].program_page_table.allocate_virtual_memory(len(instruction_list),1)
 
     def program_get_instruction(self,addr,program_num):
         ins_list = ()
@@ -70,7 +70,7 @@ class Memory:
         physical_block = self.program_list[program_num].program_page_table.page_table_list[page_num].physical_block_num
         for i in range(offset):
             count = 0
-            ins_list.append(self.physical_memory[physical_block][page_offset + count])
+            data_list.append(self.physical_memory[physical_block][page_offset + count])
             count = count + 1
         #todo: 此处要处理一下列表
         return data_list
