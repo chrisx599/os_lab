@@ -16,7 +16,7 @@ from processManager.PCB import PCB
 from MemoryManager.Memory import *
 
 @inject("interrupt_event","interrupt_pcb_queue")
-def run(dcb):
+def run(dcb,interrupt_pcb_queue,interrupt_event):
     #参数interrupt_event, interrupt_pcb_queue
     while True:
         if dcb.status == "idle":
@@ -27,8 +27,8 @@ def run(dcb):
                 time.sleep(3)
                 release_dev(dcb.dev_type,dcb.dev_id)
                 pcb.set_event = 1
-                # interrupt_pcb_queue.put(pcb)
-                # interrupt_event.set()
+                interrupt_pcb_queue.put(pcb)
+                interrupt_event.set()
 
 #处理请求，调用设备
 def use_dev(drq,dst):
@@ -63,18 +63,6 @@ def release_dev(dev_type,dev_num):
     dcb = dst.get_dev(dev_type)
     if dcb is not None:
         dcb.status = "idle"
-
-# 中断处理程序
-def interrupt_handler(dev_id):
-    dcb = dst.get_dev(dev_id)
-    if dcb is not None:
-        dcb.status = "idle"  # 更新设备状态为闲置
-        # 唤醒等待该设备资源的进程
-        while len(dcb.queue) > 0:
-            pid, dev_type, dev_num = dcb.queue.pop(0)
-            ready_queue.append((pid, dev_type, dev_num))
-
-
 
 if __name__ == "__main__":
     #************测试************
