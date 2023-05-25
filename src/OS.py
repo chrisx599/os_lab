@@ -3,19 +3,34 @@
 # @Time     : 2023/5/18 21:11
 # @Author   : qingyao
 import threading
-
+import sys
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\MemoryManager")
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\FileManager")
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\processManager")
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\InterruptManager")
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\TimeManager")
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\HardWareManager")
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\DeviceManager")
+print(sys.path)
 from utils.Container import *
 from processManager.PCB import *
 import treelib
+from utils.Container import *
+
 import threading
+from src.MemoryManager.Memory import *
+from processManager.Process import *
+from processManager.IDGenerator import *
+from TimeManager.Timer import *
+from HardWareManager.CPU import *
 
 class OS:
     cpu = None
     process = None
-    interrupt = None
     running_pcb = None
     cpu_time = 0
     last_run_time = 0
+    dispatch_thread = None
 
     process_tree = None
     process_pid = []
@@ -23,14 +38,13 @@ class OS:
     process_running_timer = []
 
 
-    @inject("cpu", "process", "interrupt", "timeout_event",
-            "atom_lock", "running_event", "process_over_event", "new_process_event", "os_timer_messager")
-    def __init__(self, cpu, process, interrupt, system_time, timeout_event,
-                 atom_lock, running_event, process_over_event, new_process_event, os_timer_messager):
+    @inject("cpu", "process", "timeout_event",
+            "atom_lock", "running_event", "process_over_event", "os_timer_messager", "new_process_event")
+    def __init__(self, cpu, process, timeout_event,
+                 atom_lock, running_event, process_over_event, os_timer_messager,  new_process_event):
         self.cpu = cpu
-        self.interrupt = interrupt
         self.process = process
-        self.system_time = system_time
+        self.system_time = 0
         self.process_tree = treelib.Tree()
         self.timeout_event = timeout_event
         self.atom_lock = atom_lock
@@ -38,12 +52,14 @@ class OS:
         self.process_over_event = process_over_event
         self.new_process_event = new_process_event
         self.os_timer_messager = os_timer_messager
+        self.dispatch_thread = threading.Thread(target=self.dispatch_process)
+        self.dispatch_thread.start()
 
 
     def dispatch_func(self):
         # 保存上下文环境
-        ax, bx, cx, dx, axm, bxm, cxm, dxm = self.cpu.get_gen_reg()
-        self.running_pcb.set_gen_reg(ax, bx, cx, dx, axm, bxm, cxm, dxm)
+        ax, bx, cx, dx, axm, bxm, cxm, dxm = self.cpu.get_gen_reg_all()
+        self.running_pcb.set_gen_reg_all(ax, bx, cx, dx, axm, bxm, cxm, dxm)
         pc = self.cpu.get_PC()
         self.running_pcb.set_PC(pc)
         ir = self.cpu.get_IR()
@@ -62,20 +78,22 @@ class OS:
         # 恢复上下文环境
         ax, bx, cx, dx, axm, bxm, cxm, dxm = self.running_pcb.get_gen_reg_all()
         self.cpu.set_gen_reg_all(ax, bx, cx, dx, axm, bxm, cxm, dxm)
-        pc = self.running_pcb.get_pc()
+        pc = self.running_pcb.get_PC()
         self.cpu.set_PC(pc)
         ir = self.running_pcb.get_IR()
-        self.cpu.get_IR(ir)
+        self.cpu.set_IR(ir)
         self.cpu.set_PID(self.running_pcb.get_PID())
 
     def dispatch_process(self):
+        print("dispatch_process")
         while True:
             if not self.timeout_event.is_set():
                 self.timeout_event.wait()
+            print("dispatch start")
             self.running_event.clear()
             self.last_run_time = self.os_timer_messager.get()
             self.cpu_time += self.last_run_time
-            self.running_pcb.set_total_time(self.running_pcb.get_total_time + self.last_run_time)
+            self.running_pcb.set_total_time(self.running_pcb.get_total_time() + self.last_run_time)
             if self.process_over_event.is_set():
                 self.running_pcb.set_state(PCB.PROCESS_EXIT)
             with self.atom_lock:
@@ -105,4 +123,49 @@ class OS:
 
 
 if __name__ == "__main__":
-    run_code = 0
+    print(sys.path)
+    container = Container()
+    timeout_event = threading.Event()
+    running_event = threading.Event()
+    atom_lock = threading.Lock()
+    process_over_event = threading.Event()
+    new_process_event = threading.Event()
+    os_timer_messager = Queue()
+    interrupt_pcb_queue = Queue()
+    ready_pcb_queue = []
+    for i in range(3):
+        ready_pcb_queue.append(Queue())
+    block_pcb_queue = Queue()
+    exit_pcb_queue = Queue()
+    interrupt_event = threading.Event()
+    interrupt_message_queue = Queue()
+    id_generator = IDGenerator()
+    container.register("timeout_event", timeout_event)
+    container.register("running_event", running_event)
+    container.register("atom_lock", atom_lock)
+    container.register("interrupt_event", interrupt_event)
+    container.register("process_over_event", process_over_event)
+    container.register("new_process_event", new_process_event)
+    container.register("os_timer_messager", os_timer_messager)
+    container.register("interrupt_pcb_queue", interrupt_pcb_queue)
+    container.register("interrupt_message_queue", interrupt_message_queue)
+    container.register("id_generator", id_generator)
+    container.register("ready_pcb_queue", ready_pcb_queue)
+    container.register("block_pcb_queue", block_pcb_queue)
+    container.register("exit_pcb_queue", exit_pcb_queue)
+    memory = Memory()
+    container.register("memory", memory)
+    timer = Timer()
+    container.register("timer", timer)
+    process = Process()
+    container.register("process", process)
+    cpu = CPU()
+    container.register("cpu", cpu)
+    os = OS()
+    cpu.start()
+    timer.start()
+    pcb = PCB("bbb")
+    os.running_pcb = pcb
+    os.create_process("aaa", 0)
+    timeout_event.set()
+    os_timer_messager.put(5)

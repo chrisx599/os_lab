@@ -4,18 +4,19 @@ from utils.logger import *
 from PageTableItem import *
 from PhysicalMemory import *
 from Program import *
+from constant import *
 from ProgramVirtualMem import *
 from FileManager.FileOperation import *
 from FileManager.FileCore import *
 from DeviceManager.DeviceManager import *
 
-PAGE_TABLE_LEVEL = 2  # 四级页表
-PAGE_ITEM_SIZE = 32  # 一个页表里可以储存32个页表项
-PAGE_SIZE = 64  # 一个页的大小为64B
-PROGRAM_CNT = 0  # 程序计数器，创建一个程序，计数器+1
-MAX_PROGRAM = 100 # 最大程序个数
-INSTRCUTION_MAX_NUM = 1000  # 程序最多指令条数
-INSTRCUTION_LENGTH = 4
+# PAGE_TABLE_LEVEL = 2  # 四级页表
+# PAGE_ITEM_SIZE = 32  # 一个页表里可以储存32个页表项
+# PAGE_SIZE = 64  # 一个页的大小为64B
+# PROGRAM_CNT = 0  # 程序计数器，创建一个程序，计数器+1
+# MAX_PROGRAM = 100 # 最大程序个数
+# INSTRCUTION_MAX_NUM = 1000  # 程序最多指令条数
+# INSTRCUTION_LENGTH = 4
 real_memory = PhysicalMemory()
 
 

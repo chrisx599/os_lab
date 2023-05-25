@@ -10,6 +10,7 @@ class Process:
     ready_pcb_queue = []
     block_pcb_queue = None
     exit_pcb_queue = None
+    running_pcb = None
 
 
     @inject("ready_pcb_queue", "block_pcb_queue", "exit_pcb_queue", "memory")
@@ -39,7 +40,7 @@ class Process:
         new_pcb = PCB(name)
         new_pcb.set_code_size(self.memory.create_program(new_pcb.get_PID()))
         new_pcb.set_state(PCB.PROCESS_READY)
-        self.ready_pcb_queue.put(new_pcb)
+        self.move_to_next_queue(new_pcb)
         return new_pcb
 
     # 销毁进程
@@ -74,6 +75,7 @@ class Process:
         if pcb != None:
             self.move_to_next_queue(pcb)
         next_pcb = self.get_next_pcb()
+        self.running_pcb = next_pcb
         return next_pcb
 
     # 进程状态切换
@@ -96,6 +98,8 @@ class Process:
     def get_ready_pcb_queue(self):
         return self.ready_pcb_queue
 
+    def get_running_pcb(self):
+        return self.running_pcb
 
 
 

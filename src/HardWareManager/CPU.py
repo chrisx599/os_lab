@@ -20,7 +20,7 @@ class CPU(threading.Thread):
     IR = 0
 
     # 4个通用寄存器， 4个地址寄存器
-    gen_reg = []
+    gen_reg = [0, 0, 0, 0, 0, 0, 0, 0]
 
     # 基址寄存器
     base_mem_reg = 0
@@ -49,6 +49,7 @@ class CPU(threading.Thread):
 
     @inject("atom_lock", "running_event", "process_over_event", "memory", "interrupt_event", "interrupt_pcb_queue", "interrupt_message_queue")
     def __init__(self, atom_lock, running_event, process_over_event, memory, interrupt_event, interrupt_pcb_queue, interrupt_message_queue):
+        threading.Thread.__init__(self)
         self.atom_lock = atom_lock
         self.running_event = running_event
         self.process_over_event = process_over_event
@@ -93,6 +94,7 @@ class CPU(threading.Thread):
         front_obj = int(self.IR[8:12])
         back_obj = int(self.IR[12:16])
         immvalue = int(self.IR[16:32])
+        get_value = 0
         if front_obj >= 4 or back_obj >= 4:
             address = int(self.gen_reg[front_obj]) if front_obj >= 4 else  int(self.gen_reg[back_obj])
             flag = self.memory.program_check_page_fault(self.base_mem_reg + self.PC, self.PID)
@@ -116,7 +118,7 @@ class CPU(threading.Thread):
                 self.gen_reg[front_obj] = get_value
             # 寄存器数据 -> 内存
             else:
-                self.memory.write_memory()
+                self.memory.write_memory(self.running_pcb.get_PID(), self.gen_reg[front_obj], self.gen_reg[back_obj])
         elif opt == 2:
             # 立即数加寄存器
             if back_obj == 0:
@@ -156,7 +158,7 @@ class CPU(threading.Thread):
                 self.gen_reg[back_obj] = 1 if not self.gen_reg[back_obj] else 0
             else:
                 # write2mem(self.gen_reg[back_obj], 1 if not get_value else 0)
-                pass
+                self.memory.write_memory(self.running_pcb.get_PID(), self.gen_reg[back_obj], 1 if not get_value else 0)
         elif opt == 9:
             if back_obj == 0:
                 if self.gen_reg[front_obj] == immvalue:

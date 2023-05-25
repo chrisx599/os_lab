@@ -3,7 +3,7 @@ from Memory import *
 class PhysicalMemory:
     memory_size = pow(2, 14)  # 物理内存总大小
     block_size = pow(2, 6)  # 一个块的大小
-    block_num = memory_size / block_size  # 一共有多少块
+    block_num = memory_size // block_size  # 一共有多少块
     core_block_num = block_num / 4  # 系统区的大小，块数
     used_block_num = 0  # 使用了多少物理块
     block_threshold_num = block_num / 8  # 设定的是剩余块阈值
