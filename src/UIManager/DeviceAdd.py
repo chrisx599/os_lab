@@ -9,7 +9,7 @@ from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PyQt6.QtWidgets import (QApplication, QLabel, QSizePolicy, QWidget)
+from PyQt6.QtWidgets import (QApplication, QLabel, QSizePolicy, QWidget, QMessageBox)
 
 from qfluentwidgets import (LineEdit, PushButton)
 
@@ -53,12 +53,13 @@ class Ui_DeviceAdd(object):
 
 
 class DeviceAdd():
-    def __init__(self, device_st) -> None:
+    def __init__(self, parent) -> None:
         super().__init__()
         self.window = QWidget()
         self.ui = Ui_DeviceAdd()
         self.ui.setupUi(self.window)
-        self.device_st = device_st
+        self.device_st = parent.device_st
+        self.parent = parent
 
         self.signal()
 
@@ -69,7 +70,14 @@ class DeviceAdd():
     def true_add(self):
         dev_type = self.ui.DevTypeEdit.text()
         dev_id = self.ui.DevIDEdit.text()
-        self.device_st.add_dev(dev_type, dev_id)
+        self.device_st.add_dev(dev_type, int(dev_id))
+        tip = QMessageBox(self.window)
+        tip.setWindowTitle("提示")
+        tip.setText("添加成功.")
+        tip.setIcon(QMessageBox.Icon.Information)
+        tip.exec()
+        self.parent.show_device()
+        self.window.close()
 
     def not_add(self):
         self.window.close()

@@ -1,7 +1,8 @@
 """
 Writen by Liang Zhengyang
 """
-from DeviceManager.DeviceManager import *
+from DeviceManager.DeviceStatusTable import *
+from DeviceManager.DeviceRequestQueue import *
 from FileManager.FileOperation import *
 
 class System():

@@ -160,6 +160,9 @@ class CommandLineWindow(QMainWindow):
             self.cmdOutput.appendPlainText('       > write [--file] <filename> <content>:write file')
             self.cmdOutput.appendPlainText('       > write [--dev] <content>:write device')
             self.cmdOutput.appendPlainText('       > write [--command] <content>:write command')
+            self.cmdOutput.appendPlainText('       > dev:open device viewer')
+            self.cmdOutput.appendPlainText('       > mem:open memory viewer')
+            self.cmdOutput.appendPlainText('       > jobs:open process viewer')
         else:
             self.cmdOutput.appendPlainText('Result > '
                                             + "Error:Please check your command, \""
@@ -175,6 +178,8 @@ class CommandLineWindow(QMainWindow):
         # 保存文件树结构
         self.system.file_manager.save()
         self.system.file_manager.saveDisk()
+
+        self.system.device_st.save()
         # 调用父类的 closeEvent() 方法以确保窗口正常关闭
         super().closeEvent(event)
 
