@@ -22,7 +22,6 @@ class Interrput(threading.Thread):
         self.process_over_event = process_over_event
         self.memory = memory
         self.block_pcb_queue = block_pcb_queue
-        file = open("interrupt_vector_table")
 
     def run(self):
         try:
