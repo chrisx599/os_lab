@@ -15,6 +15,7 @@ class Interrput(threading.Thread):
             "interrupt_message_queue", "process_over_event", "memory", "block_pcb_queue")
     def __init__(self, ready_pcb_queue, interrupt_pcb_queue, interrupt_event,
                  interrupt_message_queue, process_over_event, memory, block_pcb_queue):
+        super().__init__()
         self.ready_pcb_queue = ready_pcb_queue
         self.interrupt_event = interrupt_event
         self.interrupt_pcb_queue = interrupt_pcb_queue
@@ -22,7 +23,6 @@ class Interrput(threading.Thread):
         self.process_over_event = process_over_event
         self.memory = memory
         self.block_pcb_queue = block_pcb_queue
-        file = open("interrupt_vector_table")
 
     def run(self):
         try:
