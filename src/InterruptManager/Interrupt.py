@@ -9,7 +9,6 @@ from utils.Container import *
 from DeviceManager.DeviceManager import *
 from ProcessManager import PCB
 import ctypes
-interrupt_vector = []
 class Interrput(threading.Thread):
 
     @inject("ready_pcb_queue", "interrupt_pcb_queue", "interrupt_event",
@@ -24,9 +23,6 @@ class Interrput(threading.Thread):
         self.memory = memory
         self.block_pcb_queue = block_pcb_queue
         file = open("interrupt_vector_table")
-        for line in file:
-            interrupt_vector.append(line)
-        file.close()
 
     def run(self):
         try:
