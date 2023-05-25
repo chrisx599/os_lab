@@ -4,7 +4,7 @@
 # @Author   : qingyao
 import random
 
-from IDGenerator import *
+
 from utils.Container import *
 
 
@@ -22,7 +22,7 @@ class PCB:
     name = ""
 
     # 进程优先级
-    priority = 0
+    priority = -1
     # 进程状态
     state = ""
     # 进程程序计数器
@@ -32,7 +32,7 @@ class PCB:
     IR = 0
 
     # 4个通用寄存器,4个地址寄存器
-    gen_reg = []
+    gen_reg = [0, 0, 0, 0, 0, 0, 0, 0]
 
     # 标志寄存器
     flag_reg = 0
@@ -79,8 +79,9 @@ class PCB:
     # 累计运行时间
     total_time = 0
 
-    def __init__(self, name):
-        self.PID = IDGenerator.create_id(IDGenerator)
+    @inject("id_generator")
+    def __init__(self, name, id_generator):
+        self.PID = id_generator.create_id()
         self.name = name
 
     def get_PID(self):
@@ -94,6 +95,12 @@ class PCB:
 
     def get_code_size(self):
         return self.code_size
+
+    def set_IR(self, IR):
+        self.IR = IR
+
+    def get_IR(self):
+        return self.IR
 
 
     def get_page_num(self):

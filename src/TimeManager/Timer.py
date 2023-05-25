@@ -12,6 +12,7 @@ class Timer(threading.Thread):
 
     @inject("os_timer_messager", "timeout_event", "running_event", "process_over_event", "interrupt_event")
     def __init__(self, os_timer_messager, timeout_event, running_event, process_over_event, interrupt_event):
+        threading.Thread.__init__(self)
         self.os_timer_messager = os_timer_messager
         self.timeout_event = timeout_event
         self.running_event = running_event
@@ -19,12 +20,15 @@ class Timer(threading.Thread):
         self.interrupt_event = interrupt_event
 
     def run(self) -> None:
+        print("Timer thread start")
         while True:
             if (not self.running_event.is_set()) or self.timeout_event.is_set():
                 if not self.running_event.is_set():
+                    print("waiting running_event set")
                     self.running_event.wait()
                 else:
                     continue
+            print("time_slice start")
             time_slice = self.os_timer_messager.get()
             i = 0
             while i < time_slice * 5 and not self.process_over_event.is_set():

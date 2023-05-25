@@ -1,34 +1,0 @@
-
-}python:S1192û"_Define a constant instead of duplicating this literal 'æ–°åç§°åœ¨åŒè·¯å¾„ä¸‹å†²çª' 4 times.(Ú•¿—üÿÿÿÿ
-npython:S1192ü"PDefine a constant instead of duplicating this literal 'æ–‡ä»¶ä¸å­˜åœ¨' 3 times.(¸‹ôíıÿÿÿÿ
-tpython:S117 "XRename this local variable "nowTime" to match the regular expression ^[_a-z][a-z0-9_]*$.(£Åîâıÿÿÿÿ
-qpython:S117!"ZRename this local variable "randomNum" to match the regular expression ^[_a-z][a-z0-9_]*$.(·Õ˜
-gpython:S1542"ORename function "uniqueNum" to match the regular expression ^[a-z_][a-z0-9_]*$.(©éŞŠ
-Bpython:S1481"%Remove the unused local variable "i".(â˜ÑÆúÿÿÿÿ
-gpython:S117R"PRename this parameter "Disk" to match the regular expression ^[_a-z][a-z0-9_]*$.(®¾Õ
-rpython:S1542R"ZRename function "contiguousAllocation" to match the regular expression ^[a-z_][a-z0-9_]*$.(®¾Õ
-lpython:S117p"PRename this parameter "Disk" to match the regular expression ^[_a-z][a-z0-9_]*$.(ÕŸ§½şÿÿÿÿ
-tpython:S1542o"WRename function "creatFileOrFolder" to match the regular expression ^[a-z_][a-z0-9_]*$.(ÊËÃÌúÿÿÿÿ
-qpython:S3776o"TRefactor this function to reduce its Cognitive Complexity from 23 to the 15 allowed.(ÊËÃÌúÿÿÿÿ
-Gpython:S1940†")Use the opposite operator ("!=") instead.(çé‹ùÿÿÿÿ
-kpython:S1542›"MRename function "getPath" to match the regular expression ^[a-z_][a-z0-9_]*$.(ü¶Ê¨úÿÿÿÿ
-mpython:S117¸"PRename this parameter "Disk" to match the regular expression ^[_a-z][a-z0-9_]*$.(•¸«Ãùÿÿÿÿ
-kpython:S117¸"NRename this parameter "IR" to match the regular expression ^[_a-z][a-z0-9_]*$.(•¸«Ãùÿÿÿÿ
-mpython:S1542¸"ORename function "pathToObj" to match the regular expression ^[a-z_][a-z0-9_]*$.(•¸«Ãùÿÿÿÿ
-rpython:S3776¸"TRefactor this function to reduce its Cognitive Complexity from 56 to the 15 allowed.(•¸«Ãùÿÿÿÿ
-Fpython:S1940Ú"-Use the opposite operator ("not in") instead.(¿¨‰ü
-mpython:S117"PRename this parameter "Disk" to match the regular expression ^[_a-z][a-z0-9_]*$.(ŒÕôûÿÿÿÿ
-spython:S1542"URename function "clearFileInDisk" to match the regular expression ^[a-z_][a-z0-9_]*$.(ŒÕôûÿÿÿÿ
-ppython:S1542™"RRename function "findFileById" to match the regular expression ^[a-z_][a-z0-9_]*$.(–¹ìşÿÿÿÿ
-qpython:S1542©"SRename function "findObjByName" to match the regular expression ^[a-z_][a-z0-9_]*$.(’¦ô÷ÿÿÿÿÿ
-ppython:S1542Á"RRename function "renameFolder" to match the regular expression ^[a-z_][a-z0-9_]*$.(Û¯ôüÿÿÿÿ
-npython:S1542Ø"PRename function "renameFile" to match the regular expression ^[a-z_][a-z0-9_]*$.(õğÿóúÿÿÿÿ
-hpython:S117ï"PRename this parameter "Disk" to match the regular expression ^[_a-z][a-z0-9_]*$.(öÇ¶í
-hpython:S1542ï"ORename function "writeFile" to match the regular expression ^[a-z_][a-z0-9_]*$.(öÇ¶í
-gpython:S1542Œ"NRename function "readFile" to match the regular expression ^[a-z_][a-z0-9_]*$.(İáØş
-hpython:S117¡"PRename this parameter "Disk" to match the regular expression ^[_a-z][a-z0-9_]*$.(¸ùñÍ
-fpython:S1542¡"MRename function "delFile" to match the regular expression ^[a-z_][a-z0-9_]*$.(¸ùñÍ
-lpython:S117¸"TRename this parameter "DiskSize" to match the regular expression ^[_a-z][a-z0-9_]*$.(£êü¿
-mpython:S1542¸"TRename function "initFileSystem" to match the regular expression ^[a-z_][a-z0-9_]*$.(£êü¿
-dpython:S5655Å"KChange this argument; Function "creatFileOrFolder" expects a different type(†Ïş¾
-lpython:S1542Õ"NRename function "FileTree" to match the regular expression ^[a-z_][a-z0-9_]*$.(ä´ÌÈüÿÿÿÿ

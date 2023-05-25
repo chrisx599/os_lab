@@ -1,4 +1,4 @@
-from Memory import *
+from constant import *
 from linklist import *
 from PageTableItem import *
 # 页表类，每个程序都一有一个相应的页表
@@ -17,13 +17,13 @@ class PageTable:
     list_location = 0
 
     # 初始化页表列表
-    @inject("interrupt_event", "interrupt_type_queue")
-    def __init__(self, interrupt_event, interrupt_type_queue):
+    # @inject("interrupt_event", "interrupt_type_queue")
+    def __init__(self):
         # 一个页表列表里存放所有页表项，一个页表项对应着一个页面
         page_table_list = [PageTableItem() for i in range(self.page_num)]
 
-        self.interrupt_event = interrupt_event
-        self.interrupt_type_queue = interrupt_type_queue
+        # self.interrupt_event = interrupt_event
+        # self.interrupt_type_queue = interrupt_type_queue
         # for j in range(PAGE_ITEM_SIZE):
         #     page_table_list[j] = PageTableItem()
         # for i in range(PAGE_ITEM_SIZE):
