@@ -39,9 +39,9 @@ class OS:
 
 
     @inject("cpu", "process", "timeout_event",
-            "atom_lock", "running_event", "process_over_event", "os_timer_messager", "new_process_event")
+            "atom_lock", "running_event", "process_over_event", "os_timer_messager", "new_process_event", "exit_event")
     def __init__(self, cpu, process, timeout_event,
-                 atom_lock, running_event, process_over_event, os_timer_messager,  new_process_event):
+                 atom_lock, running_event, process_over_event, os_timer_messager,  new_process_event, exit_event):
         self.cpu = cpu
         self.process = process
         self.system_time = 0
@@ -52,6 +52,7 @@ class OS:
         self.process_over_event = process_over_event
         self.new_process_event = new_process_event
         self.os_timer_messager = os_timer_messager
+        self.exit_event = exit_event
         self.dispatch_thread = threading.Thread(target=self.dispatch_process)
         self.dispatch_thread.start()
 
@@ -118,6 +119,15 @@ class OS:
         start_time = self.cpu_time - self.last_run_time
         self.process_start_timer.append(start_time)
         self.process_running_timer.append(self.last_run_time)
+
+    def get_process_tree(self):
+        return self.process_tree
+
+    @inject("cpu", "timer")
+    def process_exit(self, cpu, timer):
+        cpu.stop()
+        timer.stop()
+        time.sleep(1)
 
 
 

@@ -47,8 +47,10 @@ class CPU(threading.Thread):
     device_id = -1
 
 
-    @inject("atom_lock", "running_event", "process_over_event", "memory", "interrupt_event", "interrupt_pcb_queue", "interrupt_message_queue")
-    def __init__(self, atom_lock, running_event, process_over_event, memory, interrupt_event, interrupt_pcb_queue, interrupt_message_queue):
+    @inject("atom_lock", "running_event", "process_over_event", "memory",
+            "interrupt_event", "interrupt_pcb_queue", "interrupt_message_queue")
+    def __init__(self, atom_lock, running_event, process_over_event, memory,
+                 interrupt_event, interrupt_pcb_queue, interrupt_message_queue):
         threading.Thread.__init__(self)
         self.atom_lock = atom_lock
         self.running_event = running_event
