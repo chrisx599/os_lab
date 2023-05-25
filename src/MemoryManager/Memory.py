@@ -42,13 +42,31 @@ class Memory:
         return self.physical_memory.block_num
     def get_core_block_num(self):
         return self.physical_memory.core_block_num
+    def used_block_list(self):
+        block_list = [list() for i in range (16)]
+        block_num = self.physical_memory.block_num
+        for i in range(16):
+            for j in range(16):
+                if(self.physical_memory.memory_space[block_num][0] != 0):
+                    block_list[i][j] = 1
+                else:
+                    block_list[i][j] = 0
+        return block_list
+    def used_block_num(self):
+        count = 0
+        block_num = self.physical_memory.block_num
+        for i in range(block_num):
+            if (self.physical_memory.memory_space[block_num][i] != 0):
+                count = count + 1
+        return count
+
     def create_program(self,program_num):
         self.program_list[program_num].program_id = program_num
         return len(self.program_list[program_num].program_page_table.instruction_list) * 4
     def load_program(self,program_num,instruction_list):
         self.program_list[program_num].program_page_table.__init__()
         self.program_list[program_num].program_page_table.instruction_list = instruction_list
-        self.program_list[program_num].program_page_table.allocate_virtual_memory(len(instruction_list),1)
+        self.program_list[program_num].program_page_table.allocate_virtual_memory(len(instruction_list), 1)
 
     def program_get_instruction(self,addr,program_num):
         ins_list = ()
