@@ -5,6 +5,8 @@
 import threading
 from utils.Container import *
 from MemoryManager.Memory import *
+import ctypes
+import time
 class CPU(threading.Thread):
     # processId
 
@@ -51,7 +53,7 @@ class CPU(threading.Thread):
             "interrupt_event", "interrupt_pcb_queue", "interrupt_message_queue")
     def __init__(self, atom_lock, running_event, process_over_event, memory,
                  interrupt_event, interrupt_pcb_queue, interrupt_message_queue):
-        threading.Thread.__init__(self)
+        super().__init__()
         self.atom_lock = atom_lock
         self.running_event = running_event
         self.process_over_event = process_over_event
@@ -67,15 +69,35 @@ class CPU(threading.Thread):
         self.PID = PID
 
     def run(self):
-        while True:
-            if (not self.running_event.is_set()) or self.process_over_event.is_set() or self.interrupt_event.is_set():
-                if not self.running_event.is_set():
-                    self.running_event.wait()
-                else:
-                    continue
-            with self.atom_lock:
-                self.fetch_instruction()
-                self.analysis_and_execute_instruction()
+        try:
+            while True:
+                if (not self.running_event.is_set()) or self.process_over_event.is_set() or self.interrupt_event.is_set():
+                    if not self.running_event.is_set():
+                        self.running_event.wait()
+                    else:
+                        continue
+                with self.atom_lock:
+                    self.fetch_instruction()
+                    self.analysis_and_execute_instruction()
+        finally:
+            print("CPU thread ended")
+
+    def get_id(self):
+
+        # returns id of the respective thread
+        if hasattr(self, '_thread_id'):
+            return self._thread_id
+        for id, thread in threading._active.items():
+            if thread is self:
+                return id
+
+    def stop(self):
+        thread_id = self.get_id()
+        res = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id,
+                                                         ctypes.py_object(SystemExit))
+        if res > 1:
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, 0)
+            print('Exception raise failure')
 
 
     def fetch_instruction(self):

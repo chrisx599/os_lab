@@ -12,6 +12,7 @@ from MemoryManager.Memory import *
 from TimeManager.Timer import *
 from ProcessManager.Process import *
 from HardWareManager.CPU import *
+from InterruptManager.Interrupt import *
 from OS import OS
 
 
@@ -59,9 +60,12 @@ class System():
         self.container.register("process", process)
         cpu = CPU()
         self.container.register("cpu", cpu)
+        interrupt = Interrput()
+        self.container.register("interrupt", interrupt)
         self.os = OS()
         cpu.start()
         timer.start()
+        interrupt.start()
 
 
         
