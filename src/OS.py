@@ -6,7 +6,7 @@ import threading
 import sys
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\MemoryManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\FileManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\ProcessManager")
+sys.path.append("/ProcessManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\InterruptManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\TimeManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\HardWareManager")
@@ -123,10 +123,11 @@ class OS:
     def get_process_tree(self):
         return self.process_tree
 
-    @inject("cpu", "timer")
-    def process_exit(self, cpu, timer):
+    @inject("cpu", "timer", "interrupt")
+    def process_exit(self, cpu, timer, interrupt):
         cpu.stop()
         timer.stop()
+        interrupt.stop()
         time.sleep(1)
 
 

@@ -8,6 +8,7 @@ from ProcessManager.PCB import PCB
 from utils.Container import *
 from DeviceManager.DeviceManager import *
 from ProcessManager import PCB
+import ctypes
 interrupt_vector = []
 class Interrput(threading.Thread):
 
@@ -28,29 +29,49 @@ class Interrput(threading.Thread):
         file.close()
 
     def run(self):
-        while True:
-            if not self.interrupt_event.is_set():
-                self.interrupt_event.wait()
-                self.interrupt_pcb = self.interrupt_pcb_queue.get()
-                type = 0
-                if self.interrupt_pcb != None:
-                    type = self.interrupt_pcb.get_event()
-                if type == 1:# ok
-                    self.interrupt_pcb.set_state(PCB.PROCESS_READY)
-                    self.ready_pcb_queue.put(self.interrupt_pcb)
-                    self.interrupt_event.clear()
-                elif type == 2:
-                    do_IRQ(self.interrupt_pcb.get_device_id())
-                    self.interrupt_pcb.set_state(PCB.PROCESS_BLOCK)
-                    self.block_pcb_queue.put(self.interrupt_pcb)
-                    self.process_over_event.set()
-                    self.interrupt_event.clear()
-                else:
-                    page_num = self.interrupt_message_queue.get()
-                    program_num = self.interrupt_message_queue.get()
-                    out_page = self.interrupt_message_queue.get()
-                    self.memory.program_deal_page_fault(page_num, program_num, out_page)
-                    self.interrupt_event.clear()
+        try:
+            while True:
+                if not self.interrupt_event.is_set():
+                    self.interrupt_event.wait()
+                    self.interrupt_pcb = self.interrupt_pcb_queue.get()
+                    type = 0
+                    if self.interrupt_pcb != None:
+                        type = self.interrupt_pcb.get_event()
+                    if type == 1:# ok
+                        self.interrupt_pcb.set_state(PCB.PROCESS_READY)
+                        self.ready_pcb_queue.put(self.interrupt_pcb)
+                        self.interrupt_event.clear()
+                    elif type == 2:
+                        do_IRQ(self.interrupt_pcb.get_device_id())
+                        self.interrupt_pcb.set_state(PCB.PROCESS_BLOCK)
+                        self.block_pcb_queue.put(self.interrupt_pcb)
+                        self.process_over_event.set()
+                        self.interrupt_event.clear()
+                    else:
+                        page_num = self.interrupt_message_queue.get()
+                        program_num = self.interrupt_message_queue.get()
+                        out_page = self.interrupt_message_queue.get()
+                        self.memory.program_deal_page_fault(page_num, program_num, out_page)
+                        self.interrupt_event.clear()
+        finally:
+            print("interrupt thread end")
+
+    def get_id(self):
+
+        # returns id of the respective thread
+        if hasattr(self, '_thread_id'):
+            return self._thread_id
+        for id, thread in threading._active.items():
+            if thread is self:
+                return id
+
+    def stop(self):
+        thread_id = self.get_id()
+        res = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id,
+                                                         ctypes.py_object(SystemExit))
+        if res > 1:
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, 0)
+            print('Exception raise failure')
 
 @inject("device_request_queue", "device_status_table")
 def do_IRQ(pcb, device: int, device_request_queue, device_status_table):
