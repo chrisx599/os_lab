@@ -2,15 +2,15 @@ from PyQt6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect, QThread,
     QSize, QTime, QUrl, Qt)
 from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
+    QFont, QFontDatabase, QGradient, QIcon, QFileSystemModel,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PyQt6.QtWidgets import (QApplication, QHeaderView, QLabel, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+    QSpacerItem, QVBoxLayout, QWidget, QHBoxLayout)
 
-from qfluentwidgets import (LineEdit, PushButton, TableView)
+from qfluentwidgets import (LineEdit, PushButton, TableView, TreeView)
 from ProcessGanter import GanttChartView
-
+from OS import OS
 import threading
 
 class Ui_Form(object):
@@ -18,9 +18,19 @@ class Ui_Form(object):
         if not Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(800, 600)
-        self.TableView = TableView(Form)
-        self.TableView.setObjectName(u"TableView")
-        self.TableView.setGeometry(QRect(0, 0, 600, 600))
+        # self.TableView = TableView(Form)
+        # self.TableView.setObjectName(u"TableView")
+        # self.TableView.setGeometry(QRect(0, 0, 600, 600))
+
+        # 树形结构
+        # self.hBoxLayout = QHBoxLayout(self)
+        self.view = TreeView(Form)
+        # model = QFileSystemModel()
+        # model.setRootPath('.')
+        # self.view.setModel(model)
+        self.view.setGeometry(QRect(0, 0, 600, 600))
+
+#####################################################################################################
         self.widget = QWidget(Form)
         self.widget.setObjectName(u"widget")
         self.widget.setGeometry(QRect(650, 90, 130, 401))
@@ -145,6 +155,12 @@ class ProcessUI():
 
         # 等待线程结束
         thread.wait()
+
+    def show_pro_tree(self):
+        """
+        在self.ui.view中展示进程树
+        """
+        # 获取到进程的数据
 
 
     def show_ganter(self):

@@ -49,9 +49,28 @@ class MemoryUI():
         self.ui = Ui_MemoryViewer()
         self.ui.setupUi(self.window)
 
+    def set_color(self, memory_matrix):
+        for i in range(16):
+            for k in range(16):
+                if memory_matrix[i][k]:
+                    color = QColor(0, 255, 0)  # 设置为绿色
+                    item = QTableWidgetItem("")
+                    # item = QTableWidgetItem("Cell Text")
+                    item.setBackground(color)
+                    self.ui.MemoryList.setItem(i, k, item)
+
 if __name__ == "__main__":
     app = QApplication([])
     window = MemoryUI()
+    mm = [[1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1], [1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1]
+          ,[1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1], [1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1]
+          ,[1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1], [1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1]
+          ,[1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1], [1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1]
+          ,[1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1], [1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1]
+          ,[1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1], [1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1]
+          ,[1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1], [1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1]
+          ,[1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1], [1,1,1,0,1,0,1,0,1,1,0,1,1,1,0,1]]
+    window.set_color(mm)
     window.window.show()
     
     app.exec()

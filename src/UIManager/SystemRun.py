@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import QLineEdit, QPlainTextEdit
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtCore import Qt, QDir
 import os
+from collections import deque
 
 
 # 导入自定义包
@@ -151,6 +152,11 @@ class CommandLineWindow(QMainWindow):
         elif tokens[0] == "dev":
             self.dev_ui = DeviceManager(self.system.device_st)
             self.dev_ui.window.show()
+        elif tokens[0] == "log":
+            if tokens[1]:
+                self.show_log(tokens[1])
+            else:
+                self.cmdOutput.appendPlainText('Result > please input line number')
         elif tokens[0] == "help":
             self.cmdOutput.appendPlainText('Result > new <parentfile> <childrenfile>:show file tree')
             self.cmdOutput.appendPlainText('       > cat <filename>:view file content')
@@ -163,10 +169,27 @@ class CommandLineWindow(QMainWindow):
             self.cmdOutput.appendPlainText('       > dev:open device viewer')
             self.cmdOutput.appendPlainText('       > mem:open memory viewer')
             self.cmdOutput.appendPlainText('       > jobs:open process viewer')
+            self.cmdOutput.appendPlainText('       > log <numbers>:list last numbers system log')
         else:
             self.cmdOutput.appendPlainText('Result > '
                                             + "Error:Please check your command, \""
                                             + cmd + "\" not a available command, use help to check")
+
+    def show_log(self, line_limit):
+        # with open('system.log', 'r') as file:
+        #     for line_no, line in enumerate(file, start=1):
+        #         if line_no >= int(line_limit):
+        #             self.cmdOutput.appendPlainText(line.rstrip())
+        #             # print(line.rstrip())  # 处理读取的行数据
+
+        lines = deque(maxlen=int(line_limit))  # 创建一个指定长度的 deque
+        with open('system.log', 'r') as file:
+            for line in file:
+                lines.append(line.rstrip())  # 保存当前行到 deque 中
+
+        for line in lines:
+            self.cmdOutput.appendPlainText(line)
+            # print(line)  # 处理读取的行数据
 
     def eventFilter(self, obj, event):
         if event.type() == QKeyEvent.Type.KeyPress and event.key() == Qt.Key.Key_Tab:
