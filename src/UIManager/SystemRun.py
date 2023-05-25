@@ -213,7 +213,7 @@ class CommandLineWindow(QMainWindow):
         # 保存设备信息
         self.system.device_st.save()
         # 终止所有线程
-
+        self.system.os.process_exit()
         #############################################
         # 调用父类的 closeEvent() 方法以确保窗口正常关闭
         super().closeEvent(event)
