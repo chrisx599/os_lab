@@ -6,7 +6,7 @@ import threading
 import sys
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\MemoryManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\FileManager")
-sys.path.append("/ProcessManager")
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\ProcessManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\InterruptManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\TimeManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\HardWareManager")
@@ -23,6 +23,8 @@ from ProcessManager.Process import *
 from ProcessManager.IDGenerator import *
 from TimeManager.Timer import *
 from HardWareManager.CPU import *
+from ProcessManager.PCB import *
+from InterruptManager.Interrupt import *
 
 class OS:
     cpu = None
@@ -39,15 +41,17 @@ class OS:
 
 
     @inject("cpu", "process", "timeout_event",
-            "atom_lock", "running_event", "process_over_event", "os_timer_messager", "new_process_event")
+            "atom_lock", "running_event", "process_over_event", "os_timer_messager", "new_process_event", "exit_event", "interrupt_event")
     def __init__(self, cpu, process, timeout_event,
-                 atom_lock, running_event, process_over_event, os_timer_messager,  new_process_event):
+                 atom_lock, running_event, process_over_event, os_timer_messager,  new_process_event, exit_event, interrupt_event):
         self.cpu = cpu
         self.process = process
         self.system_time = 0
         self.process_tree = treelib.Tree()
         self.timeout_event = timeout_event
         self.atom_lock = atom_lock
+        self.exit_event = exit_event
+        self.interrupt_event = interrupt_event
         self.running_event = running_event
         self.process_over_event = process_over_event
         self.new_process_event = new_process_event
@@ -89,6 +93,8 @@ class OS:
         while True:
             if not self.timeout_event.is_set():
                 self.timeout_event.wait()
+                if self.exit_event.is_set():
+                    return
             print("dispatch start")
             self.running_event.clear()
             self.last_run_time = self.os_timer_messager.get()
@@ -122,12 +128,11 @@ class OS:
     def get_process_tree(self):
         return self.process_tree
 
-    @inject("cpu", "timer", "interrupt")
-    def process_exit(self, cpu, timer, interrupt):
-        cpu.stop()
-        timer.stop()
-        interrupt.stop()
-        time.sleep(1)
+    def process_exit(self):
+        self.exit_event.set()
+        self.interrupt_event.set()
+        self.running_event.set()
+        self.timeout_event.set()
 
 
 
@@ -148,6 +153,7 @@ if __name__ == "__main__":
     block_pcb_queue = Queue()
     exit_pcb_queue = Queue()
     interrupt_event = threading.Event()
+    exit_event = threading.Event()
     interrupt_message_queue = Queue()
     id_generator = IDGenerator()
     container.register("timeout_event", timeout_event)
@@ -163,6 +169,7 @@ if __name__ == "__main__":
     container.register("ready_pcb_queue", ready_pcb_queue)
     container.register("block_pcb_queue", block_pcb_queue)
     container.register("exit_pcb_queue", exit_pcb_queue)
+    container.register("exit_event", exit_event)
     memory = Memory()
     container.register("memory", memory)
     timer = Timer()
@@ -171,11 +178,9 @@ if __name__ == "__main__":
     container.register("process", process)
     cpu = CPU()
     container.register("cpu", cpu)
+    interrupt = Interrput()
+    interrupt.start()
     os = OS()
     cpu.start()
     timer.start()
-    pcb = PCB("bbb")
-    os.running_pcb = pcb
-    os.create_process("aaa", 0)
-    timeout_event.set()
-    os_timer_messager.put(5)
+    os.process_exit()
