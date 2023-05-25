@@ -4,10 +4,10 @@
 # @Author   : qingyao
 import threading
 from utils.logger import logger
-from processManager.PCB import PCB
+from ProcessManager.PCB import PCB
 from utils.Container import *
 from DeviceManager.DeviceManager import *
-from processManager import PCB
+from ProcessManager import PCB
 interrupt_vector = []
 class Interrput(threading.Thread):
 

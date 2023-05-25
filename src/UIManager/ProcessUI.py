@@ -1,3 +1,6 @@
+"""
+Writen by Liang Zhengyang
+"""
 from PyQt6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect, QThread,
     QSize, QTime, QUrl, Qt)

@@ -19,6 +19,7 @@ sys.path.append(current_path + "\src")
 sys.path.append(current_path + "\src\DeviceManager")
 sys.path.append(current_path + "\src\FileManager")
 sys.path.append(current_path + "\src\ProcessManager")
+sys.path.append(current_path + "\src\MemoryManager")
 from DeviceUI import DeviceManager
 from System import System
 from MemoryUI import MemoryUI
@@ -103,6 +104,9 @@ class CommandLineWindow(QMainWindow):
 
 
     def cmd_implement(self, cmd):
+        """
+        处理命令输入框输入进的指令
+        """
         cmd = str(cmd)
         tokens = cmd.split(" ")
         if tokens[0] == "ls":
@@ -197,12 +201,20 @@ class CommandLineWindow(QMainWindow):
         return super().eventFilter(obj, event)
     
     def closeEvent(self, event):
+        """
+        关闭命令行主体窗口时进行的操作
+        """
         # 在窗口关闭时执行的操作
+        #############################################
         # 保存文件树结构
         self.system.file_manager.save()
+        # 保存磁盘文件
         self.system.file_manager.saveDisk()
-
+        # 保存设备信息
         self.system.device_st.save()
+        # 终止所有线程
+
+        #############################################
         # 调用父类的 closeEvent() 方法以确保窗口正常关闭
         super().closeEvent(event)
 

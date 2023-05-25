@@ -6,21 +6,21 @@ import threading
 import sys
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\MemoryManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\FileManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\processManager")
+sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\ProcessManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\InterruptManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\TimeManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\HardWareManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\DeviceManager")
 print(sys.path)
 from utils.Container import *
-from processManager.PCB import *
+from ProcessManager.PCB import *
 import treelib
 from utils.Container import *
 
 import threading
-from src.MemoryManager.Memory import *
-from processManager.Process import *
-from processManager.IDGenerator import *
+from MemoryManager.Memory import *
+from ProcessManager.Process import *
+from ProcessManager.IDGenerator import *
 from TimeManager.Timer import *
 from HardWareManager.CPU import *
 

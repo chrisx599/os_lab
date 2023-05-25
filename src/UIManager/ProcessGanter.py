@@ -1,12 +1,18 @@
+"""
+Writen by Liang Zhengyang
+"""
 import sys
 from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene
 from PyQt6.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt6.QtCore import Qt
 
 class GanttChartView(QGraphicsView):
+    """
+    甘特图界面类
+    """
     def __init__(self):
         super().__init__()
-        self.h = 50
+        self.h = 50 # 每个条高多少
         self.start_x = 120
         self.init_ui()
 
@@ -47,7 +53,10 @@ class GanttChartView(QGraphicsView):
 
         self.setWindowTitle("Gantt Chart")
 
-    def add_rect(self, process_id, start_time, end_time, i):
+    def add_rect(self, process_id:str, start_time:int, end_time:int, i:int):
+        """
+        向图中添加内容
+        """
         text_item = self.scene.addText(process_id)
         text_item.setFont(QFont("Arial", 10))
         text_item.setDefaultTextColor(Qt.GlobalColor.black)
@@ -57,8 +66,6 @@ class GanttChartView(QGraphicsView):
         rect1.setBrush(QBrush(QColor("black")))
 
     
-
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     view = GanttChartView()

@@ -3,7 +3,7 @@ import os
 current_path = os.getcwd()
 print(current_path)
 sys.path.append(current_path + "\..")
-sys.path.append(current_path + "\..\processManager")
+sys.path.append(current_path + "\..\ProcessManager")
 
 import threading
 from DeviceControlBlock import *
@@ -12,7 +12,7 @@ from DeviceRequestQueue import *
 import time
 from utils.logger import logger
 from utils.Container import *
-from processManager.PCB import PCB
+from ProcessManager.PCB import PCB
 from MemoryManager.Memory import *
 
 @inject("interrupt_event","interrupt_pcb_queue")

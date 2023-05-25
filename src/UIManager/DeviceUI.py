@@ -1,4 +1,5 @@
 """
+Writen by Liang Zhengyang
 Device界面
 包括Device界面中的信号与槽的全部定义设置
 """
