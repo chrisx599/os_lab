@@ -44,19 +44,24 @@ class Memory:
         return self.physical_memory.core_block_num
     def used_block_list(self):
         block_list = [list() for i in range (16)]
-        block_num = self.physical_memory.block_num
         for i in range(16):
             for j in range(16):
-                if(self.physical_memory.memory_space[block_num][0] != 0):
+                block_list[i].append(0)
+        block_num = self.physical_memory.block_num
+        count = 0
+        for i in range(16):
+            for j in range(16):
+                if(self.physical_memory.memory_space[count][0] != 0):
                     block_list[i][j] = 1
                 else:
                     block_list[i][j] = 0
+                count = count + 1
         return block_list
     def used_block_num(self):
         count = 0
         block_num = self.physical_memory.block_num
         for i in range(block_num):
-            if (self.physical_memory.memory_space[block_num][i] != 0):
+            if (self.physical_memory.memory_space[i][0] != 0):
                 count = count + 1
         return count
 
