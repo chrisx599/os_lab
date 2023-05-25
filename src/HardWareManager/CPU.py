@@ -93,6 +93,7 @@ class CPU(threading.Thread):
 
     def stop(self):
         thread_id = self.get_id()
+        self.running_event.set()
         res = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id,
                                                          ctypes.py_object(SystemExit))
         if res > 1:
