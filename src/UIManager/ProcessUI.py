@@ -5,8 +5,8 @@ from PyQt6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect, QThread,
     QSize, QTime, QUrl, Qt)
 from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon, QFileSystemModel,
-    QImage, QKeySequence, QLinearGradient, QPainter,
+    QFont, QFontDatabase, QGradient, QIcon, QFileSystemModel, QStandardItemModel, 
+    QImage, QKeySequence, QLinearGradient, QPainter, QStandardItem,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PyQt6.QtWidgets import (QApplication, QHeaderView, QLabel, QSizePolicy,
     QSpacerItem, QVBoxLayout, QWidget, QHBoxLayout)
@@ -15,6 +15,7 @@ from qfluentwidgets import (LineEdit, PushButton, TableView, TreeView)
 from ProcessGanter import GanttChartView
 from OS import OS
 import threading
+from treelib import Tree
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -124,12 +125,15 @@ class Ui_Form(object):
 
 
 class ProcessUI():
-    def __init__(self) -> None:
+    def __init__(self, os) -> None:
         self.window = QWidget()
         self.ui = Ui_Form()
         self.ui.setupUi(self.window)
 
+        self.os = os
         self.signal()
+
+        self.show_pro_tree()
 
     def signal(self):
         self.ui.ViewButton.clicked.connect(self.show_ganter)
@@ -163,8 +167,35 @@ class ProcessUI():
         """
         在self.ui.view中展示进程树
         """
+        model = QStandardItemModel()
+        # 设置表头
+        header_labels = ["进程名称", "PID", "状态", "内存占用率", "运行时间"]
+        model.setHorizontalHeaderLabels(header_labels)
         # 获取到进程的数据
-
+        pro_tree = Tree()
+        # pro_tree = self.os.get_process_tree()
+        node_list = pro_tree.all_nodes()
+        cnt = 0
+        for item in node_list:
+            # 判断是不是父节点
+            if pro_tree.children(item.identifier):
+                # 创建父节点并添加到模型中
+                mem_rate = item.data.size / 16384
+                root_item = model.invisibleRootItem()
+                root_item.appendRow([QStandardItem(item.data.name), QStandardItem(item.data.PID)
+                                     , QStandardItem(item.data.state), QStandardItem(mem_rate),
+                                     QStandardItem(item.total_time)])
+                # 将子节点全部放入父节点下
+                children_list = pro_tree.children(item.identifier)
+                for child in children_list:
+                    child_mem_rate = child.data.size / 16384
+                    child_item = root_item.child(cnt)
+                    child_item.appendRow([QStandardItem(child.data.name), QStandardItem(child.data.PID)
+                                     , QStandardItem(child.data.state), QStandardItem(child_mem_rate),
+                                     QStandardItem(child.total_time)])
+                # 父节点数量    
+                cnt += 1
+                
 
     def show_ganter(self):
         self.view = GanttChartView()
