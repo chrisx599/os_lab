@@ -151,7 +151,7 @@ class CommandLineWindow(QMainWindow):
             self.jobs_ui = ProcessUI()
             self.jobs_ui.window.show()
         elif tokens[0] == "mem":
-            self.mem_ui = MemoryUI()
+            self.mem_ui = MemoryUI(self.system.container.resolve("memory"))
             self.mem_ui.window.show()
         elif tokens[0] == "dev":
             self.dev_ui = DeviceManager(self.system.device_st)
