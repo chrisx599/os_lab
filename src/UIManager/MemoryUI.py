@@ -2,7 +2,7 @@
 Writen by Liang Zhengyang
 """
 from PyQt6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
+    QMetaObject, QObject, QPoint, QRect, QTimer,
     QSize, QTime, QUrl, Qt)
 from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
@@ -68,11 +68,27 @@ class Ui_MemoryViewer(object):
 
 
 class MemoryUI():
-    def __init__(self) -> None:
+    def __init__(self, memory) -> None:
         self.window = QWidget()
         self.ui = Ui_MemoryViewer()
         self.ui.setupUi(self.window)
+        self.memory = memory
 
+        # 定时更新MemoryUI中的内容
+        self.timer = QTimer(self.window)
+        self.timer.setInterval(500)  # 每隔 0.5 秒触发一次定时器
+        # 将槽函数与定时器的 timeout 信号关联
+        self.timer.timeout.connect(self.get_memory_data())
+        self.timer.timeout.connect(self.set_color(self.memory_matrix))
+        self.timer.timeout.connect(self.set_label(self.alread_used, self.all_mem))
+        # 启动定时器
+        self.timer.start()
+
+
+    def get_memory_data(self):
+        self.alread_used = self.memory.used_block_num() * 64
+        self.all_mem = self.memory.get_memory_size()
+        self.memory_matrix = self.memory.used_block_list()
 
     def set_color(self, memory_matrix):
         for i in range(16):
