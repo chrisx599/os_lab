@@ -1,3 +1,7 @@
+"""
+Writen by Liang Zhengyang
+"""
+
 class BankerAlgorithm:
     def __init__(self, available, max_claim, allocation, need):
         self.available = available

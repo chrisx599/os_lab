@@ -1,6 +1,6 @@
 
 L
-src/processManager/Banker.py,f\8\f85dcddec2e52bed17ff185a283c2ae2f9ce884b
+src/ProcessManager/Banker.py,f\8\f85dcddec2e52bed17ff185a283c2ae2f9ce884b
 :
 
 system.log,b\0\b00a247ff33ec9b29ed4d667e48a2b41c51878f2
@@ -21,7 +21,7 @@ W
 E
 src/utils/__init__.py,5\f\5fe712ad9bdfa86bdb6bde4773c0a66bf4ec509a
 P
- src/processManager/Dispatcher.py,c\b\cbc309a9b33286beba6b11799c44a7b73b63a609
+ src/ProcessManager/Dispatcher.py,c\b\cbc309a9b33286beba6b11799c44a7b73b63a609
 V
 &src/DeviceManager/DeviceStatusTable.py,a\b\ab4039ac08ec4866202b595244989cd287eb04a5
 R
@@ -31,15 +31,15 @@ W
 M
 src/DeviceManager/__init__.py,6\e\6e78f832e21feb686ec3d15d54ccad760bd75af3
 O
-src/processManager/Semaphore.py,5\a\5aefd4565e76f06592a842d9beb446814244da2f
+src/ProcessManager/Semaphore.py,5\a\5aefd4565e76f06592a842d9beb446814244da2f
 R
 "src/MemoryManager/PageTableItem.py,8\d\8d0cc00371553ba4098b85f07e1d7a9d20555774
 M
 src/MemoryManager/linklist.py,5\7\5768467a9a842e18d5e90a1b4ac860e3de18869f
 I
-src/processManager/CPU.py,4\2\42cfdef0b0ec4e2a40171f049ea7be98a56ddfd5
+src/ProcessManager/CPU.py,4\2\42cfdef0b0ec4e2a40171f049ea7be98a56ddfd5
 N
-src/processManager/__init__.py,4\d\4da30d4cc9bd1969488236a0a2b0b2a48da7f699
+src/ProcessManager/__init__.py,4\d\4da30d4cc9bd1969488236a0a2b0b2a48da7f699
 A
 src/utils/test.py,2\7\2704cd65fa29301372f6753bcb2b9e22e8831269
 P
