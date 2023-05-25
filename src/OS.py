@@ -58,6 +58,7 @@ class OS:
         self.os_timer_messager = os_timer_messager
         self.dispatch_thread = threading.Thread(target=self.dispatch_process)
         self.dispatch_thread.start()
+        self.create_process("init")
 
 
     def dispatch_func(self):
@@ -109,14 +110,14 @@ class OS:
             self.running_event.set()
             self.update_timer()
 
-    def create_process(self, name, parent_pid):
-        pcb = self.process.create_process(name)
+    def create_process(self, *args):
+        pcb = self.process.create_process(args[0])
         if self.running_pcb == None:
             self.new_process_event.set()
         if self.process_tree.size() == 0:
-            self.process_tree.create_node(name, pcb.get_PID(), data=pcb)
+            self.process_tree.create_node(args[0], pcb.get_PID(), data=pcb)
         else:
-            self.process_tree.create_node(name, pcb.get_PID(), parent=parent_pid, data=pcb)
+            self.process_tree.create_node(args[0], pcb.get_PID(), parent=args[1], data=pcb)
 
     def update_timer(self):
         pid = self.process.get_running_pcb().get_PID()
