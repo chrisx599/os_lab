@@ -4,6 +4,13 @@
 # @Author   : qingyao
 import threading
 import sys
+import os
+current_path = os.getcwd()
+sys.path.append(current_path + "\src")
+sys.path.append(current_path + "\src\DeviceManager")
+sys.path.append(current_path + "\src\FileManager")
+sys.path.append(current_path + "\src\ProcessManager")
+sys.path.append(current_path + "\src\MemoryManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\MemoryManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\FileManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\ProcessManager")

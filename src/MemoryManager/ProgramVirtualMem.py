@@ -133,14 +133,16 @@ class PageTable:
                 if(visited_page_list.get_length() != 1):
                     while (temp_node.next.next != None):
                         temp_node = temp_node.next
-                    temp_node.next.next = visited_page_list.head
-                    out_value = temp_node.next.value
-                    visited_page_list.head = temp_node.next
-                    temp_node.next = None
-                    visited_page_list.head.value = page_num
-                    return out_value
+                        temp_node.next.next = visited_page_list.head
+                        out_value = temp_node.next.value
+                        visited_page_list.head = temp_node.next
+                        temp_node.next = None
+                        visited_page_list.head.value = page_num
+                        return out_value
                 else:
-                    return visited_page_list.head.value
+                    temp_value = visited_page_list.head.value
+                    visited_page_list.head.value = page_num
+                    return temp_value
         else:
             # 需要的页在LRU链表中，只需要将其放在链表头部即可
             # location为目标页在链表中的位置,prev_node为目标页节点的前驱节点，goal_node为目标页节点
@@ -157,12 +159,11 @@ class PageTable:
                 goal_node = cur_node
                 prev_node.next = goal_node.next
                 goal_node.next = visited_page_list.head
-                head = goal_node
+                visited_page_list.head = goal_node
                 return -2
             else:
                 visited_page_list.head.value = page_num
                 return -2
-
     # 处理访存,若out_page为1，即需要缺页中断，否则只是更新LRU链表
 
     def check_page_interruption(self, page_num):

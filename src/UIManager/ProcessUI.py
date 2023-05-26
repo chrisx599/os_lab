@@ -46,35 +46,45 @@ class Ui_Form(object):
 
         self.verticalLayout.addItem(self.verticalSpacer_3)
 
-        self.label = QLabel(self.widget)
-        self.label.setObjectName(u"label")
+        # self.label = QLabel(self.widget)
+        # self.label.setObjectName(u"label")
 
-        self.verticalLayout.addWidget(self.label)
+        # self.verticalLayout.addWidget(self.label)
 
-        self.BaseEdit = LineEdit(self.widget)
-        self.BaseEdit.setObjectName(u"BaseEdit")
+        # self.BaseEdit = LineEdit(self.widget)
+        # self.BaseEdit.setObjectName(u"BaseEdit")
 
-        self.verticalLayout.addWidget(self.BaseEdit)
+        # self.verticalLayout.addWidget(self.BaseEdit)
 
-        self.label_2 = QLabel(self.widget)
-        self.label_2.setObjectName(u"label_2")
+        # self.label_2 = QLabel(self.widget)
+        # self.label_2.setObjectName(u"label_2")
 
-        self.verticalLayout.addWidget(self.label_2)
+        # self.verticalLayout.addWidget(self.label_2)
 
-        self.LimitEdit = LineEdit(self.widget)
-        self.LimitEdit.setObjectName(u"LimitEdit")
+        # self.LimitEdit = LineEdit(self.widget)
+        # self.LimitEdit.setObjectName(u"LimitEdit")
 
-        self.verticalLayout.addWidget(self.LimitEdit)
+        # self.verticalLayout.addWidget(self.LimitEdit)
 
-        self.label_3 = QLabel(self.widget)
-        self.label_3.setObjectName(u"label_3")
+        # self.label_3 = QLabel(self.widget)
+        # self.label_3.setObjectName(u"label_3")
 
-        self.verticalLayout.addWidget(self.label_3)
+        # self.verticalLayout.addWidget(self.label_3)
 
-        self.SizeEdit = LineEdit(self.widget)
-        self.SizeEdit.setObjectName(u"SizeEdit")
+        # self.SizeEdit = LineEdit(self.widget)
+        # self.SizeEdit.setObjectName(u"SizeEdit")
 
-        self.verticalLayout.addWidget(self.SizeEdit)
+        # self.verticalLayout.addWidget(self.SizeEdit)
+
+        self.label_4 = QLabel(self.widget)
+        self.label_4.setObjectName(u"label_4")
+
+        self.verticalLayout.addWidget(self.label_4)
+
+        self.NameEdit = LineEdit(self.widget)
+        self.NameEdit.setObjectName(u"NameEdit")
+
+        self.verticalLayout.addWidget(self.NameEdit)
 
         self.label_4 = QLabel(self.widget)
         self.label_4.setObjectName(u"label_4")
@@ -124,9 +134,9 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u5740:", None))
-        self.label_2.setText(QCoreApplication.translate("Form", u"\u4e0a\u9650:", None))
-        self.label_3.setText(QCoreApplication.translate("Form", u"\u4ee3\u7801\u5927\u5c0f:", None))
+        # self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u5740:", None))
+        # self.label_2.setText(QCoreApplication.translate("Form", u"\u4e0a\u9650:", None))
+        # self.label_3.setText(QCoreApplication.translate("Form", u"\u4ee3\u7801\u5927\u5c0f:", None))
         self.label_4.setText("进程名称:")
         self.CreateProButton.setText(QCoreApplication.translate("Form", u"\u521b\u5efa\u8fdb\u7a0b", None))
         self.StopProButton.setText(QCoreApplication.translate("Form", u"\u7ec8\u6b62\u8fdb\u7a0b", None))
@@ -217,11 +227,12 @@ class ProcessUI():
         创建进程槽函数
         """
         # 获取基址、上限、代码大小
-        base = self.ui.BaseEdit.text()
-        limit = self.ui.LimitEdit.text()
-        size = self.ui.SizeEdit.text()
+        # base = self.ui.BaseEdit.text()
+        # limit = self.ui.LimitEdit.text()
+        # size = self.ui.SizeEdit.text()
         name = self.ui.NameEdit.text()
         # self.os.create_process()
+        self.show_pro_tree()
 
     def stop_process(self):
         """
