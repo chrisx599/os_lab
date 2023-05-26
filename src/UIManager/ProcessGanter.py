@@ -10,11 +10,13 @@ class GanttChartView(QGraphicsView):
     """
     甘特图界面类
     """
-    def __init__(self):
+    def __init__(self, os):
         super().__init__()
         self.h = 50 # 每个条高多少
         self.start_x = 120
         self.init_ui()
+        
+        self.os = os
 
 
         # 定时更新MemoryUI中的内容
@@ -27,7 +29,12 @@ class GanttChartView(QGraphicsView):
 
     def show_ganter(self):
         # 获取process数据
-        pass
+        pid_list = self.os.process_pid
+        start_list = self.os.process_start_timer
+        stop_list = self.os.process_running_timer
+        num = len(pid_list)
+        for i in range(num):
+            self.add_rect(str(pid_list[i]), start_list[i], stop_list[i], i)
 
     def init_ui(self):
         self.scene = QGraphicsScene(self)
@@ -43,28 +50,28 @@ class GanttChartView(QGraphicsView):
         self.setFixedSize(800, 600)
 
         # 添加进程名称标签
-        process_labels = ["Process 1", "Process 2", "Process 3"]
-        for i, label in enumerate(process_labels):
-            text_item = self.scene.addText(label)
-            text_item.setFont(QFont("Arial", 10))
-            text_item.setDefaultTextColor(Qt.GlobalColor.black)
-            text_item.setPos(0, 50 + i * 55)  # 根据需要调整位置
+        # process_labels = ["Process 1", "Process 2", "Process 3"]
+        # for i, label in enumerate(process_labels):
+        #     text_item = self.scene.addText(label)
+        #     text_item.setFont(QFont("Arial", 10))
+        #     text_item.setDefaultTextColor(Qt.GlobalColor.black)
+        #     text_item.setPos(0, 50 + i * 55)  # 根据需要调整位置
 
-        # 绘制甘特图条形
-        rect1 = self.scene.addRect(100, 50, 200, 50)
-        rect1.setBrush(QBrush(QColor("blue")))
+        # # 绘制甘特图条形
+        # rect1 = self.scene.addRect(100, 50, 200, 50)
+        # rect1.setBrush(QBrush(QColor("blue")))
 
-        rect2 = self.scene.addRect(150, 150, 150, 50)
-        rect2.setBrush(QBrush(QColor("red")))
+        # rect2 = self.scene.addRect(150, 150, 150, 50)
+        # rect2.setBrush(QBrush(QColor("red")))
 
-        rect3 = self.scene.addRect(300, 100, 100, 50)
-        rect3.setBrush(QBrush(QColor("green")))
+        # rect3 = self.scene.addRect(300, 100, 100, 50)
+        # rect3.setBrush(QBrush(QColor("green")))
 
-        self.add_rect("6667", 18, 60, 3)
+        # self.add_rect("6667", 18, 60, 3)
 
         self.setWindowTitle("Gantt Chart")
 
-    def add_rect(self, process_id:str, start_time:int, end_time:int, i:int):
+    def add_rect(self, process_id:str, start_time:int, run_time:int, i:int):
         """
         向图中添加内容
         """
@@ -72,9 +79,9 @@ class GanttChartView(QGraphicsView):
         text_item.setFont(QFont("Arial", 10))
         text_item.setDefaultTextColor(Qt.GlobalColor.black)
         text_item.setPos(0, 50 + i * 55)  # 根据需要调整位置
-        period = start_time - end_time
-        rect1 = self.scene.addRect(start_time, 50 + i * 50, period, self.h)
-        rect1.setBrush(QBrush(QColor("black")))
+        # period = start_time - run_time
+        rect1 = self.scene.addRect(start_time + 20, 50 + i * 50, run_time * 10, self.h)
+        rect1.setBrush(QBrush(QColor("green")))
 
     
 if __name__ == "__main__":

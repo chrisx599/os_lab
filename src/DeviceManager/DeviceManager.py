@@ -15,8 +15,8 @@ from utils.Container import *
 from ProcessManager.PCB import PCB
 from MemoryManager.Memory import *
 
-@inject("interrupt_event","interrupt_pcb_queue")
-def run(dcb,interrupt_pcb_queue,interrupt_event):
+#@inject("interrupt_event","interrupt_pcb_queue")
+def run(dcb):
     #参数interrupt_event, interrupt_pcb_queue
     while True:
         if dcb.status == "idle":
@@ -27,8 +27,8 @@ def run(dcb,interrupt_pcb_queue,interrupt_event):
                 time.sleep(3)
                 release_dev(dcb.dev_type,dcb.dev_id)
                 pcb.set_event = 1
-                interrupt_pcb_queue.put(pcb)
-                interrupt_event.set()
+                # interrupt_pcb_queue.put(pcb)
+                # interrupt_event.set()
 
 #处理请求，调用设备
 def use_dev(drq,dst):

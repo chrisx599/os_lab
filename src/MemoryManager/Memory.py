@@ -99,7 +99,7 @@ class Memory:
         return out_page
 
     def program_deal_page_fault(self,page_num,program_num,out_page):
-        print("in memory: page_num :" +str(page_num) + " program_id: " + str(program_num) + " out_page:" + str(out_page))
+        # print("in memory: page_num :" +str(page_num) + " program_id: " + str(program_num) + " out_page:" + str(out_page))
         if(out_page >= 0):
             self.program_replace_vm_page(page_num,program_num,out_page)
         elif(out_page == -1):

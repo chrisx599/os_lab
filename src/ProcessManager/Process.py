@@ -77,6 +77,23 @@ class Process:
         next_pcb = self.get_next_pcb()
         self.running_pcb = next_pcb
         return next_pcb
+    
+
+    def get_ready_pcb_by_PID(self, PID):
+        flag = False
+        pcb = None
+        for q in self.ready_pcb_queue:
+            times = q.qsize()
+            for i in range(times):
+                item = q.get()
+                if item.get_PID() == PID:
+                    pcb = item
+                    flag = True
+                else:
+                    q.put(item)
+            if flag:
+                break
+        return pcb     
 
     # 进程状态切换
     def to_ready(self, pcb):

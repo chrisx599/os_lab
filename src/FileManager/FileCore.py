@@ -109,7 +109,8 @@ class FileCore:
 
             # 重命名
             elif IR["operator"] == "renameFile":
-                self.tree.update_node(node, nid=IR["newName"])
+                self.tree.update_node(nid=name, identifier=IR["newName"], tag=IR["newName"])
+                # self.tree.update_node(node, nid=IR["newName"])
                 return 1
 
             else:

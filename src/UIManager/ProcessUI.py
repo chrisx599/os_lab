@@ -189,7 +189,7 @@ class ProcessUI():
         """
         model = QStandardItemModel()
         # 设置表头
-        header_labels = ["进程名称", "PID", "状态", "内存占用率", "运行时间"]
+        header_labels = ["PID", "进程名称", "状态", "内存占用率", "运行时间"]
         model.setHorizontalHeaderLabels(header_labels)
         # 获取到进程的数据
         # pro_tree = Tree()
@@ -202,7 +202,7 @@ class ProcessUI():
                 # 创建父节点并添加到模型中
                 mem_rate = item.data.size / 16384
                 root_item = model.invisibleRootItem()
-                root_item.appendRow([QStandardItem(item.data.name), QStandardItem(str(item.data.PID))
+                root_item.appendRow([QStandardItem(str(item.data.PID)), QStandardItem(item.data.name)
                                      , QStandardItem(item.data.state), QStandardItem(str(mem_rate)),
                                      QStandardItem(str(item.data.total_time))])
                 # 将子节点全部放入父节点下
@@ -210,15 +210,17 @@ class ProcessUI():
                 for child in children_list:
                     child_mem_rate = child.data.size / 16384
                     child_item = root_item.child(cnt)
-                    child_item.appendRow([QStandardItem(child.data.name), QStandardItem(str(child.data.PID))
+                    child_item.appendRow([QStandardItem(str(child.data.PID)), QStandardItem(child.data.name)
                                      , QStandardItem(child.data.state), QStandardItem(str(child_mem_rate)),
                                      QStandardItem(str(child.data.total_time))])
                 # 父节点数量    
                 cnt += 1
+        
+        self.ui.view.setModel(model)
                 
 
     def show_ganter(self):
-        self.view = GanttChartView()
+        self.view = GanttChartView(self.system.os)
         self.view.show()
 
     def create_process(self):
@@ -235,17 +237,19 @@ class ProcessUI():
                     "00000001", "01010001", "00000000","00000000","00000001","00010000","00000000","00001100",
                     "00000010", "00010101", "00000000","00000000","00000000","00000000","00000000","00000000"]
         self.system.container.resolve("memory").load_program(1, instructions)
-        print("aaa666")
+        # print("aaa666")
         self.system.os.create_process(name, 0)
         self.show_pro_tree()
-        print("aaa666")
+        # print("aaa666")
 
     def stop_process(self):
         """
         终止进程槽函数
         """
         selected_row = self.ui.view.selectionModel().selectedRows()
-        # self.os.del_dev(int(selected_row[0].data()))
+        # aa = selected_row[0].data()
+        # print("666")
+        self.system.os.del_process(int(selected_row[0].data()))
         self.show_pro_tree()
 
 

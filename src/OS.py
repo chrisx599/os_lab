@@ -18,7 +18,7 @@ sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\InterruptManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\TimeManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\HardWareManager")
 sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\DeviceManager")
-print(sys.path)
+# print(sys.path)
 from utils.Container import *
 from ProcessManager.PCB import *
 import treelib
@@ -100,11 +100,11 @@ class OS:
         self.cpu.set_PID(self.running_pcb.get_PID())
 
     def dispatch_process(self):
-        print("dispatch_process")
+        # print("dispatch_process")
         if not self.new_process_event.is_set():
             self.new_process_event.wait()
             self.new_process_event.clear()
-            print("dispatch: new_process_event get")
+            # print("dispatch: new_process_event get")
             self.running_pcb = self.process.get_next_pcb()
             ax, bx, cx, dx, axm, bxm, cxm, dxm = self.running_pcb.get_gen_reg_all()
             self.cpu.set_gen_reg_all(ax, bx, cx, dx, axm, bxm, cxm, dxm)
@@ -116,13 +116,14 @@ class OS:
             self.os_timer_messager.put(self.running_pcb.get_priority())
             self.cpu.running_pcb = self.running_pcb
             self.running_event.set()
-            print("dispatch: now running_event set")
+            # print("dispatch: now running_event set")
         while True:
             if not self.timeout_event.is_set():
-                print("dispatch: now waiting timeout_event")
+                # print("dispatch: now waiting timeout_event")
                 self.timeout_event.wait()
-                print("dispatch: get timeout_event now ")
+                # print("dispatch: get timeout_event now ")
                 if self.exit_event.is_set():
+                    self.update_timer()
                     return
             self.running_event.clear()
             self.last_run_time = self.os_timer_messager.get()
@@ -132,10 +133,12 @@ class OS:
                 self.running_pcb.set_state(self.running_pcb.PROCESS_EXIT)
 
             self.atom_lock.acquire()
-            print("dispatch: dispatch start")
-            self.dispatch_func()
+            # print("dispatch: dispatch start")
+            self.update_timer()
+            self.dispatch_func()       
             self.cpu.running_pcb = self.running_pcb
             if self.exit_event.is_set():
+                self.update_timer()
                 return
             self.atom_lock.release()
             self.timeout_event.clear()
@@ -153,7 +156,9 @@ class OS:
             self.process_tree.create_node(args[0], pcb.get_PID(), parent=args[1], data=pcb)
 
     def update_timer(self):
-        pid = self.process.get_running_pcb().get_PID()
+        if self.running_pcb == None:
+            return
+        pid = self.running_pcb.PID
         self.process_pid.append(pid)
         start_time = self.cpu_time - self.last_run_time
         self.process_start_timer.append(start_time)
@@ -169,7 +174,14 @@ class OS:
         self.new_process_event.set()
         self.timeout_event.set()
 
-
+    def del_process(self, PID):
+        pcb = self.process_tree.get_node(PID).data
+        self.process_tree.remove_node(PID)
+        if pcb.get_state() == pcb.PROCESS_READY:
+            pcb = self.process.get_ready_pcb_by_PID(PID)
+            pcb.set_state(pcb.PROCESS_EXIT)
+            del pcb
+        
 
 
 

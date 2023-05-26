@@ -27,13 +27,13 @@ class Interrput(threading.Thread):
 
 
     def run(self):
-        print("interrupt thread new ok")
+        # print("interrupt thread new ok")
         while True:
             if not self.interrupt_event.is_set():
-                print("interrupt: now waiting interrupt_event")
+                # print("interrupt: now waiting interrupt_event")
                 self.interrupt_event.wait()
                 if self.exit_event.is_set():
-                    print("interrupt thread end")
+                    # print("interrupt thread end")
                     return
                 type = 0
                 if not self.interrupt_pcb_queue.empty():
@@ -57,7 +57,7 @@ class Interrput(threading.Thread):
                     page_num = message["page_num"]
                     program_num = message["PID"]
                     out_page = message["flag"]
-                    print("interrupt_get: page_num" + str(page_num)+ "program_num:"+ str(program_num) + "out_page:" + str(out_page))
+                    # print("interrupt_get: page_num" + str(page_num)+ "program_num:"+ str(program_num) + "out_page:" + str(out_page))
                     self.memory.program_deal_page_fault(page_num, program_num, out_page)
                     self.interrupt_event.clear()
 

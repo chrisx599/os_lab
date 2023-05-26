@@ -24,8 +24,8 @@ class DeviceStatusTable:
     # 添加设备控制块
     def add_dev(self, dev_type:str, dev_id):
         self.table[dev_id] = DeviceControlBlock(dev_type, dev_id)
-        t = threading.Thread(target=DeviceManager.run, args=[self.table.get_dev(dev_id)], name=dev_type)
-        t.start()
+        # t = threading.Thread(target=DeviceManager.run, args=[self.table.get_dev(dev_id)], name=dev_type)
+        # t.start()
         logger.info('Successfully added device:'+str(dev_id)+' '+dev_type+'.')
 
     #删除设备控制块

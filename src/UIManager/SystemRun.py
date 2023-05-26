@@ -90,7 +90,9 @@ class CommandLineWindow(QMainWindow):
         self.cmdInput.setFocus()
 
         # 重定向标准输出流至QPlainTextEdit
-        # sys.stdout = Stream(stdout=self.cmdOutput)
+        sys.stdout = Stream(stdout=self.cmdOutput)
+
+        self.cmdOutput.appendPlainText('Power OS start 版本号:v1.0')
 
     
     def runCommand(self):
@@ -110,6 +112,7 @@ class CommandLineWindow(QMainWindow):
         cmd = str(cmd)
         tokens = cmd.split(" ")
         if tokens[0] == "ls":
+            self.cmdOutput.appendPlainText('')
             self.system.file_manager.filecore.tree.show()
         elif tokens[0] == "new":
             state = self.system.file_manager.create_File(tokens[1], tokens[2])
@@ -124,12 +127,14 @@ class CommandLineWindow(QMainWindow):
             else:
                 self.cmdOutput.appendPlainText('Result > Failed delete!')
         elif tokens[0] == "rename":
-            state = self.system.file_manager.del_File(tokens[1], tokens[2])
+            state = self.system.file_manager.rename_File(tokens[1], tokens[2])
             if state:
                 self.cmdOutput.appendPlainText('Result > Successfully rename!')
             else:
                 self.cmdOutput.appendPlainText('Result > Failed rename!')
         elif tokens[0] == "disk":
+            if not tokens[1]:
+                self.cmdOutput.appendPlainText('Result > Error command!')
             if tokens[1] == "--rate":
                 self.system.file_manager.check_Disk()
             elif tokens[1] == "--content":
@@ -137,14 +142,16 @@ class CommandLineWindow(QMainWindow):
             else:
                 self.cmdOutput.appendPlainText('Result > Error command!')
         elif tokens[0] == "cat":
+            self.cmdOutput.appendPlainText('')
             self.system.file_manager.read_File(tokens[1])
         elif tokens[0] == "write":
-            if tokens[1] == "--file":
-                self.system.file_manager.write_File(tokens[2], tokens[3])
-            elif tokens[1] == "--dev":
-                self.system.file_manager.write_Device(tokens[2])
-            elif tokens[1] == "--command":
-                self.system.file_manager.write_Order(tokens[2])
+            self.system.file_manager.write_File(tokens[1], tokens[2])
+            # if tokens[1] == "--file":
+            #     self.system.file_manager.write_File(tokens[2], tokens[3])
+            # elif tokens[1] == "--dev":
+            #     self.system.file_manager.write_Device(tokens[2])
+            # elif tokens[1] == "--command":
+            #     self.system.file_manager.write_Order(tokens[2])
         elif tokens[0] == "clear":
             self.cmdOutput.clear()
         elif tokens[0] == "jobs":
@@ -167,9 +174,11 @@ class CommandLineWindow(QMainWindow):
             self.cmdOutput.appendPlainText('       > rename <filename> <newname>:rename file name')
             self.cmdOutput.appendPlainText('       > rm <filename>:delete file')
             self.cmdOutput.appendPlainText('       > ls:show file tree')
-            self.cmdOutput.appendPlainText('       > write [--file] <filename> <content>:write file')
-            self.cmdOutput.appendPlainText('       > write [--dev] <content>:write device')
-            self.cmdOutput.appendPlainText('       > write [--command] <content>:write command')
+            self.cmdOutput.appendPlainText('       > write <filename> <content>:write file')
+            self.cmdOutput.appendPlainText('       > disk [--rate]:write file')
+            self.cmdOutput.appendPlainText('       > disk [--content]:write file')
+            # self.cmdOutput.appendPlainText('       > write [--dev] <content>:write device')
+            # self.cmdOutput.appendPlainText('       > write [--command] <content>:write command')
             self.cmdOutput.appendPlainText('       > dev:open device viewer')
             self.cmdOutput.appendPlainText('       > mem:open memory viewer')
             self.cmdOutput.appendPlainText('       > jobs:open process viewer')
