@@ -90,7 +90,7 @@ class CommandLineWindow(QMainWindow):
         self.cmdInput.setFocus()
 
         # 重定向标准输出流至QPlainTextEdit
-        sys.stdout = Stream(stdout=self.cmdOutput)
+        # sys.stdout = Stream(stdout=self.cmdOutput)
 
     
     def runCommand(self):
@@ -148,7 +148,7 @@ class CommandLineWindow(QMainWindow):
         elif tokens[0] == "clear":
             self.cmdOutput.clear()
         elif tokens[0] == "jobs":
-            self.jobs_ui = ProcessUI(self.system.os)
+            self.jobs_ui = ProcessUI(self.system)
             self.jobs_ui.window.show()
         elif tokens[0] == "mem":
             self.mem_ui = MemoryUI(self.system.container.resolve("memory"))
@@ -226,7 +226,8 @@ class Stream:
         self.stdout = stdout
 
     def write(self, text):
-        self.stdout.appendPlainText(text)
+        # self.stdout.appendPlainText(text)
+        self.stdout.insertPlainText(text)
 
     def flush(self):
         pass  # 这里可以添加适当的刷新操作
