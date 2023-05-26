@@ -18,7 +18,7 @@ class GanttChartView(QGraphicsView):
 
 
         # 定时更新MemoryUI中的内容
-        self.timer = QTimer(self.window)
+        self.timer = QTimer(self)
         self.timer.setInterval(500)  # 每隔 0.5 秒触发一次定时器
         # 将槽函数与定时器的 timeout 信号关联
         self.timer.timeout.connect(self.show_ganter)
@@ -26,6 +26,7 @@ class GanttChartView(QGraphicsView):
         self.timer.start()
 
     def show_ganter(self):
+        # 获取process数据
         pass
 
     def init_ui(self):
