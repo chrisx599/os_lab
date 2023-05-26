@@ -8,7 +8,7 @@ class linklist:
     head = None
 
     def __init__(self):
-        head = Node()
+        self.head = Node()
 
     def get_length(self):
         count = 0

@@ -86,6 +86,16 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.NameEdit)
 
+        self.label_4 = QLabel(self.widget)
+        self.label_4.setObjectName(u"label_4")
+
+        self.verticalLayout.addWidget(self.label_4)
+
+        self.NameEdit = LineEdit(self.widget)
+        self.NameEdit.setObjectName(u"NameEdit")
+
+        self.verticalLayout.addWidget(self.NameEdit)
+
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum
                                             , QSizePolicy.Policy.Expanding)
 
