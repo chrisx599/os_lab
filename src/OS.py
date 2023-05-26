@@ -56,7 +56,7 @@ class OS:
         self.process_over_event = process_over_event
         self.new_process_event = new_process_event
         self.os_timer_messager = os_timer_messager
-        self.dispatch_thread = threading.Thread(target=self.dispatch_process)
+        self.dispatch_thread = threading.Thread(target=self.dispatch_process, name="dispatch")
         self.dispatch_thread.start()
         self.create_process("init")
 
@@ -70,8 +70,8 @@ class OS:
         ir = self.cpu.get_IR()
         self.running_pcb.set_IR(ir)
         # 修改进程状态
-        if self.running_pcb.get_state == PCB.PROCESS_RUNNING:
-            self.running_pcb.set_state(PCB.PROCESS_READY)
+        if self.running_pcb.get_state() == self.running_pcb.PROCESS_RUNNING:
+            self.running_pcb.set_state(self.running_pcb.PROCESS_READY)
         # 进程调度
         next_running_pcb = self.process.dispatch_process(self.running_pcb)
         if next_running_pcb == None:
@@ -91,20 +91,42 @@ class OS:
 
     def dispatch_process(self):
         print("dispatch_process")
+        if not self.new_process_event.is_set():
+            self.new_process_event.wait()
+            print("dispatch: new_process_event get")
+            self.running_pcb = self.process.get_next_pcb()
+            ax, bx, cx, dx, axm, bxm, cxm, dxm = self.running_pcb.get_gen_reg_all()
+            self.cpu.set_gen_reg_all(ax, bx, cx, dx, axm, bxm, cxm, dxm)
+            pc = self.running_pcb.get_PC()
+            self.cpu.set_PC(pc)
+            ir = self.running_pcb.get_IR()
+            self.cpu.set_IR(ir)
+            self.cpu.set_PID(self.running_pcb.get_PID())
+            self.os_timer_messager.put(self.running_pcb.get_priority())
+            self.cpu.running_pcb = self.running_pcb
+            self.running_event.set()
+            print("dispatch: now running_event set")
         while True:
             if not self.timeout_event.is_set():
+                print("dispatch: now waiting timeout_event")
                 self.timeout_event.wait()
+                print("dispatch: get timeout_event now ")
                 if self.exit_event.is_set():
                     return
-            print("dispatch start")
             self.running_event.clear()
             self.last_run_time = self.os_timer_messager.get()
             self.cpu_time += self.last_run_time
             self.running_pcb.set_total_time(self.running_pcb.get_total_time() + self.last_run_time)
             if self.process_over_event.is_set():
-                self.running_pcb.set_state(PCB.PROCESS_EXIT)
-            with self.atom_lock:
-                self.dispatch_func()
+                self.running_pcb.set_state(self.running_pcb.PROCESS_EXIT)
+                fore_del_pcb = self.running_pcb
+                self.running_pcb = None
+                self.process.del_process(fore_del_pcb)
+            self.atom_lock.acquire()
+            print("dispatch: dispatch start")
+            self.dispatch_func()
+            self.cpu.running_pcb = self.running_pcb
+            self.atom_lock.release()
             self.timeout_event.clear()
             self.process_over_event.clear()
             self.running_event.set()
@@ -112,7 +134,7 @@ class OS:
 
     def create_process(self, *args):
         pcb = self.process.create_process(args[0])
-        if self.running_pcb == None:
+        if self.running_pcb == None and pcb.PID != 0:
             self.new_process_event.set()
         if self.process_tree.size() == 0:
             self.process_tree.create_node(args[0], pcb.get_PID(), data=pcb)
@@ -133,7 +155,9 @@ class OS:
         self.exit_event.set()
         self.interrupt_event.set()
         self.running_event.set()
+        self.new_process_event.set()
         self.timeout_event.set()
+
 
 
 
@@ -179,9 +203,18 @@ if __name__ == "__main__":
     container.register("process", process)
     cpu = CPU()
     container.register("cpu", cpu)
+    device_status_table = DeviceStatusTable()
+    device_request_queue = DeviceRequestQueue()
+    container.register("device_status_table", device_status_table)
+    container.register("device_request_queue", device_request_queue)
+
     interrupt = Interrput()
     interrupt.start()
     os = OS()
+    instructions = ["00000001", "01010000", "10000000","00000000","00000001","00010000","00000000","00000011",
+                    "00000001", "01010001", "00000000","00000000","00000001","00010000","00000000","00001100",
+                    "00000010", "00010100", "00000000","00000000","00000000","00000000","00000000","00000000"]
+    memory.load_program(1, instructions)
     cpu.start()
     timer.start()
-    os.process_exit()
+    os.create_process("aaa", 0)

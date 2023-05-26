@@ -1,4 +1,5 @@
 from Memory import *
+from constant import *
 # 物理内存类，memory_size代表物理内存大小,block_size代表一个块(页)的大小，64B,memory_space则是一个二维的列表,256个块(页),每页又有64B/4,16条指令
 class PhysicalMemory:
     memory_size = pow(2, 14)  # 物理内存总大小
@@ -31,7 +32,7 @@ class PhysicalMemory:
         # 一个死循环,只有找到一个未被使用的页,将其页号记录下来之后,存储到列表中返回,否则一直循环
         while (1):
             temp_block_num = create_random_list(1, self.core_block_num, self.block_num)
-            if (len(self.memory_space[temp_block_num[0]][0]) == 0):
+            if (self.memory_space[temp_block_num[0]][0] == 0):
                 self.memory_space[temp_block_num[0]][0] = 1
                 return temp_block_num[0]
 
@@ -39,7 +40,9 @@ class PhysicalMemory:
     def load_memory(self, instruction_list, location, block_num):
 
         for i in range(PAGE_SIZE):
-            self.memory_space[block_num[0]][i] = instruction_list[location]
+            self.memory_space[block_num][i] = instruction_list[location]
+            if i == len(instruction_list) - 1:
+                break
             location = location + 1
 
     # 检测物理内存中是否还有空闲块
@@ -55,5 +58,5 @@ class PhysicalMemory:
     # 清空对应物理块中的内存
     def unload_block(self, block_num):
 
-        for i in range(self.block_size / INSTRCUTION_LENGTH):
+        for i in range(self.block_size // INSTRCUTION_LENGTH):
             self.memory_space[block_num][i] = 0

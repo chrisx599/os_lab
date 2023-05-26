@@ -2,6 +2,7 @@ from constant import *
 from linklist import *
 from PageTableItem import *
 # 页表类，每个程序都一有一个相应的页表
+real_memory = PhysicalMemory()
 class PageTable:
     page_table_list = ()  # 页表管理虚拟内存
     page_allocated_list = []  # 已分配的页的列表
@@ -20,8 +21,8 @@ class PageTable:
     # @inject("interrupt_event", "interrupt_type_queue")
     def __init__(self):
         # 一个页表列表里存放所有页表项，一个页表项对应着一个页面
-        page_table_list = [PageTableItem() for i in range(self.page_num)]
-
+        self.page_table_list = [PageTableItem() for i in range(self.page_num)]
+        self.lru_list = linklist()
         # self.interrupt_event = interrupt_event
         # self.interrupt_type_queue = interrupt_type_queue
         # for j in range(PAGE_ITEM_SIZE):
@@ -40,16 +41,16 @@ class PageTable:
         error = None
         # 计算需要分配的页数,分为整除和不能整除两种情况
         if (need_space % PAGE_SIZE != 0):
-            page_count = need_space / PAGE_SIZE + 1
+            page_count = need_space // PAGE_SIZE + 1
         else:
-            page_count = need_space / PAGE_SIZE
+            page_count = need_space // PAGE_SIZE
         # 需要放入内存的核心页的数量(key_page)
         key_page = 1
         # 一共分配了几页，相当于偏移量,后续可能用于计算
         offset = page_count
         end_addr = page_count * PAGE_SIZE
         # 给这个程序分配的物理块的总数，先暂定为其需要的总页数的一般
-        self.allocated_block_num = page_count / 2
+        self.allocated_block_num = page_count // 2 + 1
         # 实际使用了多少物理块
         self.used_block_num = 0
         # 可以把分配的物理快的块号记录下
@@ -59,7 +60,7 @@ class PageTable:
         # 循环中控制先分配n页，i=0，j<n，然后剩下的再判断。
         for i in range(self.page_num):
             if (i < key_page):
-                if (self.page_table_list[i].state == 0):
+                if (self.page_table_list[i].item_state == 0):
                     # 有空闲的物理页，可以选择一个进行分配。
                     if (real_memory.exist_available_page() == 1):
                         # 说明已经用了一个物理页
@@ -74,6 +75,7 @@ class PageTable:
                             real_memory.load_memory(self.instruction_list, self.list_location,
                                                     self.page_table_list[i].physical_block_num)
                             page_count = page_count - 1
+                            self.lru_list.head.value == self.page_table_list[i].physical_block_num
                     else:
                         # 检查内存，发现用户区已经没有空闲内存块了，无法进行分配，停止分配
                         print('申请失败,没有空闲块')
@@ -117,14 +119,15 @@ class PageTable:
         # 查找需要的页是否在LRU链表中
         if (visited_page_list.search_value(page_num) == 0):
             # 若不在LRU链表中
-            if (visited_page_list.get_length < self.allocated_block_num):
+            if (visited_page_list.get_length() < self.allocated_block_num):
                 # 若已分配的物理块未用完，LRU链表未满
-                new_node = Node()
-                new_node.next = visited_page_list.head
-                visited_page_list.head = new_node
-                visited_page_list.head.value = page_num
-                return -1
-            elif (visited_page_list.get_length == self.allocated_block_num):
+                if(visited_page_list.get_length() != 0):
+                    new_node = Node()
+                    new_node.next = visited_page_list.head
+                    visited_page_list.head = new_node
+                    visited_page_list.head.value = page_num
+                    return -1
+            elif (visited_page_list.get_length() == self.allocated_block_num):
                 # 若已分配的物理块已经用完，LRU链表满了
                 temp_node = visited_page_list.head
                 while (temp_node.next.next != None):

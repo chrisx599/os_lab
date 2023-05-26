@@ -17,15 +17,9 @@ from DeviceManager.DeviceManager import *
 # MAX_PROGRAM = 100 # 最大程序个数
 # INSTRCUTION_MAX_NUM = 1000  # 程序最多指令条数
 # INSTRCUTION_LENGTH = 4
-real_memory = PhysicalMemory()
 
 
-# 生成一个随机数列表，size为列表大小，start和end为随机数最小值和最大值
-def create_random_list(size, start, end):
-    list = []
-    for i in range(size):
-        list.append(random.randint(start, end))
-    return list
+
 
 class Memory:
 
@@ -74,20 +68,20 @@ class Memory:
         self.program_list[program_num].program_page_table.allocate_virtual_memory(len(instruction_list), 1)
 
     def program_get_instruction(self,addr,program_num):
-        ins_list = ()
-        page_num = addr / PAGE_SIZE
+        ins_list = []
+        page_num = addr // PAGE_SIZE
         page_offset = addr % PAGE_SIZE
         # self.program_list[program_num].program_page_table.check_page_interruption(page_num)
         #处理完了，可以用了
         physical_block = self.program_list[program_num].program_page_table.page_table_list[page_num].physical_block_num
         for i in range(4):
-            ins_list.append(self.physical_memory[physical_block][page_offset + i])
+            ins_list.append(self.physical_memory.memory_space[physical_block][page_offset + i])
         return ins_list
 
 
     def program_read_memory(self,program_num,addr,offset):
         data_list = ()
-        page_num = addr / PAGE_SIZE
+        page_num = addr // PAGE_SIZE
         page_offset = addr % PAGE_SIZE
         # self.program_list[program_num].program_page_table.check_page_interruption(page_num)
         #处理完了，可以用了
@@ -107,8 +101,9 @@ class Memory:
     def program_deal_page_fault(self,page_num,program_num,out_page):
         if(out_page >= 0):
             self.program_replace_vm_page(page_num,program_num,out_page)
-        else:
-            self.program_lru_allocate_page(page_num,program_num)
+        else:#分配的情况
+            if(self.program_list[program_num].program_page_table.used_block_num != 1):
+                self.program_lru_allocate_page(page_num,program_num)
 
     def program_replace_vm_page(self,page_num,program_num,out_page):
         self.program_list[program_num].program_page_table.replace_page(page_num,out_page)
@@ -141,7 +136,7 @@ class Memory:
 
 
     def program_write_memory(self, program_num, addr, write_str):
-        page_num = addr / PAGE_SIZE
+        page_num = addr // PAGE_SIZE
         page_offset = addr % page_num
         block_num = self.program_list[program_num].page_table_list[page_num].physical_block_num
         self.physical_memory[block_num][page_offset] = write_str

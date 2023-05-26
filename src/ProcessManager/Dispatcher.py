@@ -48,16 +48,16 @@ class Dispatcher:
 
     # 进程状态切换
     def to_ready(self, pcb):
-        pcb.set_state(PCB.PROCESS_READY)
+        pcb.set_state(pcb.PROCESS_READY)
 
     def to_running(self, pcb):
-        pcb.set_state(PCB.PROCESS_RUNNING)
+        pcb.set_state(pcb.PROCESS_RUNNING)
 
     def to_block(self, pcb):
-        pcb.set_state(PCB.PROCESS_BLOCK)
+        pcb.set_state(pcb.PROCESS_BLOCK)
 
     def to_exit(self, pcb):
-        pcb.set_state(PCB.PROCESS_EXIT)
+        pcb.set_state(pcb.PROCESS_EXIT)
 
     def get_block_pcb_queue(self):
         return self.__block_pcb_queue

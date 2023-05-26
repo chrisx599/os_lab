@@ -4,7 +4,7 @@
 # @Author   : qingyao
 
 class IDGenerator:
-    __id_generator = 0
+    __id_generator = -1
 
     def create_id(self):
         self.__id_generator = self.__id_generator + 1
