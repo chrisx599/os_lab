@@ -10,10 +10,7 @@ from utils.Container import *
 
 class PCB:
 
-    PROCESS_READY = 'ready'
-    PROCESS_RUNNING = 'running'
-    PROCESS_BLOCK = 'block'
-    PROCESS_EXIT = 'exit'
+
 
     # 进程唯一标识
     PID = 0
@@ -83,12 +80,41 @@ class PCB:
     def __init__(self, name, id_generator):
         self.PID = id_generator.create_id()
         self.name = name
+        self.priority = 1
+        self.state = ""
+        self.gen_reg = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.event = 0
+        self.device_id = -1
+        self.arrive_time = -1
+        self.page_num = 0
+        self.total_time = 0
+        self.buffer_address = 0
+        self.buffer_size = 0
+        self.PC = 0
+        self.IR = ""
+        self.flag_reg = 0
+        self.base_mem_reg = 0
+        self.code_size = 0
+        self.data_start_location = 0
+        self.limit_mem_reg = 0
+        self.size = 0
+        self.IO_reg = 0
+        self.PROCESS_READY = 'ready'
+        self.PROCESS_RUNNING = 'running'
+        self.PROCESS_BLOCK = 'block'
+        self.PROCESS_EXIT = 'exit'
 
     def get_PID(self):
         return self.PID
 
     def set_PID(self, PID):
         self.PID = PID
+
+    def set_IO_reg(self, reg):
+        self.IO_reg = reg
+
+    def get_IO_reg(self):
+        return self.IO_reg
 
     def set_code_size(self, code_size):
         self.code_size = code_size
@@ -182,9 +208,8 @@ class PCB:
     def get_gen_reg(self, index):
         return self.gen_reg[index]
 
-    def set_gen_reg_all(self, value0, value1, value2, value3,
-                        value4, value5, value6, value7):
-        self.gen_reg[0] = value0
+    def set_gen_reg_all(self, value1, value2, value3,
+                        value4, value5, value6, value7, value8):
         self.gen_reg[1] = value1
         self.gen_reg[2] = value2
         self.gen_reg[3] = value3
@@ -192,10 +217,11 @@ class PCB:
         self.gen_reg[5] = value5
         self.gen_reg[6] = value6
         self.gen_reg[7] = value7
+        self.gen_reg[8] = value8
 
     def get_gen_reg_all(self):
-        return self.gen_reg[0], self.gen_reg[1], self.gen_reg[2], self.gen_reg[3], \
-               self.gen_reg[4], self.gen_reg[5], self.gen_reg[6], self.gen_reg[7]
+        return self.gen_reg[1], self.gen_reg[2], self.gen_reg[3], self.gen_reg[4], \
+               self.gen_reg[5], self.gen_reg[6], self.gen_reg[7], self.gen_reg[8]
 
     def set_base_mem_reg(self, base_mem):
         self.base_mem_reg = base_mem
