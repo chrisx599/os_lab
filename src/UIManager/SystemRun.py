@@ -148,7 +148,7 @@ class CommandLineWindow(QMainWindow):
         elif tokens[0] == "clear":
             self.cmdOutput.clear()
         elif tokens[0] == "jobs":
-            self.jobs_ui = ProcessUI()
+            self.jobs_ui = ProcessUI(self.system.os)
             self.jobs_ui.window.show()
         elif tokens[0] == "mem":
             self.mem_ui = MemoryUI(self.system.container.resolve("memory"))
