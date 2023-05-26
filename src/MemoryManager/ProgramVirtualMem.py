@@ -75,7 +75,7 @@ class PageTable:
                             real_memory.load_memory(self.instruction_list, self.list_location,
                                                     self.page_table_list[i].physical_block_num)
                             page_count = page_count - 1
-                            self.lru_list.head.value = self.page_table_list[i].physical_block_num
+                            self.lru_list.head.value = self.page_table_list[i].page_num
                     else:
                         # 检查内存，发现用户区已经没有空闲内存块了，无法进行分配，停止分配
                         print('申请失败,没有空闲块')
@@ -140,7 +140,7 @@ class PageTable:
                     visited_page_list.head.value = page_num
                     return out_value
                 else:
-                    return page_num
+                    return visited_page_list.head.value
         else:
             # 需要的页在LRU链表中，只需要将其放在链表头部即可
             # location为目标页在链表中的位置,prev_node为目标页节点的前驱节点，goal_node为目标页节点
@@ -167,18 +167,19 @@ class PageTable:
 
     def check_page_interruption(self, page_num):
         out_page = self.lru_switch(self.lru_list, page_num)
+        return out_page
         # 访问页替代淘汰页，占用其物理块，并且重新映射
-        if (out_page >= 0):
-            return out_page
-            # self.interrupt_event.set()
-            # self.interrupt_type_queue.put(2)
-            # self.replace_page(page_num,out_page)
-            # self.interrupt_event.clear()
-        elif (out_page == -2):
-            print('update LRU')
-        elif (out_page == -1):
-            # 还要分配一个页,给页号为page_num的页表项分配一个物理页
-            return out_page
+        # if (out_page >= 0):
+        #     return out_page
+        #     # self.interrupt_event.set()
+        #     # self.interrupt_type_queue.put(2)
+        #     # self.replace_page(page_num,out_page)
+        #     # self.interrupt_event.clear()
+        # elif (out_page == -2):
+        #     print('update LRU')
+        # elif (out_page == -1):
+        #     # 还要分配一个页,给页号为page_num的页表项分配一个物理页
+        #     return out_page
             # self.interrupt_event.set()
             # self.interrupt_type_queue.put(2)
             # self.interrupt_event.clear()

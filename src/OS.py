@@ -81,6 +81,9 @@ class OS:
             self.new_process_event.clear()
         self.running_pcb = next_running_pcb
         # 恢复上下文环境
+        time.sleep(0.001)
+        if self.exit_event.is_set():
+            return
         ax, bx, cx, dx, axm, bxm, cxm, dxm = self.running_pcb.get_gen_reg_all()
         self.cpu.set_gen_reg_all(ax, bx, cx, dx, axm, bxm, cxm, dxm)
         pc = self.running_pcb.get_PC()
@@ -125,6 +128,8 @@ class OS:
             print("dispatch: dispatch start")
             self.dispatch_func()
             self.cpu.running_pcb = self.running_pcb
+            if self.exit_event.is_set():
+                return
             self.atom_lock.release()
             self.timeout_event.clear()
             self.process_over_event.clear()
@@ -212,7 +217,7 @@ if __name__ == "__main__":
     os = OS()
     instructions = ["00000001", "01010000", "10000000","00000000","00000001","00010000","00000000","00000011",
                     "00000001", "01010001", "00000000","00000000","00000001","00010000","00000000","00001100",
-                    "00000010", "00010100", "00000000","00000000","00000000","00000000","00000000","00000000"]
+                    "00000010", "00010101", "00000000","00000000","00000000","00000000","00000000","00000000"]
     memory.load_program(1, instructions)
     cpu.start()
     timer.start()
