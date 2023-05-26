@@ -76,6 +76,16 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.SizeEdit)
 
+        self.label_4 = QLabel(self.widget)
+        self.label_4.setObjectName(u"label_4")
+
+        self.verticalLayout.addWidget(self.label_4)
+
+        self.NameEdit = LineEdit(self.widget)
+        self.NameEdit.setObjectName(u"NameEdit")
+
+        self.verticalLayout.addWidget(self.NameEdit)
+
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum
                                             , QSizePolicy.Policy.Expanding)
 
@@ -117,6 +127,7 @@ class Ui_Form(object):
         self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u5740:", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"\u4e0a\u9650:", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"\u4ee3\u7801\u5927\u5c0f:", None))
+        self.label_4.setText("进程名称:")
         self.CreateProButton.setText(QCoreApplication.translate("Form", u"\u521b\u5efa\u8fdb\u7a0b", None))
         self.StopProButton.setText(QCoreApplication.translate("Form", u"\u7ec8\u6b62\u8fdb\u7a0b", None))
         self.ViewButton.setText(QCoreApplication.translate("Form", u"\u67e5\u770b\u8fdb\u7a0b\u5e76\u53d1", None))
@@ -209,13 +220,16 @@ class ProcessUI():
         base = self.ui.BaseEdit.text()
         limit = self.ui.LimitEdit.text()
         size = self.ui.SizeEdit.text()
-        pass
+        name = self.ui.NameEdit.text()
+        # self.os.create_process()
 
     def stop_process(self):
         """
         终止进程槽函数
         """
-        pass
+        selected_row = self.ui.view.selectionModel().selectedRows()
+        # self.os.del_dev(int(selected_row[0].data()))
+        self.show_pro_tree()
 
 
 # 自定义线程类

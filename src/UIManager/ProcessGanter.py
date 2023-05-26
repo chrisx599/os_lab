@@ -4,7 +4,7 @@ Writen by Liang Zhengyang
 import sys
 from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene
 from PyQt6.QtGui import QPainter, QBrush, QPen, QColor, QFont
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 
 class GanttChartView(QGraphicsView):
     """
@@ -17,6 +17,16 @@ class GanttChartView(QGraphicsView):
         self.init_ui()
 
 
+        # 定时更新MemoryUI中的内容
+        self.timer = QTimer(self.window)
+        self.timer.setInterval(500)  # 每隔 0.5 秒触发一次定时器
+        # 将槽函数与定时器的 timeout 信号关联
+        self.timer.timeout.connect(self.show_ganter)
+        # 启动定时器
+        self.timer.start()
+
+    def show_ganter(self):
+        pass
 
     def init_ui(self):
         self.scene = QGraphicsScene(self)
