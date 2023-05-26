@@ -111,7 +111,7 @@ class CPU(threading.Thread):
 
 
     def fetch_instruction(self):
-        flag = self.memory.program_check_page_fault(self.base_mem_reg + self.PC, self.PID)
+        flag = self.memory.program_check_page_fault((self.base_mem_reg + self.PC) // 64, self.PID)
         if flag == -2:
             print("update LRU")
         else:
@@ -123,6 +123,7 @@ class CPU(threading.Thread):
             pass
         IRs = self.memory.program_get_instruction(self.base_mem_reg + self.PC, self.PID)
         self.IR = IRs[0] + IRs[1] +IRs[2] + IRs[3]
+        print(self.IR)
         self.PC += 4
 
     def analysis_and_execute_instruction(self):
@@ -132,6 +133,7 @@ class CPU(threading.Thread):
         immvalue = int(self.IR[16:32], 2)
 
         if opt == 0:
+            print(self.gen_reg[1])
             self.process_over_event.set()
         elif opt == 1:
             # 立即数放到寄存器中
@@ -140,7 +142,7 @@ class CPU(threading.Thread):
             # 地址数据 -> 寄存器
             elif front_obj < 4:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -153,7 +155,7 @@ class CPU(threading.Thread):
             # 寄存器数据 -> 内存
             else:
                 address = self.gen_reg[front_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -161,14 +163,14 @@ class CPU(threading.Thread):
                     self.interrupt_message_queue.put(address // 64)
                     self.interrupt_message_queue.put(self.get_PID())
                     self.interrupt_message_queue.put(flag)
-                self.memory.write_memory(self.running_pcb.get_PID(), address, self.gen_reg[back_obj])
+                self.memory.program_write_memory(self.running_pcb.get_PID(), address, self.gen_reg[back_obj])
         elif opt == 2:
             # 立即数加寄存器
             if back_obj == 0:
                 self.gen_reg[front_obj] += immvalue
             else:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -177,14 +179,14 @@ class CPU(threading.Thread):
                     self.interrupt_message_queue.put(self.get_PID())
                     self.interrupt_message_queue.put(flag)
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
-                self.gen_reg[front_obj] += get_value
+                self.gen_reg[front_obj] += int(get_value[0], 2)
         elif opt == 3:
             # 寄存器 - 立即数
             if back_obj == 0:
                 self.gen_reg[front_obj] -= immvalue
             else:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -200,7 +202,7 @@ class CPU(threading.Thread):
                 self.gen_reg[front_obj] *= immvalue
             else:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -216,7 +218,7 @@ class CPU(threading.Thread):
                 self.gen_reg[front_obj] //= immvalue
             else:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -231,7 +233,7 @@ class CPU(threading.Thread):
                 self.gen_reg[front_obj] = 1 if self.gen_reg[front_obj] and immvalue else 0
             else:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -246,7 +248,7 @@ class CPU(threading.Thread):
                 self.gen_reg[front_obj] = 1 if self.gen_reg[front_obj] or immvalue else 0
             else:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -261,7 +263,7 @@ class CPU(threading.Thread):
                 self.gen_reg[front_obj] = 1 if not self.gen_reg[front_obj] else 0
             else:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(self.gen_reg[back_obj], self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:
@@ -271,7 +273,7 @@ class CPU(threading.Thread):
                     self.interrupt_message_queue.put(flag)
                 # write2mem(self.gen_reg[back_obj], 1 if not get_value else 0)
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
-                self.memory.write_memory(self.running_pcb.get_PID(), address, 1 if not get_value else 0)
+                self.memory.program_write_memory(self.running_pcb.get_PID(), address, 1 if not get_value else 0)
         elif opt == 9:
             if back_obj == 0:
                 if self.gen_reg[front_obj] == immvalue:
@@ -282,7 +284,7 @@ class CPU(threading.Thread):
                     self.flag_reg = 1
             else:
                 address = self.gen_reg[back_obj]
-                flag = self.memory.program_check_page_fault(address, self.PID)
+                flag = self.memory.program_check_page_fault(address // 64, self.PID)
                 if flag == -2:
                     print("update LRU")
                 else:

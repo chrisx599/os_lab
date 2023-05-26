@@ -80,7 +80,7 @@ class Memory:
 
 
     def program_read_memory(self,program_num,addr,offset):
-        data_list = ()
+        data_list = []
         page_num = addr // PAGE_SIZE
         page_offset = addr % PAGE_SIZE
         # self.program_list[program_num].program_page_table.check_page_interruption(page_num)
@@ -88,7 +88,7 @@ class Memory:
         physical_block = self.program_list[program_num].program_page_table.page_table_list[page_num].physical_block_num
         for i in range(offset):
             count = 0
-            data_list.append(self.physical_memory[physical_block][page_offset + count])
+            data_list.append(self.physical_memory.memory_space[physical_block][page_offset + count])
             count = count + 1
         #todo: 此处要处理一下列表
         return data_list
@@ -101,7 +101,7 @@ class Memory:
     def program_deal_page_fault(self,page_num,program_num,out_page):
         if(out_page >= 0):
             self.program_replace_vm_page(page_num,program_num,out_page)
-        else:
+        else:#分配的情况
             if(self.program_list[program_num].program_page_table.used_block_num != 1):
                 self.program_lru_allocate_page(page_num,program_num)
 
@@ -125,7 +125,7 @@ class Memory:
 
     def write_buffer(self,write_str):
         buffer_page = 0
-        temp_list = ()
+        temp_list = []
         for i in range(PAGE_SIZE):
             if(self.physical_memory[buffer_page][i] == 0):
                 self.physical_memory[buffer_page][i] = write_str
@@ -138,8 +138,8 @@ class Memory:
     def program_write_memory(self, program_num, addr, write_str):
         page_num = addr // PAGE_SIZE
         page_offset = addr % page_num
-        block_num = self.program_list[program_num].page_table_list[page_num].physical_block_num
-        self.physical_memory[block_num][page_offset] = write_str
+        block_num = self.program_list[program_num].program_page_table.page_table_list[page_num].physical_block_num
+        self.physical_memory.memory_space[block_num][page_offset] = write_str
         return 1
 
 

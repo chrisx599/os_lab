@@ -93,6 +93,7 @@ class OS:
         print("dispatch_process")
         if not self.new_process_event.is_set():
             self.new_process_event.wait()
+            self.new_process_event.clear()
             print("dispatch: new_process_event get")
             self.running_pcb = self.process.get_next_pcb()
             ax, bx, cx, dx, axm, bxm, cxm, dxm = self.running_pcb.get_gen_reg_all()
@@ -119,9 +120,7 @@ class OS:
             self.running_pcb.set_total_time(self.running_pcb.get_total_time() + self.last_run_time)
             if self.process_over_event.is_set():
                 self.running_pcb.set_state(self.running_pcb.PROCESS_EXIT)
-                fore_del_pcb = self.running_pcb
-                self.running_pcb = None
-                self.process.del_process(fore_del_pcb)
+
             self.atom_lock.acquire()
             print("dispatch: dispatch start")
             self.dispatch_func()

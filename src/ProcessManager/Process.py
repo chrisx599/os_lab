@@ -26,10 +26,7 @@ class Process:
         if pcb.get_state() == pcb.PROCESS_EXIT or pcb.get_state() == pcb.PROCESS_BLOCK:
             # 如果是由于进程运行完成
             if pcb.get_state == pcb.PROCESS_EXIT:
-                if pcb.get_release():
-                    self.del_process(pcb)
-                else:
-                    self.exit_pcb_queue.put(pcb)
+                self.del_process(pcb)
                 return self.multi_feedback_dispatch(None)
         # 正常调度
         else:

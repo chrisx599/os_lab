@@ -5,8 +5,8 @@ from PyQt6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect, QThread,
     QSize, QTime, QUrl, Qt)
 from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon, QFileSystemModel,
-    QImage, QKeySequence, QLinearGradient, QPainter,
+    QFont, QFontDatabase, QGradient, QIcon, QFileSystemModel, QStandardItemModel, 
+    QImage, QKeySequence, QLinearGradient, QPainter, QStandardItem,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PyQt6.QtWidgets import (QApplication, QHeaderView, QLabel, QSizePolicy,
     QSpacerItem, QVBoxLayout, QWidget, QHBoxLayout)
@@ -15,6 +15,7 @@ from qfluentwidgets import (LineEdit, PushButton, TableView, TreeView)
 from ProcessGanter import GanttChartView
 from OS import OS
 import threading
+from treelib import Tree
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -75,6 +76,16 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.SizeEdit)
 
+        self.label_4 = QLabel(self.widget)
+        self.label_4.setObjectName(u"label_4")
+
+        self.verticalLayout.addWidget(self.label_4)
+
+        self.NameEdit = LineEdit(self.widget)
+        self.NameEdit.setObjectName(u"NameEdit")
+
+        self.verticalLayout.addWidget(self.NameEdit)
+
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum
                                             , QSizePolicy.Policy.Expanding)
 
@@ -116,6 +127,7 @@ class Ui_Form(object):
         self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u5740:", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"\u4e0a\u9650:", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"\u4ee3\u7801\u5927\u5c0f:", None))
+        self.label_4.setText("进程名称:")
         self.CreateProButton.setText(QCoreApplication.translate("Form", u"\u521b\u5efa\u8fdb\u7a0b", None))
         self.StopProButton.setText(QCoreApplication.translate("Form", u"\u7ec8\u6b62\u8fdb\u7a0b", None))
         self.ViewButton.setText(QCoreApplication.translate("Form", u"\u67e5\u770b\u8fdb\u7a0b\u5e76\u53d1", None))
@@ -124,12 +136,15 @@ class Ui_Form(object):
 
 
 class ProcessUI():
-    def __init__(self) -> None:
+    def __init__(self, os) -> None:
         self.window = QWidget()
         self.ui = Ui_Form()
         self.ui.setupUi(self.window)
 
+        self.os = os
         self.signal()
+
+        self.show_pro_tree()
 
     def signal(self):
         self.ui.ViewButton.clicked.connect(self.show_ganter)
@@ -163,8 +178,35 @@ class ProcessUI():
         """
         在self.ui.view中展示进程树
         """
+        model = QStandardItemModel()
+        # 设置表头
+        header_labels = ["进程名称", "PID", "状态", "内存占用率", "运行时间"]
+        model.setHorizontalHeaderLabels(header_labels)
         # 获取到进程的数据
-
+        pro_tree = Tree()
+        # pro_tree = self.os.get_process_tree()
+        node_list = pro_tree.all_nodes()
+        cnt = 0
+        for item in node_list:
+            # 判断是不是父节点
+            if pro_tree.children(item.identifier):
+                # 创建父节点并添加到模型中
+                mem_rate = item.data.size / 16384
+                root_item = model.invisibleRootItem()
+                root_item.appendRow([QStandardItem(item.data.name), QStandardItem(item.data.PID)
+                                     , QStandardItem(item.data.state), QStandardItem(mem_rate),
+                                     QStandardItem(item.total_time)])
+                # 将子节点全部放入父节点下
+                children_list = pro_tree.children(item.identifier)
+                for child in children_list:
+                    child_mem_rate = child.data.size / 16384
+                    child_item = root_item.child(cnt)
+                    child_item.appendRow([QStandardItem(child.data.name), QStandardItem(child.data.PID)
+                                     , QStandardItem(child.data.state), QStandardItem(child_mem_rate),
+                                     QStandardItem(child.total_time)])
+                # 父节点数量    
+                cnt += 1
+                
 
     def show_ganter(self):
         self.view = GanttChartView()
@@ -178,13 +220,16 @@ class ProcessUI():
         base = self.ui.BaseEdit.text()
         limit = self.ui.LimitEdit.text()
         size = self.ui.SizeEdit.text()
-        pass
+        name = self.ui.NameEdit.text()
+        # self.os.create_process()
 
     def stop_process(self):
         """
         终止进程槽函数
         """
-        pass
+        selected_row = self.ui.view.selectionModel().selectedRows()
+        # self.os.del_dev(int(selected_row[0].data()))
+        self.show_pro_tree()
 
 
 # 自定义线程类

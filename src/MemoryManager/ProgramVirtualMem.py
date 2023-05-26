@@ -75,6 +75,7 @@ class PageTable:
                             real_memory.load_memory(self.instruction_list, self.list_location,
                                                     self.page_table_list[i].physical_block_num)
                             page_count = page_count - 1
+                            self.lru_list.head.value = self.page_table_list[i].physical_block_num
                     else:
                         # 检查内存，发现用户区已经没有空闲内存块了，无法进行分配，停止分配
                         print('申请失败,没有空闲块')
@@ -120,22 +121,26 @@ class PageTable:
             # 若不在LRU链表中
             if (visited_page_list.get_length() < self.allocated_block_num):
                 # 若已分配的物理块未用完，LRU链表未满
-                new_node = Node()
-                new_node.next = visited_page_list.head
-                visited_page_list.head = new_node
-                visited_page_list.head.value = page_num
-                return -1
+                if(visited_page_list.get_length() != 0):
+                    new_node = Node()
+                    new_node.next = visited_page_list.head
+                    visited_page_list.head = new_node
+                    visited_page_list.head.value = page_num
+                    return -1
             elif (visited_page_list.get_length() == self.allocated_block_num):
                 # 若已分配的物理块已经用完，LRU链表满了
                 temp_node = visited_page_list.head
-                while (temp_node.next.next != None):
-                    temp_node = temp_node.next
-                temp_node.next.next = visited_page_list.head
-                out_value = temp_node.next.value
-                visited_page_list.head = temp_node.next
-                temp_node.next = None
-                visited_page_list.head.value = page_num
-                return out_value
+                if(visited_page_list.get_length() != 1):
+                    while (temp_node.next.next != None):
+                        temp_node = temp_node.next
+                    temp_node.next.next = visited_page_list.head
+                    out_value = temp_node.next.value
+                    visited_page_list.head = temp_node.next
+                    temp_node.next = None
+                    visited_page_list.head.value = page_num
+                    return out_value
+                else:
+                    return page_num
         else:
             # 需要的页在LRU链表中，只需要将其放在链表头部即可
             # location为目标页在链表中的位置,prev_node为目标页节点的前驱节点，goal_node为目标页节点
@@ -154,13 +159,16 @@ class PageTable:
                 goal_node.next = visited_page_list.head
                 head = goal_node
                 return -2
+            else:
+                visited_page_list.head.value = page_num
+                return -2
 
     # 处理访存,若out_page为1，即需要缺页中断，否则只是更新LRU链表
 
     def check_page_interruption(self, page_num):
         out_page = self.lru_switch(self.lru_list, page_num)
         # 访问页替代淘汰页，占用其物理块，并且重新映射
-        if (out_page > 0):
+        if (out_page >= 0):
             return out_page
             # self.interrupt_event.set()
             # self.interrupt_type_queue.put(2)
@@ -192,7 +200,7 @@ class PageTable:
         self.page_table_list[page_num].physical_block_num = block_num
         self.page_table_list[page_num].item_state = 1
         self.page_table_list[page_num].page_num = page_num
-        real_memory.load_memory(self.instruction_list, self.list_location, page_num)
+        real_memory.load_memory(self.instruction_list, self.list_location, self.page_table_list[page_num].physical_block_num)
 
     def lru_allocate_page(self, page_num):
         new_page = real_memory.allocate_physical_memory()
