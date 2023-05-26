@@ -12,6 +12,7 @@ class PageTable:
     used_block_num = None  # 记录该程序已经实际使用了多少物理块
     lru_list = None  # lru的列表，是一个链表，其中每个节点代表一个页
     page_num = PAGE_ITEM_SIZE * PAGE_ITEM_SIZE  # 一共有多少页
+    data_list = None
     interrupt_event = None
     # 创建一个指令列表，每当程序运行时，将指令读入列表中，程序暂停时，记录指令执行的位置，以便重新运行。程序终止后，清空该列表。
     instruction_list = [list() for i in range(INSTRCUTION_MAX_NUM)]
@@ -23,6 +24,7 @@ class PageTable:
         # 一个页表列表里存放所有页表项，一个页表项对应着一个页面
         self.page_table_list = [PageTableItem() for i in range(self.page_num)]
         self.lru_list = linklist()
+        self.data_list = [None for i in range(PAGE_SIZE)]
         # self.interrupt_event = interrupt_event
         # self.interrupt_type_queue = interrupt_type_queue
         # for j in range(PAGE_ITEM_SIZE):
@@ -202,7 +204,12 @@ class PageTable:
         self.page_table_list[page_num].physical_block_num = block_num
         self.page_table_list[page_num].item_state = 1
         self.page_table_list[page_num].page_num = page_num
-        real_memory.load_memory(self.instruction_list, self.list_location, self.page_table_list[page_num].physical_block_num)
+        if(page_num != 512):
+            real_memory.load_memory(self.instruction_list, self.list_location, self.page_table_list[page_num].physical_block_num)
+        else:
+            for i in range(PAGE_SIZE):
+                if(self.data_list[i] != None):
+                    real_memory.memory_space[block_num][i] = self.data_list[i]
 
     def lru_allocate_page(self, page_num):
         new_page = real_memory.allocate_physical_memory()

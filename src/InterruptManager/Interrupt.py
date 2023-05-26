@@ -50,9 +50,14 @@ class Interrput(threading.Thread):
                     self.process_over_event.set()
                     self.interrupt_event.clear()
                 else:
-                    page_num = self.interrupt_message_queue.get()
-                    program_num = self.interrupt_message_queue.get()
-                    out_page = self.interrupt_message_queue.get()
+                    # page_num = self.interrupt_message_queue.get()
+                    # program_num = self.interrupt_message_queue.get()
+                    # out_page = self.interrupt_message_queue.get()
+                    message = self.interrupt_message_queue.get()
+                    page_num = message["page_num"]
+                    program_num = message["PID"]
+                    out_page = message["flag"]
+                    print("interrupt_get: page_num" + str(page_num)+ "program_num:"+ str(program_num) + "out_page:" + str(out_page))
                     self.memory.program_deal_page_fault(page_num, program_num, out_page)
                     self.interrupt_event.clear()
 

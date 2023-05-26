@@ -99,6 +99,7 @@ class Memory:
         return out_page
 
     def program_deal_page_fault(self,page_num,program_num,out_page):
+        print("in memory: page_num :" +str(page_num) + " program_id: " + str(program_num) + " out_page:" + str(out_page))
         if(out_page >= 0):
             self.program_replace_vm_page(page_num,program_num,out_page)
         elif(out_page == -1):
@@ -140,6 +141,7 @@ class Memory:
         page_offset = addr % page_num
         block_num = self.program_list[program_num].program_page_table.page_table_list[page_num].physical_block_num
         self.physical_memory.memory_space[block_num][page_offset] = write_str
+        self.program_list[program_num].program_page_table.data_list[page_offset] = write_str
         return 1
 
 

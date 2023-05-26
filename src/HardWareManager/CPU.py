@@ -111,13 +111,14 @@ class CPU(threading.Thread):
 
 
     def fetch_instruction(self):
-        flag = self.memory.program_check_page_fault((self.base_mem_reg + self.PC) // 64, self.PID)
+        address = self.base_mem_reg + self.PC
+        print("cpU:::::::::::::::base_mem_reg:" + str(self.base_mem_reg) + " PC:" + str(self.PC))
+        flag = self.memory.program_check_page_fault(address // 64, self.PID)
         if flag == -2:
             print("update LRU")
         else:
-            self.interrupt_message_queue.put((self.base_mem_reg + self.PC) // 64)
-            self.interrupt_message_queue.put(self.get_PID())
-            self.interrupt_message_queue.put(flag)
+            message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+            self.interrupt_message_queue.put(message)
             self.interrupt_event.set()
         while self.interrupt_event.is_set():
             pass
@@ -146,10 +147,14 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num" : address // 64, "PID" :self.PID, "flag": flag}
+                    self.interrupt_message_queue.put(message)
+                    # self.interrupt_message_queue.put(address // 64)
+                    # self.interrupt_message_queue.put(self.get_PID())
+                    # self.interrupt_message_queue.put(flag)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 self.gen_reg[front_obj] = get_value
             # 寄存器数据 -> 内存
@@ -161,10 +166,14 @@ class CPU(threading.Thread):
                 else:
                     print("address:" + str(address))
                     print("front_obj" + str(front_obj))
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num" : address // 64, "PID" :self.PID, "flag": flag}
+                    self.interrupt_message_queue.put(message)
+                    # self.interrupt_message_queue.put(address // 64)
+                    # self.interrupt_message_queue.put(self.get_PID())
+                    # self.interrupt_message_queue.put(flag)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 self.memory.program_write_memory(self.running_pcb.get_PID(), address, self.gen_reg[back_obj])
         elif opt == 2:
             # 立即数加寄存器
@@ -176,16 +185,18 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    print("cpu::::::flag:" + str(flag))
+                    self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 print("address:" + str(address))
                 print("back_obj:" + str(back_obj))
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 print("test: get_value" + str(get_value))
                 print("test: reg " + str(self.gen_reg[front_obj]))
-                self.gen_reg[front_obj] += int(get_value[0], 2)
+                self.gen_reg[front_obj] += int(get_value[0])
         elif opt == 3:
             # 寄存器 - 立即数
             if back_obj == 0:
@@ -196,10 +207,12 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    print("cpu::::::flag:" + str(flag))
+                    self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 self.gen_reg[front_obj] -= get_value
         elif opt == 4:
@@ -212,10 +225,11 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 self.gen_reg[front_obj] *= get_value
         elif opt == 5:
@@ -228,10 +242,11 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 self.gen_reg[front_obj] //= get_value
         elif opt == 6:
@@ -243,10 +258,11 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 self.gen_reg[front_obj] = 1 if self.gen_reg[front_obj] and get_value else 0
         elif opt == 7:
@@ -258,10 +274,11 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 self.gen_reg[front_obj] = 1 if self.gen_reg[front_obj] or get_value else 0
         elif opt == 8:
@@ -273,10 +290,11 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 # write2mem(self.gen_reg[back_obj], 1 if not get_value else 0)
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 self.memory.program_write_memory(self.running_pcb.get_PID(), address, 1 if not get_value else 0)
@@ -294,10 +312,11 @@ class CPU(threading.Thread):
                 if flag == -2:
                     print("update LRU")
                 else:
-                    self.interrupt_message_queue.put(address // 64)
-                    self.interrupt_message_queue.put(self.get_PID())
-                    self.interrupt_message_queue.put(flag)
+                    message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
+                while self.interrupt_event.is_set():
+                    continue
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
                 if self.gen_reg[front_obj] == get_value:
                     self.flag_reg = 0

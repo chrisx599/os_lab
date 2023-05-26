@@ -229,3 +229,5 @@ if __name__ == "__main__":
     cpu.start()
     timer.start()
     os.create_process("aaa", 0)
+    time.sleep(1)
+    os.process_exit()
