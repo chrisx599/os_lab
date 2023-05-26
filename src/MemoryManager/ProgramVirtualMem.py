@@ -75,6 +75,7 @@ class PageTable:
                             real_memory.load_memory(self.instruction_list, self.list_location,
                                                     self.page_table_list[i].physical_block_num)
                             page_count = page_count - 1
+                            self.lru_list.head.value == self.page_table_list[i].physical_block_num
                     else:
                         # 检查内存，发现用户区已经没有空闲内存块了，无法进行分配，停止分配
                         print('申请失败,没有空闲块')
@@ -120,11 +121,12 @@ class PageTable:
             # 若不在LRU链表中
             if (visited_page_list.get_length() < self.allocated_block_num):
                 # 若已分配的物理块未用完，LRU链表未满
-                new_node = Node()
-                new_node.next = visited_page_list.head
-                visited_page_list.head = new_node
-                visited_page_list.head.value = page_num
-                return -1
+                if(visited_page_list.get_length() != 0):
+                    new_node = Node()
+                    new_node.next = visited_page_list.head
+                    visited_page_list.head = new_node
+                    visited_page_list.head.value = page_num
+                    return -1
             elif (visited_page_list.get_length() == self.allocated_block_num):
                 # 若已分配的物理块已经用完，LRU链表满了
                 temp_node = visited_page_list.head

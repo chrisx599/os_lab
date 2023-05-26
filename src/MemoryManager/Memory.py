@@ -101,7 +101,7 @@ class Memory:
     def program_deal_page_fault(self,page_num,program_num,out_page):
         if(out_page >= 0):
             self.program_replace_vm_page(page_num,program_num,out_page)
-        else:
+        else:#分配的情况
             if(self.program_list[program_num].program_page_table.used_block_num != 1):
                 self.program_lru_allocate_page(page_num,program_num)
 
