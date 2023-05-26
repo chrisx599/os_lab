@@ -1,0 +1,16 @@
+
+dpython:S2208"GImport only needed names or import the module and then use its members.(Ğ©¼ˆÿÿÿÿÿ
+kpython:S100"ORename method "create_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(­õí„ùÿÿÿÿ
+ipython:S100"MRename method "read_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(“‡•Íşÿÿÿÿ
+epython:S100*"NRename method "read_Order" to match the regular expression ^[a-z_][a-z0-9_]*$.(«êââ
+fpython:S1009"ORename method "read_Device" to match the regular expression ^[a-z_][a-z0-9_]*$.(úïÿó
+epython:S100H"NRename method "write_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(ş·‚Ü
+kpython:S100V"ORename method "write_Order" to match the regular expression ^[a-z_][a-z0-9_]*$.(ƒÜİÔıÿÿÿÿ
+lpython:S100e"PRename method "write_Device" to match the regular expression ^[a-z_][a-z0-9_]*$.(æçö¤ÿÿÿÿÿ
+jpython:S117t"SRename this parameter "newName" to match the regular expression ^[_a-z][a-z0-9_]*$.(êÅ³Â
+fpython:S100t"ORename method "rename_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(êÅ³Â
+qpython:S117"TRename this parameter "filePath" to match the regular expression ^[_a-z][a-z0-9_]*$.(Î³Óıÿÿÿÿ
+ipython:S100"LRename method "del_File" to match the regular expression ^[a-z_][a-z0-9_]*$.(Î³Óıÿÿÿÿ
+lpython:S117Š"TRename this parameter "DiskSize" to match the regular expression ^[_a-z][a-z0-9_]*$.(«ü”
+fpython:S100Š"NRename method "check_Disk" to match the regular expression ^[a-z_][a-z0-9_]*$.(«ü”
+ipython:S100—"LRename method "saveDisk" to match the regular expression ^[a-z_][a-z0-9_]*$.(†¯Ö»ùÿÿÿÿ
