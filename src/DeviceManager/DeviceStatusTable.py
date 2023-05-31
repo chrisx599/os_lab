@@ -1,13 +1,15 @@
 ﻿import pickle
 
-import DeviceManager.DeviceManager
+# from DeviceManager.DeviceManager import run
 from DeviceControlBlock import *
 from utils.logger import logger
 from FileManager.FileOperation import FileSystem
 import os
 import threading
-from DeviceManager import *
+from DeviceManager import DeviceManager
+# import DeviceManager
 from utils.Container import *
+from time import sleep
 
 # 设备状态表类
 class DeviceStatusTable:
@@ -16,6 +18,7 @@ class DeviceStatusTable:
         self.table = {}  # 设备状态表，用字典实现
         self.interrupt_event = interrupt_event
         self.interrupt_pcb_queue = interrupt_pcb_queue
+        self.ff = threading.Event()
         if os.path.exists('Device.pkl'):
             with open('Device.pkl', 'rb') as file:
                 dict = pickle.load(file)
@@ -23,13 +26,15 @@ class DeviceStatusTable:
                     self.add_dev(dict[key], int(key))
         # FileSystem.read_Device()
         # self.add_dev("daw", 1)
+        # self.ff = True
         logger.info('Successfully initialized device_status_table.')
 
     # 添加设备控制块
     def add_dev(self, dev_type:str, dev_id):
         self.table[dev_id] = DeviceControlBlock(dev_type, dev_id)
 
-        t = threading.Thread(target=DeviceManager.run, args=[self.get_dev(dev_id), self, self.interrupt_event, self.interrupt_pcb_queue], name=dev_type)
+        t = threading.Thread(target=DeviceManager.run, args=[self.get_dev(dev_id), self
+                            , self.interrupt_event, self.interrupt_pcb_queue, self.ff], name=dev_type)
         t.start()
         logger.info('Successfully added device:'+str(dev_id)+' '+dev_type+'.')
 
@@ -54,6 +59,8 @@ class DeviceStatusTable:
         logger.info('Successfully viewed devices.')
 
     def save(self):
+        self.ff.set()
+        sleep(0.5)
         new_dict = {}
         for key in self.table.keys():
             new_dict[key] = self.table[key].dev_type

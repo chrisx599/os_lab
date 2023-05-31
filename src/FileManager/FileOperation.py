@@ -68,8 +68,55 @@ class FileSystem:
     #         message_list = message.split("\n")
     #         return message_list
 
-    def read_instruction(self):
-        pass
+    def read_instruction(self, name:str='all'):
+        """
+        name:需要读入的指令集名称,默认为all读入所有\n
+        从pkl文件中读入指令\n
+        writen by Liang Zhengyang
+        """
+        if os.path.exists('instruction.pkl'):
+            with open('instruction.pkl', 'rb') as file:
+                instruction = pickle.load(file)
+            if name == "all":
+                print(instruction)
+                return instruction
+            else:
+                print(instruction[name])
+                return instruction[name]
+        else:
+            print("please init instruction system")
+
+        return None
+    
+    def write_instruction(self):
+        """
+        向pkl文件中写入指令\n
+        writen by Liang Zhengyang
+        """
+        if os.path.exists('instruction.pkl'):
+            ins_file = self.read_instruction()
+        else:
+            ins_file = dict()
+        ins_save = []
+        with open('instruction.pkl', 'wb') as file:
+            print("use command exit to exit")
+            print("please input instruction, use space each 8 bits:")
+            while True:
+                ins = input()
+                if ins == "exit":
+                    break
+                ins_list = ins.split(' ')
+                ins_save.append(ins_list[0])
+                ins_save.append(ins_list[1])
+                ins_save.append(ins_list[2])
+                ins_save.append(ins_list[3])
+            name = input("please input instruction file name:")
+            ins_file[name] = ins_save
+            pickle.dump(ins_file, file)
+        print("Instructions write successfully!")
+            
+            
+
 
 
     # 写文件

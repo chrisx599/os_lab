@@ -10,8 +10,10 @@ from utils.logger import logger
 from utils.Container import *
 from ProcessManager.PCB import PCB
 from MemoryManager.Memory import *
-def run(dcb, dst, interrupt_event, interrupt_pcb_queue):
+def run(dcb, dst, interrupt_event, interrupt_pcb_queue, ff):
     while True:
+        if ff.is_set():
+            return
         if dcb.status == "idle":
             pcb = dcb.get_dcb_queue()
             if pcb != None:
