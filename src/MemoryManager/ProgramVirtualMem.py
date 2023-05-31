@@ -52,7 +52,10 @@ class PageTable:
         offset = page_count
         end_addr = page_count * PAGE_SIZE
         # 给这个程序分配的物理块的总数，先暂定为其需要的总页数的一般
-        self.allocated_block_num = page_count // 2 + 1
+        if(page_count == 1):
+            self.allocated_block_num = 1
+        else:
+            self.allocated_block_num = page_count // 2 + 1
         # 实际使用了多少物理块
         self.used_block_num = 0
         # 可以把分配的物理快的块号记录下
@@ -136,11 +139,12 @@ class PageTable:
                     while (temp_node.next.next != None):
                         temp_node = temp_node.next
                         temp_node.next.next = visited_page_list.head
-                        out_value = temp_node.next.value
-                        visited_page_list.head = temp_node.next
-                        temp_node.next = None
-                        visited_page_list.head.value = page_num
-                        return out_value
+                    out_value = temp_node.next.value
+                    temp_node.next.next = visited_page_list.head
+                    visited_page_list.head = temp_node.next
+                    temp_node.next = None
+                    visited_page_list.head.value = page_num
+                    return out_value
                 else:
                     temp_value = visited_page_list.head.value
                     visited_page_list.head.value = page_num
@@ -205,16 +209,25 @@ class PageTable:
         self.page_table_list[page_num].item_state = 1
         self.page_table_list[page_num].page_num = page_num
         if(page_num != 512):
-            real_memory.load_memory(self.instruction_list, self.list_location, self.page_table_list[page_num].physical_block_num)
+            real_memory.load_memory(self.instruction_list, page_num * 32, self.page_table_list[page_num].physical_block_num)
         else:
             for i in range(PAGE_SIZE):
                 if(self.data_list[i] != None):
                     real_memory.memory_space[block_num][i] = self.data_list[i]
 
     def lru_allocate_page(self, page_num):
+        #可以设置一个交换区，用字典，键为页号，指为指令列表，方便LRU换页
         new_page = real_memory.allocate_physical_memory()
         self.page_table_list[page_num].physical_block_num = new_page
         self.page_table_list[page_num].item_state = 1
         self.page_table_list[page_num].page_num = page_num
-        real_memory.load_memory(self.instruction_list, self.list_location, page_num)
+        #装入对应位置的指令，如果是512页，就装入data_list
+        #如果是其他页，就可以根据页号算出来装入的指令位置。
+        #此处page_num有问题，应是new_page即对应的物理页，page_num为当前页号
+        if(page_num != 512):
+            real_memory.load_memory(self.instruction_list, page_num * 32, new_page)
+        else:
+            for i in range(PAGE_SIZE):
+                if(self.data_list[i] != None):
+                    real_memory.memory_space[new_page][i] == self.data_list[i]
         return page_num

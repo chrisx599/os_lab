@@ -8,7 +8,7 @@ class BankerAlgorithm:
         self.max_claim = max_claim
         self.allocation = allocation
         self.need = need
-        self.num_processes = len(available)
+        self.num_processes = len(max_claim)
         self.num_resources = len(available)
 
     def is_safe_state(self):
@@ -24,6 +24,7 @@ class BankerAlgorithm:
                     # 分配资源给进程
                     for resource in range(self.num_resources):
                         work[resource] += self.allocation[process][resource]
+                    print(f"处理进程{process}后,目前空闲资源情况{work}")
                     finish[process] = True
                     sequence.append(process)
                     found = True
@@ -44,6 +45,7 @@ class BankerAlgorithm:
 
 # 测试案例
 if __name__ == '__main__':
+    # available = [3, 3, 2]  # 可用资源数目
     available = [3, 3, 2]  # 可用资源数目
     max_claim = [
         [7, 5, 3],

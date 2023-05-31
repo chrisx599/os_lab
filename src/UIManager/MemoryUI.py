@@ -102,7 +102,9 @@ class MemoryUI():
 
     def set_label(self):
         rate = self.already_used / self.all_mem
-        self.ui.progressBar.setValue(int(rate))
+        # print(rate)
+        self.ui.progressBar.setVal(rate * 100)
+        # self.ui.progressBar.setValue(int(rate))
         self.ui.already_used.setText("已占用内存:" + str(self.already_used))
         self.ui.all_mem.setText("总内存:" + str(self.all_mem))
 

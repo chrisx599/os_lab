@@ -591,3 +591,271 @@
 2023-05-26 21:40:57 INFO: Successfully added device:1 mouse.
 2023-05-26 21:40:57 INFO: Successfully initialized device_status_table.
 2023-05-26 21:40:57 INFO: Successfully initialized device_request_queue.
+2023-05-30 19:11:47 INFO: Successfully initialized device:1 mouse.
+2023-05-30 19:11:47 INFO: Successfully added device:1 mouse.
+2023-05-30 19:11:47 INFO: Successfully initialized device_status_table.
+2023-05-30 19:11:47 INFO: Successfully initialized device_request_queue.
+2023-05-30 19:12:55 INFO: successfully init semaphore
+2023-05-30 19:13:55 INFO: successfully init semaphore
+2023-05-30 19:14:09 INFO: successfully init semaphore
+2023-05-30 19:14:10 INFO: successfully init semaphore
+2023-05-30 19:56:29 INFO: successfully init semaphore
+2023-05-30 19:56:48 INFO: successfully init semaphore
+2023-05-30 20:00:55 INFO: successfully init semaphore
+2023-05-30 20:20:24 INFO: Successfully initialized device:1 mouse.
+2023-05-30 20:20:24 INFO: Successfully added device:1 mouse.
+2023-05-30 20:20:24 INFO: Successfully initialized device_status_table.
+2023-05-30 20:20:24 INFO: Successfully initialized device_request_queue.
+2023-05-30 20:24:08 INFO: Successfully initialized device:1 mouse.
+2023-05-30 20:24:08 INFO: Successfully added device:1 mouse.
+2023-05-30 20:24:08 INFO: Successfully initialized device_status_table.
+2023-05-30 20:24:08 INFO: Successfully initialized device_request_queue.
+2023-05-30 20:27:31 INFO: Successfully initialized device:1 mouse.
+2023-05-30 20:27:31 INFO: Successfully added device:1 mouse.
+2023-05-30 20:27:31 INFO: Successfully initialized device_status_table.
+2023-05-30 20:27:31 INFO: Successfully initialized device_request_queue.
+2023-05-30 20:27:36 INFO: successfully init semaphore
+2023-05-30 20:31:23 INFO: Successfully initialized device:1 mouse.
+2023-05-30 20:31:23 INFO: Successfully added device:1 mouse.
+2023-05-30 20:31:23 INFO: Successfully initialized device_status_table.
+2023-05-30 20:31:23 INFO: Successfully initialized device_request_queue.
+2023-05-30 20:31:31 INFO: successfully init semaphore
+2023-05-30 20:39:15 INFO: Successfully initialized device:1 mouse.
+2023-05-30 20:39:15 INFO: Successfully added device:1 mouse.
+2023-05-30 20:39:15 INFO: Successfully initialized device_status_table.
+2023-05-30 20:39:15 INFO: Successfully initialized device_request_queue.
+2023-05-30 20:39:24 INFO: successfully init semaphore
+2023-05-30 20:39:46 INFO: Successfully initialized device:1 mouse.
+2023-05-30 20:39:46 INFO: Successfully added device:1 mouse.
+2023-05-30 20:39:46 INFO: Successfully initialized device_status_table.
+2023-05-30 20:39:46 INFO: Successfully initialized device_request_queue.
+2023-05-30 21:16:18 INFO: Successfully initialized device:1 mouse.
+2023-05-30 21:16:18 INFO: Successfully added device:1 mouse.
+2023-05-30 21:16:18 INFO: Successfully initialized device_status_table.
+2023-05-30 21:16:18 INFO: Successfully initialized device_request_queue.
+2023-05-30 21:16:24 INFO: successfully init semaphore
+2023-05-30 21:17:36 INFO: Successfully initialized device:1 mouse.
+2023-05-30 21:17:36 INFO: Successfully added device:1 mouse.
+2023-05-30 21:17:36 INFO: Successfully initialized device_status_table.
+2023-05-30 21:17:36 INFO: Successfully initialized device_request_queue.
+2023-05-30 21:17:44 INFO: successfully init semaphore
+2023-05-30 22:35:48 INFO: Successfully initialized device:1 mouse.
+2023-05-30 22:35:48 INFO: Successfully added device:1 mouse.
+2023-05-30 22:35:48 INFO: Successfully initialized device_status_table.
+2023-05-30 22:35:48 INFO: Successfully initialized device_request_queue.
+2023-05-30 22:35:55 INFO: successfully init semaphore
+2023-05-30 23:05:19 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:05:19 INFO: Successfully added device:1 mouse.
+2023-05-30 23:05:19 INFO: Successfully initialized device_status_table.
+2023-05-30 23:05:19 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:05:25 INFO: successfully init semaphore
+2023-05-30 23:08:59 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:08:59 INFO: Successfully added device:1 mouse.
+2023-05-30 23:08:59 INFO: Successfully initialized device_status_table.
+2023-05-30 23:08:59 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:09:45 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:09:45 INFO: Successfully added device:1 mouse.
+2023-05-30 23:09:45 INFO: Successfully initialized device_status_table.
+2023-05-30 23:09:45 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:10:32 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:10:32 INFO: Successfully added device:1 mouse.
+2023-05-30 23:10:32 INFO: Successfully initialized device_status_table.
+2023-05-30 23:10:32 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:19:20 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:19:20 INFO: Successfully added device:1 mouse.
+2023-05-30 23:19:20 INFO: Successfully initialized device_status_table.
+2023-05-30 23:19:20 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:19:39 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:19:39 INFO: Successfully added device:1 mouse.
+2023-05-30 23:19:39 INFO: Successfully initialized device_status_table.
+2023-05-30 23:19:39 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:20:32 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:20:32 INFO: Successfully added device:1 mouse.
+2023-05-30 23:20:32 INFO: Successfully initialized device_status_table.
+2023-05-30 23:20:32 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:20:58 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:20:58 INFO: Successfully added device:1 mouse.
+2023-05-30 23:20:58 INFO: Successfully initialized device_status_table.
+2023-05-30 23:20:58 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:21:32 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:21:32 INFO: Successfully added device:1 mouse.
+2023-05-30 23:21:32 INFO: Successfully initialized device_status_table.
+2023-05-30 23:21:32 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:21:46 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:21:46 INFO: Successfully added device:1 mouse.
+2023-05-30 23:21:46 INFO: Successfully initialized device_status_table.
+2023-05-30 23:21:46 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:43:49 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:43:49 INFO: Successfully added device:1 mouse.
+2023-05-30 23:43:49 INFO: Successfully initialized device_status_table.
+2023-05-30 23:43:49 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:43:55 INFO: successfully init semaphore
+2023-05-30 23:48:40 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:48:40 INFO: Successfully added device:1 mouse.
+2023-05-30 23:48:40 INFO: Successfully initialized device_status_table.
+2023-05-30 23:48:40 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:49:39 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:49:39 INFO: Successfully added device:1 mouse.
+2023-05-30 23:49:39 INFO: Successfully initialized device_status_table.
+2023-05-30 23:49:39 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:50:49 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:50:49 INFO: Successfully added device:1 mouse.
+2023-05-30 23:50:49 INFO: Successfully initialized device_status_table.
+2023-05-30 23:50:49 INFO: Successfully initialized device_request_queue.
+2023-05-30 23:50:55 INFO: successfully init semaphore
+2023-05-30 23:59:36 INFO: Successfully initialized device:1 mouse.
+2023-05-30 23:59:36 INFO: Successfully added device:1 mouse.
+2023-05-30 23:59:36 INFO: Successfully initialized device_status_table.
+2023-05-30 23:59:36 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:00:05 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:00:05 INFO: Successfully added device:1 mouse.
+2023-05-31 00:00:05 INFO: Successfully initialized device_status_table.
+2023-05-31 00:00:05 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:00:30 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:00:30 INFO: Successfully added device:1 mouse.
+2023-05-31 00:00:30 INFO: Successfully initialized device_status_table.
+2023-05-31 00:00:30 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:04:11 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:04:11 INFO: Successfully added device:1 mouse.
+2023-05-31 00:04:11 INFO: Successfully initialized device_status_table.
+2023-05-31 00:04:11 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:05:04 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:05:04 INFO: Successfully added device:1 mouse.
+2023-05-31 00:05:04 INFO: Successfully initialized device_status_table.
+2023-05-31 00:05:04 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:08:24 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:08:24 INFO: Successfully added device:1 mouse.
+2023-05-31 00:08:24 INFO: Successfully initialized device_status_table.
+2023-05-31 00:08:24 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:10:12 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:10:12 INFO: Successfully added device:1 mouse.
+2023-05-31 00:10:12 INFO: Successfully initialized device_status_table.
+2023-05-31 00:10:12 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:11:41 INFO: successfully init semaphore
+2023-05-31 00:13:30 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:13:30 INFO: Successfully added device:1 mouse.
+2023-05-31 00:13:30 INFO: Successfully initialized device_status_table.
+2023-05-31 00:13:30 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:13:39 INFO: successfully init semaphore
+2023-05-31 00:17:50 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:17:50 INFO: Successfully added device:1 mouse.
+2023-05-31 00:17:50 INFO: Successfully initialized device_status_table.
+2023-05-31 00:17:50 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:18:32 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:18:32 INFO: Successfully added device:1 mouse.
+2023-05-31 00:18:32 INFO: Successfully initialized device_status_table.
+2023-05-31 00:18:32 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:19:57 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:19:57 INFO: Successfully added device:1 mouse.
+2023-05-31 00:19:57 INFO: Successfully initialized device_status_table.
+2023-05-31 00:19:57 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:20:31 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:20:31 INFO: Successfully added device:1 mouse.
+2023-05-31 00:20:31 INFO: Successfully initialized device_status_table.
+2023-05-31 00:20:31 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:22:00 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:22:00 INFO: Successfully added device:1 mouse.
+2023-05-31 00:22:00 INFO: Successfully initialized device_status_table.
+2023-05-31 00:22:00 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:24:34 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:24:34 INFO: Successfully added device:1 mouse.
+2023-05-31 00:24:34 INFO: Successfully initialized device_status_table.
+2023-05-31 00:24:34 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:24:53 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:24:53 INFO: Successfully added device:1 mouse.
+2023-05-31 00:24:53 INFO: Successfully initialized device_status_table.
+2023-05-31 00:24:53 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:26:09 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:26:09 INFO: Successfully added device:1 mouse.
+2023-05-31 00:26:09 INFO: Successfully initialized device_status_table.
+2023-05-31 00:26:09 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:26:16 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:26:16 INFO: Successfully added device:1 mouse.
+2023-05-31 00:26:16 INFO: Successfully initialized device_status_table.
+2023-05-31 00:26:16 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:26:45 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:26:45 INFO: Successfully added device:1 mouse.
+2023-05-31 00:26:45 INFO: Successfully initialized device_status_table.
+2023-05-31 00:26:45 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:27:04 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:27:04 INFO: Successfully added device:1 mouse.
+2023-05-31 00:27:04 INFO: Successfully initialized device_status_table.
+2023-05-31 00:27:04 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:27:49 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:27:49 INFO: Successfully added device:1 mouse.
+2023-05-31 00:27:49 INFO: Successfully initialized device_status_table.
+2023-05-31 00:27:49 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:28:14 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:28:14 INFO: Successfully added device:1 mouse.
+2023-05-31 00:28:14 INFO: Successfully initialized device_status_table.
+2023-05-31 00:28:14 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:31:51 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:31:51 INFO: Successfully added device:1 mouse.
+2023-05-31 00:31:51 INFO: Successfully initialized device_status_table.
+2023-05-31 00:31:51 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:32:59 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:32:59 INFO: Successfully added device:1 mouse.
+2023-05-31 00:32:59 INFO: Successfully initialized device_status_table.
+2023-05-31 00:32:59 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:33:09 INFO: successfully init semaphore
+2023-05-31 00:38:10 INFO: Successfully initialized device:1 mouse.
+2023-05-31 00:38:10 INFO: Successfully added device:1 mouse.
+2023-05-31 00:38:10 INFO: Successfully initialized device_status_table.
+2023-05-31 00:38:10 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:39:39 INFO: Successfully deleted device:1.
+2023-05-31 00:40:35 INFO: successfully init semaphore
+2023-05-31 00:44:27 INFO: Successfully initialized device_status_table.
+2023-05-31 00:44:27 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:44:38 INFO: successfully init semaphore
+2023-05-31 00:45:59 INFO: Successfully initialized device_status_table.
+2023-05-31 00:45:59 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:46:17 INFO: successfully init semaphore
+2023-05-31 00:48:47 INFO: Successfully initialized device_status_table.
+2023-05-31 00:48:47 INFO: Successfully initialized device_request_queue.
+2023-05-31 00:49:01 INFO: successfully init semaphore
+2023-05-31 10:31:47 INFO: Successfully initialized device_status_table.
+2023-05-31 10:31:47 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:36:06 INFO: Successfully initialized device_status_table.
+2023-05-31 10:36:06 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:37:54 INFO: Successfully initialized device_status_table.
+2023-05-31 10:37:54 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:38:43 INFO: Successfully initialized device_status_table.
+2023-05-31 10:38:43 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:39:46 INFO: Successfully initialized device_status_table.
+2023-05-31 10:39:46 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:40:21 INFO: Successfully initialized device_status_table.
+2023-05-31 10:40:21 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:42:14 INFO: Successfully initialized device_status_table.
+2023-05-31 10:42:14 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:46:23 INFO: Successfully initialized device_status_table.
+2023-05-31 10:46:23 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:49:46 INFO: Successfully initialized device_status_table.
+2023-05-31 10:49:46 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:50:50 INFO: Successfully initialized device_status_table.
+2023-05-31 10:50:50 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:52:52 INFO: Successfully initialized device_status_table.
+2023-05-31 10:52:52 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:55:33 INFO: Successfully initialized device_status_table.
+2023-05-31 10:55:33 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:57:10 INFO: Successfully initialized device_status_table.
+2023-05-31 10:57:10 INFO: Successfully initialized device_request_queue.
+2023-05-31 10:57:54 INFO: Successfully initialized device_status_table.
+2023-05-31 10:57:54 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:07:58 INFO: Successfully initialized device_status_table.
+2023-05-31 11:07:58 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:11:10 INFO: Successfully initialized device_status_table.
+2023-05-31 11:11:10 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:12:40 INFO: Successfully initialized device_status_table.
+2023-05-31 11:12:40 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:16:01 INFO: Successfully initialized device_status_table.
+2023-05-31 11:16:01 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:17:34 INFO: Successfully initialized device_status_table.
+2023-05-31 11:17:34 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:18:42 INFO: Successfully initialized device_status_table.
+2023-05-31 11:18:42 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:23:10 INFO: Successfully initialized device_status_table.
+2023-05-31 11:23:10 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:24:02 INFO: Successfully initialized device_status_table.
+2023-05-31 11:24:02 INFO: Successfully initialized device_request_queue.
+2023-05-31 11:26:01 INFO: Successfully initialized device_status_table.
+2023-05-31 11:26:01 INFO: Successfully initialized device_request_queue.

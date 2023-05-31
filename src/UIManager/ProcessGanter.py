@@ -5,6 +5,9 @@ import sys
 from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene
 from PyQt6.QtGui import QPainter, QBrush, QPen, QColor, QFont
 from PyQt6.QtCore import Qt, QTimer
+from ProcessManager.Semaphore import Semaphore
+import threading
+from time import sleep
 
 class GanttChartView(QGraphicsView):
     """
@@ -32,6 +35,8 @@ class GanttChartView(QGraphicsView):
         pid_list = self.os.process_pid
         start_list = self.os.process_start_timer
         stop_list = self.os.process_running_timer
+        # 运行实例程序
+        # pid_list, start_list, stop_list = instance_pro()
         num = len(pid_list)
         for i in range(num):
             self.add_rect(str(pid_list[i]), start_list[i], stop_list[i], i)
@@ -82,6 +87,30 @@ class GanttChartView(QGraphicsView):
         # period = start_time - run_time
         rect1 = self.scene.addRect(start_time + 20, 50 + i * 50, run_time * 10, self.h)
         rect1.setBrush(QBrush(QColor("green")))
+
+    # def instance_pro(self):
+    #     self.semaphore = Semaphore(3)
+
+    #     # 创建多个线程进行测试
+    #     threads = []
+    #     for i in range(5):
+    #         t = threading.Thread(target=self.worker, args=(i,))
+    #         threads.append(t)
+    #         t.start()
+
+    #     # 等待所有线程执行完成
+    #     for t in threads:
+    #         t.join()
+
+    # def worker(self, id):
+    #         print(f'Worker {id} 正在执行')
+    #         self.semaphore.wait()
+    #         for i in range(5):
+    #             print(f'Worker {id} 正在执行{i}部分')
+    #             sleep(5)
+    #         # 这里可以添加需要执行的代码
+    #         self.semaphore.signal()
+    #         print(f'Worker {id} 释放信号量')
 
     
 if __name__ == "__main__":
