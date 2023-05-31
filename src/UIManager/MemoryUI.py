@@ -62,7 +62,8 @@ class Ui_MemoryViewer(object):
     # setupUi
 
     def retranslateUi(self, MemoryViewer):
-        MemoryViewer.setWindowTitle(QCoreApplication.translate("MemoryViewer", u"Form", None))
+        MemoryViewer.setWindowTitle("内存界面")
+        # MemoryViewer.setWindowTitle(QCoreApplication.translate("MemoryViewer", u"Form", None))
     # retranslateUi
 
 
