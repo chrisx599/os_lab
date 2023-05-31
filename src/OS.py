@@ -27,6 +27,10 @@ from TimeManager.Timer import *
 from HardWareManager.CPU import *
 from ProcessManager.PCB import *
 from InterruptManager.Interrupt import *
+from DeviceManager.DeviceManager import *
+from DeviceManager.DeviceStatusTable import *
+from DeviceManager.DeviceRequestQueue import *
+from DeviceManager.DeviceControlBlock import *
 
 class OS:
     cpu = None
@@ -43,9 +47,9 @@ class OS:
 
 
     @inject("cpu", "process", "timeout_event",
-            "atom_lock", "running_event", "process_over_event", "os_timer_messager", "new_process_event", "exit_event", "interrupt_event")
+            "atom_lock", "running_event", "process_over_event", "os_timer_messager", "new_process_event", "exit_event", "interrupt_event", "force_dispatch_event")
     def __init__(self, cpu, process, timeout_event,
-                 atom_lock, running_event, process_over_event, os_timer_messager,  new_process_event, exit_event, interrupt_event):
+                 atom_lock, running_event, process_over_event, os_timer_messager,  new_process_event, exit_event, interrupt_event, force_dispatch_event):
         self.cpu = cpu
         self.process = process
         self.system_time = 0
@@ -58,21 +62,27 @@ class OS:
         self.process_over_event = process_over_event
         self.new_process_event = new_process_event
         self.os_timer_messager = os_timer_messager
+        self.force_dispatch_event = force_dispatch_event
         self.dispatch_thread = threading.Thread(target=self.dispatch_process, name="dispatch")
         self.dispatch_thread.start()
         self.create_process("init")
+
 
 
     def dispatch_func(self):
         # 保存上下文环境
         ax, bx, cx, dx, axm, bxm, cxm, dxm = self.cpu.get_gen_reg_all()
         self.running_pcb.set_gen_reg_all(ax, bx, cx, dx, axm, bxm, cxm, dxm)
+        # print("寄存器正常")
         pc = self.cpu.get_PC()
         self.running_pcb.set_PC(pc)
+        # print("pc yes")
         ir = self.cpu.get_IR()
         self.running_pcb.set_IR(ir)
+        # print("ir yes")
         # 修改进程状态
         if self.running_pcb.get_state() == self.running_pcb.PROCESS_RUNNING:
+            # print(self.running_pcb.state)
             self.running_pcb.set_state(self.running_pcb.PROCESS_READY)
         # 进程调度
         next_running_pcb = self.process.dispatch_process(self.running_pcb)
@@ -112,6 +122,8 @@ class OS:
             self.cpu.set_PC(pc)
             ir = self.running_pcb.get_IR()
             self.cpu.set_IR(ir)
+            buffer_address = self.running_pcb.buffer_address
+            self.cpu.buffer_address = buffer_address
             self.cpu.set_PID(self.running_pcb.get_PID())
             self.os_timer_messager.put(self.running_pcb.get_priority())
             self.cpu.running_pcb = self.running_pcb
@@ -125,23 +137,23 @@ class OS:
                 if self.exit_event.is_set():
                     self.update_timer()
                     return
-            self.running_event.clear()
             self.last_run_time = self.os_timer_messager.get()
             self.cpu_time += self.last_run_time
             self.running_pcb.set_total_time(self.running_pcb.get_total_time() + self.last_run_time)
-            if self.process_over_event.is_set():
-                self.running_pcb.set_state(self.running_pcb.PROCESS_EXIT)
             self.atom_lock.acquire()
             # print("dispatch: dispatch start")
             self.update_timer()
+            # print("dispatch: update timer成功")
             self.dispatch_func()       
             self.cpu.running_pcb = self.running_pcb
+            self.os_timer_messager.put(self.running_pcb.get_priority())
             if self.exit_event.is_set():
                 self.update_timer()
                 return
+            # print("dispatch: dispatch ok")
             self.atom_lock.release()
             self.timeout_event.clear()
-            self.process_over_event.clear()
+            self.force_dispatch_event.clear()
             self.running_event.set()
 
     def create_process(self, *args):
@@ -182,7 +194,21 @@ class OS:
             pcb = self.process.get_ready_pcb_by_PID(PID)
             pcb.set_state(pcb.PROCESS_EXIT)
             del pcb
-        
+
+    def wakeup(self, pcb):
+        pcb.set_state(pcb.PROCESS_READY)
+        self.process.move_to_next_queue(pcb)
+        for i in range(self.process.block_pcb_queue.qsize()):
+            get_pcb = self.process.block_pcb_queue.get()
+            if get_pcb.PID != pcb.PID:
+                self.process.block_pcb_queue.put(get_pcb)
+
+    def block(self):
+        pcb = self.running_pcb
+        pcb.set_state(pcb.PROCESS_BLOCK)
+        self.process.block_pcb_queue.put(pcb)
+        self.force_dispatch_event.set()
+        # print("block set event")
 
 
 if __name__ == "__main__":
@@ -196,6 +222,8 @@ if __name__ == "__main__":
     os_timer_messager = Queue()
     interrupt_pcb_queue = Queue()
     ready_pcb_queue = []
+
+
     for i in range(3):
         ready_pcb_queue.append(Queue())
     block_pcb_queue = Queue()
@@ -204,6 +232,7 @@ if __name__ == "__main__":
     exit_event = threading.Event()
     interrupt_message_queue = Queue()
     id_generator = IDGenerator()
+    force_dispatch_event = threading.Event()
     container.register("timeout_event", timeout_event)
     container.register("running_event", running_event)
     container.register("atom_lock", atom_lock)
@@ -218,6 +247,7 @@ if __name__ == "__main__":
     container.register("block_pcb_queue", block_pcb_queue)
     container.register("exit_pcb_queue", exit_pcb_queue)
     container.register("exit_event", exit_event)
+    container.register("force_dispatch_event", force_dispatch_event)
     memory = Memory()
     container.register("memory", memory)
     timer = Timer()
@@ -226,29 +256,54 @@ if __name__ == "__main__":
     container.register("process", process)
     cpu = CPU()
     container.register("cpu", cpu)
-    device_status_table = DeviceStatusTable()
-    device_request_queue = DeviceRequestQueue()
-    container.register("device_status_table", device_status_table)
-    container.register("device_request_queue", device_request_queue)
-
+    dst = DeviceStatusTable()
+    drq = DeviceRequestQueue()
+    container.register("device_queue", drq)
+    container.register("device_st", dst)
+    dst.add_dev("A", 3)
+    os = OS()
+    container.register("os", os)
     interrupt = Interrput()
     interrupt.start()
-    os = OS()
-    instructions = ["00000001", "01010000", "10000000","00000000","00000001","00010000","00000000","00000011",
-                    "00000001", "01010001", "00000000","00000000","00000001","00010000","00000000","00001100",
-                    "00000010", "00010101", "00000000","00000000","00000000","00000000","00000000","00000000"]
-    memory.load_program(id_generator.create_id(), instructions)
-    print("here" + str(id_generator.get_create_id()))
+
+    instructions1 = ["00000001","00010000","00000000","00000011",
+                     "00000001","01010000","10000000","00000000",
+                     "00000001","01010001","00000000","00000000",
+                     "00000001","00010000","00000000","00001100",
+                     "00000001","00100000","00000000","00001100",
+                     "00000001","00110000","00000000","00001100",
+                     "00000010","00010101","00000000","00000000",
+                     "00000011","00100101","00000000","00000000",
+                     "00000100","00110101","00000000","00000000",
+                     "00000000","00000000","00000000","00000000"]
+    instructions2 = ["00000001", "00010000", "00000000", "00000000",
+                     "00000001", "00100000", "00000000", "00000000",
+                     "00001001", "00010000", "00000000", "00001010",
+                     "00000010", "00100001", "00000000", "00000000",
+                     "00000010", "00010000", "00000000", "00000001",
+                     "00001010", "00000011", "11111111", "11110000",
+                     "00000000", "00000000", "00000000", "00000000", ]
+    instructions3 = ["00000001", "00010000", "00000000", "00000001",
+                     "00001110", "00000000", "00000000", "00000011",
+                     "00000001", "00100000", "00000000", "00000010",
+                     "00000001", "00110000", "00000000", "00000011",
+                     "00000110", "00010000", "00000000", "00000001",
+                     "00000111", "00100000", "00000000", "00000001",
+                     "00001000", "00110000", "00000000", "00000001",
+                     "00000000", "00000000", "00000000", "00000000", ]
+    memory.load_program(id_generator.create_id(), instructions1)
+    os.create_process("bbb", 0)
+    memory.load_program(id_generator.create_id(), instructions2)
+    os.create_process("ccc", 0)
+    memory.load_program(id_generator.create_id(), instructions3)
     os.create_process("aaa", 0)
+    print("here" + str(id_generator.get_create_id()))
+
     cpu.start()
     timer.start()
-    time.sleep(3)
-    memory.load_program(id_generator.create_id(), instructions)
-    os.create_process("bbb", 0)
     i = 0
-    time.sleep(2)
-    while i < 3:
-        print(os.process_pid)
-        print(os.process_start_timer)
-        print(os.process_running_timer)
-        i += 1
+    time.sleep(20)
+    print(os.process_pid)
+    print(os.process_start_timer)
+    print(os.process_running_timer)
+    i += 1

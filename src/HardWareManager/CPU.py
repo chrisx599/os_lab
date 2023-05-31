@@ -45,14 +45,18 @@ class CPU(threading.Thread):
     # IO传输的数据量大小
     buffer_size = 0
 
+    buffer_content = 0
+
+    buffer_address = 0
+
     # 需要使用的设备的逻辑号
     device_id = -1
 
 
     @inject("atom_lock", "running_event", "process_over_event", "memory",
-            "interrupt_event", "interrupt_pcb_queue", "interrupt_message_queue", "exit_event")
+            "interrupt_event", "interrupt_pcb_queue", "interrupt_message_queue", "exit_event", "force_dispatch_event")
     def __init__(self, atom_lock, running_event, process_over_event, memory,
-                 interrupt_event, interrupt_pcb_queue, interrupt_message_queue, exit_event):
+                 interrupt_event, interrupt_pcb_queue, interrupt_message_queue, exit_event, force_dispatch_event):
         super().__init__(name="cpu")
         self.atom_lock = atom_lock
         self.running_event = running_event
@@ -62,6 +66,7 @@ class CPU(threading.Thread):
         self.interrupt_message_queue = interrupt_message_queue
         self.interrupt_pcb_queue = interrupt_pcb_queue
         self.exit_event = exit_event
+        self.force_dispatch_event = force_dispatch_event
 
     def get_PID(self):
         return self.PID
@@ -71,8 +76,10 @@ class CPU(threading.Thread):
 
     def run(self):
         while True:
+            if self.force_dispatch_event.is_set():
+                continue
             # 如果进程正在运行并且进程结束信号没有发出并且中断信号没有发出
-            if (not self.running_event.is_set()) or self.process_over_event.is_set() or self.interrupt_event.is_set():
+            if (not self.running_event.is_set()) or self.interrupt_event.is_set():
                 if not self.running_event.is_set():
                     # print("cpu: now waiting running_event")
                     self.running_event.wait()
@@ -82,34 +89,16 @@ class CPU(threading.Thread):
                         return
                 else:
                     continue
+
+
             self.atom_lock.acquire()
-            time.sleep(0.03)
             self.fetch_instruction()
+            time.sleep(0.003)
             # print(str(self.running_pcb.get_PID()) +" now is " + str(self.IR))
             self.analysis_and_execute_instruction()
+            print(str(self.PID) + ": " + self.IR)
             self.atom_lock.release()
-
-
-    # def get_id(self):
-    #
-    #     # returns id of the respective thread
-    #     if hasattr(self, '_thread_id'):
-    #         return self._thread_id
-    #     for id, thread in threading._active.items():
-    #         if thread is self:
-    #             return id
-    #
-    # def stop(self):
-    #     thread_id = self.get_id()
-    #     self.running_event.set()
-    #     res = ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id,
-    #                                                      ctypes.py_object(SystemExit))
-    #     if res > 1:
-    #         ctypes.pythonapi.PyThreadState_SetAsyncExc(thread_id, 0)
-    #         print('Exception raise failure')
-
-
-
+            time.sleep(0.1)
 
 
     def fetch_instruction(self):
@@ -136,12 +125,13 @@ class CPU(threading.Thread):
         back_obj = int(self.IR[12:16], 2)
         immvalue = int(self.IR[16:32], 2)
 
-        if opt == 0:
-            # print(self.gen_reg[1])
-            # print("停机了" + str(self.running_pcb.get_PID()))
 
-            self.process_over_event.set()
-            time.sleep(0.003)
+        if opt == 0:
+            print(self.gen_reg)
+            self.running_pcb.state = self.running_pcb.PROCESS_EXIT
+            self.force_dispatch_event.set()
+            # print("cpu set force")
+            time.sleep(1)
         elif opt == 1:
             # 立即数放到寄存器中
             if back_obj == 0:
@@ -156,9 +146,6 @@ class CPU(threading.Thread):
                 else:
                     message = {"page_num" : address // 64, "PID" :self.PID, "flag": flag}
                     self.interrupt_message_queue.put(message)
-                    # self.interrupt_message_queue.put(address // 64)
-                    # self.interrupt_message_queue.put(self.get_PID())
-                    # self.interrupt_message_queue.put(flag)
                     self.interrupt_event.set()
                 while self.interrupt_event.is_set():
                     continue
@@ -187,6 +174,8 @@ class CPU(threading.Thread):
             # 立即数加寄存器
             if back_obj == 0:
                 self.gen_reg[front_obj] += immvalue
+            elif back_obj < 5:
+                self.gen_reg[front_obj] += self.gen_reg[back_obj]
             else:
                 address = self.gen_reg[back_obj]
                 flag = self.memory.program_check_page_fault(address // 64, self.PID)
@@ -209,7 +198,7 @@ class CPU(threading.Thread):
         elif opt == 3:
             # 寄存器 - 立即数
             if back_obj == 0:
-                self.gen_reg[front_obj] -= immvalue
+                self.gen_reg[front_obj] += immvalue
             else:
                 address = self.gen_reg[back_obj]
                 flag = self.memory.program_check_page_fault(address // 64, self.PID)
@@ -223,12 +212,16 @@ class CPU(threading.Thread):
                     self.interrupt_event.set()
                 while self.interrupt_event.is_set():
                     continue
+                # print("address:" + str(address))
+                # print("back_obj:" + str(back_obj))
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
-                self.gen_reg[front_obj] -= get_value
+                # print("test: get_value" + str(get_value))
+                # print("test: reg " + str(self.gen_reg[front_obj]))
+                self.gen_reg[front_obj] -= int(get_value[0])
         elif opt == 4:
             # 寄存器 * 立即数
             if back_obj == 0:
-                self.gen_reg[front_obj] *= immvalue
+                self.gen_reg[front_obj] += immvalue
             else:
                 address = self.gen_reg[back_obj]
                 flag = self.memory.program_check_page_fault(address // 64, self.PID)
@@ -237,12 +230,17 @@ class CPU(threading.Thread):
                     # print("update LRU")
                 else:
                     message = {"page_num": address // 64, "PID": self.PID, "flag": flag}
+                    # print("cpu::::::flag:" + str(flag))
                     self.interrupt_message_queue.put(message)
                     self.interrupt_event.set()
                 while self.interrupt_event.is_set():
                     continue
+                # print("address:" + str(address))
+                # print("back_obj:" + str(back_obj))
                 get_value = self.memory.program_read_memory(self.get_PID(), address, 1)
-                self.gen_reg[front_obj] *= get_value
+                # print("test: get_value" + str(get_value))
+                # print("test: reg " + str(self.gen_reg[front_obj]))
+                self.gen_reg[front_obj] *= int(get_value[0])
         elif opt == 5:
             # 寄存器 / 立即数
             if back_obj == 0:
@@ -341,6 +339,8 @@ class CPU(threading.Thread):
                 else:
                     self.flag_reg = 1
         elif opt == 10:
+            if immvalue > 32767:
+                immvalue -= 65536
             if back_obj == 0:
                 self.PC += immvalue
             elif back_obj == 1:
@@ -359,16 +359,25 @@ class CPU(threading.Thread):
             self.running_pcb.set_PC(pc)
             ir = self.get_IR()
             self.running_pcb.set_IR(ir)
+            self.running_pcb.buffer_address = self.buffer_address
             self.running_pcb.set_event(2)
-            if opt == 11:
-                self.running_pcb.set_IO_reg(front_obj)
-            else:
-                self.running_pcb.set_buffer_content(self.running_pcb.get_gen_reg(front_obj))
+            # 如果是输出的话，就把寄存器的值送到content中。
+            if opt == 12:
+                self.running_pcb.buffer_content = self.gen_reg[front_obj]
             self.running_pcb.set_device_id(1 if opt == 11 else 2)
             self.running_pcb.set_state(self.running_pcb.PROCESS_BLOCK)
             self.interrupt_pcb_queue.put(self.running_pcb)
             self.interrupt_event.set()
-
+        elif opt == 13:
+            item = self.memory.read_buffer(self.buffer_address)
+            self.gen_reg[front_obj] = item
+        elif opt == 14:
+            # apply device
+            dev_num = immvalue
+            self.running_pcb.set_event(2)
+            self.running_pcb.set_device_id(immvalue)
+            self.interrupt_pcb_queue.put(self.running_pcb)
+            self.interrupt_event.set()
         # print(self.gen_reg[1], self.gen_reg[2],self.gen_reg[3],self.gen_reg[4],
             #   self.gen_reg[5], self.gen_reg[6],self.gen_reg[7],self.gen_reg[8])
 
@@ -429,3 +438,4 @@ class CPU(threading.Thread):
 
     def get_flag_reg(self):
         return self.flag_reg
+

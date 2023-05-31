@@ -24,13 +24,17 @@ class Process:
     def dispatch_process(self, pcb):
         # 由于进程运行完成或者进程阻塞引起调度
         if pcb.get_state() == pcb.PROCESS_EXIT or pcb.get_state() == pcb.PROCESS_BLOCK:
+            # print("这里是错误的")
             # 如果是由于进程运行完成
-            if pcb.get_state == pcb.PROCESS_EXIT:
-                self.del_process(pcb)
-                return self.multi_feedback_dispatch(None)
+            pcb = self.multi_feedback_dispatch(None)
+            # print(pcb.PID)
+            return pcb
         # 正常调度
         else:
-            return self.multi_feedback_dispatch(pcb)
+            # print("这里是正确的:" + str(pcb.PID))
+            pcb = self.multi_feedback_dispatch(pcb)
+            # print("正常调度的pid" + str(pcb.PID))
+            return pcb
 
     # 创建新进程
     def create_process(self, name):
@@ -39,7 +43,7 @@ class Process:
         # new_pcb.set_size((self.memory.program_list[new_pcb.get_PID()].program_page_table.allocated_block_num) * 64)
         new_pcb.set_state(new_pcb.PROCESS_READY)
         if new_pcb.PID != 0:
-            self.move_to_next_queue(new_pcb)
+            self.ready_pcb_queue[0].put(new_pcb)
         return new_pcb
 
     # 销毁进程
@@ -64,11 +68,14 @@ class Process:
 
     # 将pcb添加到正确的队列中
     def move_to_next_queue(self, pcb):
-        if pcb.get_priority() < 2:
-            self.ready_pcb_queue[pcb.get_priority() + 1].put(pcb)
+        if pcb.get_priority() < 3:
+            self.ready_pcb_queue[pcb.get_priority()].put(pcb)
             pcb.set_priority(pcb.get_priority() + 1)
         else:
             self.ready_pcb_queue[2].put(pcb)
+
+        # 0 1 2
+        # 1 2 3
 
     # 多级反馈算法
     def multi_feedback_dispatch(self, pcb):
@@ -94,6 +101,9 @@ class Process:
             if flag:
                 break
         return pcb     
+
+
+
 
     # 进程状态切换
     def to_ready(self, pcb):
