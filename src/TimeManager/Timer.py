@@ -28,14 +28,15 @@ class Timer(threading.Thread):
             if (not self.running_event.is_set()) or self.timeout_event.is_set():
                 if not self.running_event.is_set():
                     self.running_event.wait()
-                    if self.exit_event.is_set():
-                        return
                 else:
                     if self.process_over_event.is_set():
                         break
-                    continue
+                if self.exit_event.is_set():
+                    return
             # print("timer: time_slice start")
             while True:
+                if self.exit_event.is_set():
+                    return
                 if not self.os_timer_messager.empty():
                     time_slice = self.os_timer_messager.get()
                     # print("time_slice is " + str(time_slice))
@@ -46,6 +47,8 @@ class Timer(threading.Thread):
                 if not self.interrupt_event.is_set():
                     i += 1
                     self.process_over_event.wait(0.001)
+                if self.exit_event.is_set():
+                    return
             # if self.force_dispatch_event.is_set():
                 # print("Timer: 收到force_event")
             self.os_timer_messager.put(i)

@@ -88,6 +88,8 @@ class OS:
         next_running_pcb = self.process.dispatch_process(self.running_pcb)
         if next_running_pcb == None:
             self.new_process_event.wait()
+            if self.exit_event.is_set():
+                return
             next_running_pcb = self.process.get_next_pcb()
             self.cpu.running_pcb = next_running_pcb
             self.new_process_event.clear()
@@ -144,7 +146,9 @@ class OS:
             # print("dispatch: dispatch start")
             self.update_timer()
             # print("dispatch: update timer成功")
-            self.dispatch_func()       
+            self.dispatch_func()
+            if self.exit_event.is_set():
+                return
             self.cpu.running_pcb = self.running_pcb
             self.os_timer_messager.put(self.running_pcb.get_priority())
             if self.exit_event.is_set():
@@ -260,7 +264,7 @@ if __name__ == "__main__":
     drq = DeviceRequestQueue()
     container.register("device_queue", drq)
     container.register("device_st", dst)
-    dst.add_dev("A", 3)
+    # dst.add_dev("A", 3)
     os = OS()
     container.register("os", os)
     interrupt = Interrput()
@@ -283,27 +287,28 @@ if __name__ == "__main__":
                      "00000010", "00010000", "00000000", "00000001",
                      "00001010", "00000011", "11111111", "11110000",
                      "00000000", "00000000", "00000000", "00000000", ]
-    instructions3 = ["00000001", "00010000", "00000000", "00000001",
-                     "00001110", "00000000", "00000000", "00000011",
-                     "00000001", "00100000", "00000000", "00000010",
-                     "00000001", "00110000", "00000000", "00000011",
-                     "00000110", "00010000", "00000000", "00000001",
-                     "00000111", "00100000", "00000000", "00000001",
-                     "00001000", "00110000", "00000000", "00000001",
-                     "00000000", "00000000", "00000000", "00000000", ]
+    # instructions3 = ["00000001", "00010000", "00000000", "00000001",
+    #                  "00001110", "00000000", "00000000", "00000011",
+    #                  "00000001", "00100000", "00000000", "00000010",
+    #                  "00000001", "00110000", "00000000", "00000011",
+    #                  "00000110", "00010000", "00000000", "00000001",
+    #                  "00000111", "00100000", "00000000", "00000001",
+    #                  "00001000", "00110000", "00000000", "00000001",
+    #                  "00000000", "00000000", "00000000", "00000000", ]
     memory.load_program(id_generator.create_id(), instructions1)
     os.create_process("bbb", 0)
     memory.load_program(id_generator.create_id(), instructions2)
     os.create_process("ccc", 0)
-    memory.load_program(id_generator.create_id(), instructions3)
-    os.create_process("aaa", 0)
+    # memory.load_program(id_generator.create_id(), instructions3)
+    # os.create_process("aaa", 0)
     print("here" + str(id_generator.get_create_id()))
 
     cpu.start()
     timer.start()
-    i = 0
     time.sleep(20)
     print(os.process_pid)
     print(os.process_start_timer)
     print(os.process_running_timer)
-    i += 1
+    os.process_exit()
+    time.sleep(3)
+    print(str(threading.enumerate()))
