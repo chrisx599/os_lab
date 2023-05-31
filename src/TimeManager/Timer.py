@@ -11,8 +11,8 @@ class Timer(threading.Thread):
     system_time = 0
     timeout_event = None
 
-    @inject("os_timer_messager", "timeout_event", "running_event", "process_over_event", "interrupt_event", "exit_event")
-    def __init__(self, os_timer_messager, timeout_event, running_event, process_over_event, interrupt_event, exit_event):
+    @inject("os_timer_messager", "timeout_event", "running_event", "process_over_event", "interrupt_event", "exit_event", "force_dispatch_event")
+    def __init__(self, os_timer_messager, timeout_event, running_event, process_over_event, interrupt_event, exit_event, force_dispatch_event):
         threading.Thread.__init__(self, name="timer")
         self.os_timer_messager = os_timer_messager
         self.timeout_event = timeout_event
@@ -20,7 +20,7 @@ class Timer(threading.Thread):
         self.process_over_event = process_over_event
         self.interrupt_event = interrupt_event
         self.exit_event = exit_event
-        # self.force_dispatch_event = force_dispatch_event
+        self.force_dispatch_event = force_dispatch_event
 
     def run(self) -> None:
         # print("Timer thread start")
@@ -35,17 +35,22 @@ class Timer(threading.Thread):
                         break
                     continue
             # print("timer: time_slice start")
-            while not self.os_timer_messager.empty():
-                time_slice = self.os_timer_messager.get()
+            while True:
+                if not self.os_timer_messager.empty():
+                    time_slice = self.os_timer_messager.get()
+                    # print("time_slice is " + str(time_slice))
+                    break
             i = 0
             # print(time_slice)
-            while i < time_slice * 5 and not self.process_over_event.is_set():
+            while i < time_slice * 5 and not self.force_dispatch_event.is_set():
                 if not self.interrupt_event.is_set():
                     i += 1
                     self.process_over_event.wait(0.001)
-            # print("收到进程结束信号")
+            # if self.force_dispatch_event.is_set():
+                # print("Timer: 收到force_event")
             self.os_timer_messager.put(i)
             self.timeout_event.set()
+            self.running_event.clear()
             # print("timer:timeout_event is set now need dispatch")
 
 
