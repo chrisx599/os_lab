@@ -6,9 +6,10 @@ from PyQt6 import QtGui
 from PyQt6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QLabel
 from PyQt6.QtWidgets import QLineEdit, QPlainTextEdit
 from PyQt6.QtGui import QKeyEvent
-from PyQt6.QtCore import Qt, QDir
+from PyQt6.QtCore import Qt, QDir, QTimer
 import os
 from collections import deque
+import queue
 
 
 # 导入自定义包
@@ -24,6 +25,7 @@ from DeviceUI import DeviceManager
 from System import System
 from MemoryUI import MemoryUI
 from ProcessUI import ProcessUI
+import threading
 
 class CommandLineWindow(QMainWindow):
     def __init__(self):
@@ -89,11 +91,33 @@ class CommandLineWindow(QMainWindow):
 
         self.cmdInput.setFocus()
 
+
+        
+
+        # self.output_queue = queue.Queue()
         # 重定向标准输出流至QPlainTextEdit
+        # sys.stdout = Stream(stdout_queue=self.output_queue)
         sys.stdout = Stream(stdout=self.cmdOutput)
+
+        # self.outqueue = queue.Queue()
+        # # 定时更新MemoryUI中的内容
+        # self.timer = QTimer(self)
+        # self.timer.setInterval(1000)  # 每隔 0.5 秒触发一次定时器
+        # # 将槽函数与定时器的 timeout 信号关联
+        # self.timer.timeout.connect(self.update_cmd)
+        # # 启动定时器
+        # self.timer.start()
 
         self.cmdOutput.appendPlainText('Power OS start 版本号:v1.0')
 
+
+
+
+    # def update_cmd(self):
+    #     # 在主线程中接收来自工作线程的输出，并将其写入QPlainTextEdit组件中
+    #     if self.outqueue:
+    #         text = self.outqueue.get()
+    #         self.cmdOutput.appendPlainText(text)
     
     def runCommand(self):
         cmd = self.cmdInput.text()
@@ -233,10 +257,20 @@ class Stream:
     """
     def __init__(self, stdout=None):
         self.stdout = stdout
+        # self.stdqueue = stdqueque
 
     def write(self, text):
         # self.stdout.appendPlainText(text)
         self.stdout.insertPlainText(text)
+        # if self.stdqueue:
+        #     self.stdqueue.put(text)
+
+    # def __init__(self, stdout_queue=None):
+    #     self.stdout_queue = stdout_queue
+
+    # def write(self, text):
+    #     if self.stdout_queue:
+    #         self.stdout_queue.put(text)
 
     def flush(self):
         pass  # 这里可以添加适当的刷新操作
