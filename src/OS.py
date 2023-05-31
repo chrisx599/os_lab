@@ -5,19 +5,14 @@
 import threading
 import sys
 import os
-current_path = os.getcwd()
-sys.path.append(current_path + "\src")
-sys.path.append(current_path + "\src\DeviceManager")
-sys.path.append(current_path + "\src\FileManager")
-sys.path.append(current_path + "\src\ProcessManager")
-sys.path.append(current_path + "\src\MemoryManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\MemoryManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\FileManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\ProcessManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\InterruptManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\TimeManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\HardWareManager")
-sys.path.append("D:\\pythonCode\\final\\os_lab\\src\\DeviceManager")
+sys.path.append("D:\\pythonCode\\os_labv2\\os_lab\\src\\ProcessManager")
+sys.path.append("D:\\pythonCode\\os_labv2\\os_lab\\src\\MemoryManager")
+sys.path.append("D:\\pythonCode\\os_labv2\\os_lab\\src\\HardWareManager")
+sys.path.append("D:\\pythonCode\\os_labv2\\os_lab\\src\\TimeManager")
+sys.path.append("D:\\pythonCode\\os_labv2\\os_lab\\src\\InterruptManager")
+sys.path.append("D:\\pythonCode\\os_labv2\\os_lab\\src\\DeviceManager")
+sys.path.append("D:\\pythonCode\\os_labv2\\os_lab\\src\\FileManager")
+sys.path.append("D:\\pythonCode\\os_labv2\\os_lab\\src\\utils")
 # print(sys.path)
 from utils.Container import *
 from ProcessManager.PCB import *
@@ -87,6 +82,8 @@ class OS:
             self.cpu.running_pcb = next_running_pcb
             self.new_process_event.clear()
         self.running_pcb = next_running_pcb
+        self.running_pcb.set_state(self.running_pcb.PROCESS_RUNNING)
+        # print("调度了， 现在进程id为" + str(self.running_pcb.get_PID()))
         # 恢复上下文环境
         time.sleep(0.001)
         if self.exit_event.is_set():
@@ -103,9 +100,12 @@ class OS:
         # print("dispatch_process")
         if not self.new_process_event.is_set():
             self.new_process_event.wait()
+            if self.exit_event.is_set():
+                return
             self.new_process_event.clear()
             # print("dispatch: new_process_event get")
             self.running_pcb = self.process.get_next_pcb()
+            self.running_pcb.set_state(self.running_pcb.PROCESS_RUNNING)
             ax, bx, cx, dx, axm, bxm, cxm, dxm = self.running_pcb.get_gen_reg_all()
             self.cpu.set_gen_reg_all(ax, bx, cx, dx, axm, bxm, cxm, dxm)
             pc = self.running_pcb.get_PC()
@@ -131,7 +131,6 @@ class OS:
             self.running_pcb.set_total_time(self.running_pcb.get_total_time() + self.last_run_time)
             if self.process_over_event.is_set():
                 self.running_pcb.set_state(self.running_pcb.PROCESS_EXIT)
-
             self.atom_lock.acquire()
             # print("dispatch: dispatch start")
             self.update_timer()
@@ -144,9 +143,9 @@ class OS:
             self.timeout_event.clear()
             self.process_over_event.clear()
             self.running_event.set()
-            self.update_timer()
 
     def create_process(self, *args):
+        # self.interrupt_event.set()
         pcb = self.process.create_process(args[0])
         if self.running_pcb == None and pcb.PID != 0:
             self.new_process_event.set()
@@ -154,6 +153,8 @@ class OS:
             self.process_tree.create_node(args[0], pcb.get_PID(), data=pcb)
         else:
             self.process_tree.create_node(args[0], pcb.get_PID(), parent=args[1], data=pcb)
+        self.new_process_event.clear()
+        # self.interrupt_event.clear()
 
     def update_timer(self):
         if self.running_pcb == None:
@@ -182,7 +183,6 @@ class OS:
             pcb.set_state(pcb.PROCESS_EXIT)
             del pcb
         
-
 
 
 if __name__ == "__main__":
@@ -237,9 +237,18 @@ if __name__ == "__main__":
     instructions = ["00000001", "01010000", "10000000","00000000","00000001","00010000","00000000","00000011",
                     "00000001", "01010001", "00000000","00000000","00000001","00010000","00000000","00001100",
                     "00000010", "00010101", "00000000","00000000","00000000","00000000","00000000","00000000"]
-    memory.load_program(1, instructions)
+    memory.load_program(id_generator.create_id(), instructions)
+    print("here" + str(id_generator.get_create_id()))
+    os.create_process("aaa", 0)
     cpu.start()
     timer.start()
-    os.create_process("aaa", 0)
-    time.sleep(1)
-    os.process_exit()
+    time.sleep(3)
+    memory.load_program(id_generator.create_id(), instructions)
+    os.create_process("bbb", 0)
+    i = 0
+    time.sleep(2)
+    while i < 3:
+        print(os.process_pid)
+        print(os.process_start_timer)
+        print(os.process_running_timer)
+        i += 1

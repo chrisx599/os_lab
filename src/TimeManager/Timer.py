@@ -20,26 +20,30 @@ class Timer(threading.Thread):
         self.process_over_event = process_over_event
         self.interrupt_event = interrupt_event
         self.exit_event = exit_event
+        # self.force_dispatch_event = force_dispatch_event
 
     def run(self) -> None:
         # print("Timer thread start")
         while True:
             if (not self.running_event.is_set()) or self.timeout_event.is_set():
                 if not self.running_event.is_set():
-                    # print("timer: waiting running_event set")
                     self.running_event.wait()
                     if self.exit_event.is_set():
-                        # print("Timer thread end")
                         return
                 else:
+                    if self.process_over_event.is_set():
+                        break
                     continue
             # print("timer: time_slice start")
-            time_slice = self.os_timer_messager.get()
+            while not self.os_timer_messager.empty():
+                time_slice = self.os_timer_messager.get()
             i = 0
+            # print(time_slice)
             while i < time_slice * 5 and not self.process_over_event.is_set():
                 if not self.interrupt_event.is_set():
                     i += 1
                     self.process_over_event.wait(0.001)
+            # print("收到进程结束信号")
             self.os_timer_messager.put(i)
             self.timeout_event.set()
             # print("timer:timeout_event is set now need dispatch")
