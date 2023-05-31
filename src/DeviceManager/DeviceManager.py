@@ -4,6 +4,14 @@ current_path = os.getcwd()
 print(current_path)
 sys.path.append(current_path + "\..")
 sys.path.append(current_path + "\..\ProcessManager")
+sys.path.append(current_path + "\..\DeviceManager")
+sys.path.append(current_path + "\..\\UIManager")
+sys.path.append(current_path + "\..\MemoryManager")
+sys.path.append(current_path + "\..\FileManager")
+sys.path.append(current_path + "\..\InterruptManager")
+sys.path.append(current_path + "\..\TimeManager")
+sys.path.append(current_path + "\..\HardWareManager")
+sys.path.append(current_path + "\..\\utils")
 
 import threading
 from DeviceControlBlock import *

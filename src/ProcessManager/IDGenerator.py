@@ -4,10 +4,12 @@
 # @Author   : qingyao
 
 class IDGenerator:
-    __id_generator = -1
+    __id_generator = 0
 
     def create_id(self):
         self.__id_generator = self.__id_generator + 1
+        return self.__id_generator
+    def get_create_id(self):
         return self.__id_generator
 
 if __name__ == "__main__":

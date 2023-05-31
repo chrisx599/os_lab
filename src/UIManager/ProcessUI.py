@@ -236,7 +236,8 @@ class ProcessUI():
         instructions = ["00000001", "01010000", "10000000","00000000","00000001","00010000","00000000","00000011",
                     "00000001", "01010001", "00000000","00000000","00000001","00010000","00000000","00001100",
                     "00000010", "00010101", "00000000","00000000","00000000","00000000","00000000","00000000"]
-        self.system.container.resolve("memory").load_program(1, instructions)
+        id_generator = self.system.container.resolve("id_generator")
+        self.system.container.resolve("memory").load_program(id_generator.create_id(), instructions)
         # print("aaa666")
         self.system.os.create_process(name, 0)
         self.show_pro_tree()

@@ -78,7 +78,8 @@ class PCB:
 
     @inject("id_generator")
     def __init__(self, name, id_generator):
-        self.PID = id_generator.create_id()
+        self.PID = id_generator.get_create_id()
+        # print(id_generator.get_create_id())
         self.name = name
         self.priority = 1
         self.state = ""
@@ -258,3 +259,5 @@ class PCB:
 
     def get_flag_reg(self):
         return self.flag_reg
+if __name__ == "__main__":
+    run_code = 1
