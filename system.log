@@ -951,3 +951,85 @@
 2023-05-31 19:00:10 INFO: Successfully added device:1 type1.
 2023-05-31 19:00:10 INFO: Successfully initialized device_status_table.
 2023-05-31 19:00:10 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:00:53 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:00:53 INFO: Successfully added device:1 type1.
+2023-05-31 19:00:53 INFO: Successfully initialized device_status_table.
+2023-05-31 19:00:53 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:04:43 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:04:43 INFO: Successfully added device:1 type1.
+2023-05-31 19:04:43 INFO: Successfully initialized device_status_table.
+2023-05-31 19:04:43 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:31:23 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:31:23 INFO: Successfully added device:1 type1.
+2023-05-31 19:31:23 INFO: Successfully initialized device_status_table.
+2023-05-31 19:31:23 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:33:08 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:33:08 INFO: Successfully added device:1 type1.
+2023-05-31 19:33:09 INFO: Successfully initialized device_status_table.
+2023-05-31 19:33:09 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:33:25 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:33:25 INFO: Successfully added device:1 type1.
+2023-05-31 19:33:25 INFO: Successfully initialized device_status_table.
+2023-05-31 19:33:25 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:38:49 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:38:49 INFO: Successfully added device:1 type1.
+2023-05-31 19:38:49 INFO: Successfully initialized device_status_table.
+2023-05-31 19:38:49 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:46:15 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:46:15 INFO: Successfully added device:1 type1.
+2023-05-31 19:46:15 INFO: Successfully initialized device_status_table.
+2023-05-31 19:46:15 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:46:39 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:46:39 INFO: Successfully added device:1 type1.
+2023-05-31 19:46:39 INFO: Successfully initialized device_status_table.
+2023-05-31 19:46:39 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:57:26 INFO: Successfully initialized device:1 type1.
+2023-05-31 19:57:26 INFO: Successfully added device:1 type1.
+2023-05-31 19:57:26 INFO: Successfully initialized device_status_table.
+2023-05-31 19:57:26 INFO: Successfully initialized device_request_queue.
+2023-05-31 19:57:41 INFO: Successfully added device request to queue: 3 A.
+2023-05-31 20:00:57 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:00:57 INFO: Successfully added device:1 type1.
+2023-05-31 20:00:57 INFO: Successfully initialized device_status_table.
+2023-05-31 20:00:57 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:01:10 INFO: Successfully added device request to queue: 3 A.
+2023-05-31 20:03:39 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:03:39 INFO: Successfully added device:1 type1.
+2023-05-31 20:03:40 INFO: Successfully initialized device_status_table.
+2023-05-31 20:03:40 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:13:07 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:13:07 INFO: Successfully added device:1 type1.
+2023-05-31 20:13:07 INFO: Successfully initialized device_status_table.
+2023-05-31 20:13:07 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:13:47 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:13:47 INFO: Successfully added device:1 type1.
+2023-05-31 20:13:47 INFO: Successfully initialized device_status_table.
+2023-05-31 20:13:47 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:18:14 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:18:14 INFO: Successfully added device:1 type1.
+2023-05-31 20:18:14 INFO: Successfully initialized device_status_table.
+2023-05-31 20:18:14 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:18:54 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:18:54 INFO: Successfully added device:1 type1.
+2023-05-31 20:18:54 INFO: Successfully initialized device_status_table.
+2023-05-31 20:18:54 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:21:11 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:21:11 INFO: Successfully added device:1 type1.
+2023-05-31 20:21:11 INFO: Successfully initialized device_status_table.
+2023-05-31 20:21:11 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:31:08 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:31:08 INFO: Successfully added device:1 type1.
+2023-05-31 20:31:08 INFO: Successfully initialized device_status_table.
+2023-05-31 20:31:08 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:32:46 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:32:46 INFO: Successfully added device:1 type1.
+2023-05-31 20:32:46 INFO: Successfully initialized device_status_table.
+2023-05-31 20:32:46 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:32:57 INFO: Successfully added device request to queue: 3 A.
+2023-05-31 20:33:49 INFO: Successfully initialized device:1 type1.
+2023-05-31 20:33:49 INFO: Successfully added device:1 type1.
+2023-05-31 20:33:49 INFO: Successfully initialized device_status_table.
+2023-05-31 20:33:49 INFO: Successfully initialized device_request_queue.
+2023-05-31 20:34:03 INFO: Successfully initialized device:3 type3.
+2023-05-31 20:34:03 INFO: Successfully added device:3 type3.
+2023-05-31 20:34:22 INFO: Successfully added device request to queue: 3 A.

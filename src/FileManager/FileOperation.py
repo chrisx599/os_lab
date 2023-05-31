@@ -111,7 +111,9 @@ class FileSystem:
                 ins_save.append(ins_list[2])
                 ins_save.append(ins_list[3])
             name = input("please input instruction file name:")
-            ins_file[name] = ins_save
+            if name not in ins_file:
+                ins_file[name] = []
+            ins_file[name].append(ins_save)
             pickle.dump(ins_file, file)
         print("Instructions write successfully!")
             
