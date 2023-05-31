@@ -133,7 +133,7 @@ class FileCore:
         is_Disk_exist = os.path.exists('Disk.txt')
         if is_Disk_exist:
             with open("Disk.txt", "r") as tf:
-                disk = tf.read().split(' ')  # 磁盘文件存在 读入磁盘
+                disk = tf.read().split( )  # 磁盘文件存在 读入磁盘
         else:
             disk = ['x' for _ in range(DiskSize)]  # 磁盘不存在 新建磁盘
 
