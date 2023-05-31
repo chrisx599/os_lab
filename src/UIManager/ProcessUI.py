@@ -9,13 +9,17 @@ from PyQt6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter, QStandardItem,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PyQt6.QtWidgets import (QApplication, QHeaderView, QLabel, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget, QHBoxLayout)
+    QSpacerItem, QVBoxLayout, QWidget, QHBoxLayout, QPlainTextEdit)
 
 from qfluentwidgets import (LineEdit, PushButton, TableView, TreeView)
 from ProcessGanter import GanttChartView
 from OS import OS
 import threading
 from treelib import Tree
+from time import sleep
+from ProcessManager.Semaphore import Semaphore
+import queue
+from ProcessManager.Banker import BankerAlgorithm
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -116,6 +120,32 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.ViewButton)
 
+        ###########################################################
+        # 信号量部分
+        self.Mullabel = QLabel(self.widget)
+        self.Mullabel.setObjectName(u"Mullabel")
+        self.verticalLayout.addWidget(self.Mullabel)
+        self.MulEdit = LineEdit(self.widget)
+        self.MulEdit.setObjectName(u"MulEdit")
+        self.verticalLayout.addWidget(self.MulEdit)
+        self.MulButton = PushButton(self.widget)
+        self.MulButton.setObjectName(u"MulButton")
+        self.verticalLayout.addWidget(self.MulButton)
+        ###########################################################
+
+
+        ###########################################################
+        # 银行家算法部分
+        self.banklabel = QLabel(self.widget)
+        self.banklabel.setObjectName(u"banklabel")
+        self.verticalLayout.addWidget(self.banklabel)
+        self.bankEdit = LineEdit(self.widget)
+        self.bankEdit.setObjectName(u"MulEdit")
+        self.verticalLayout.addWidget(self.bankEdit)
+        self.bankButton = PushButton(self.widget)
+        self.bankButton.setObjectName(u"bankButton")
+        self.verticalLayout.addWidget(self.bankButton)
+        ###########################################################
 
         self.retranslateUi(Form)
 
@@ -127,7 +157,13 @@ class Ui_Form(object):
         # self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u5740:", None))
         # self.label_2.setText(QCoreApplication.translate("Form", u"\u4e0a\u9650:", None))
         # self.label_3.setText(QCoreApplication.translate("Form", u"\u4ee3\u7801\u5927\u5c0f:", None))
-        self.label_4.setText("进程名称:")
+        self.label_4.setText("程序名称:")
+        self.Mullabel.setText("信号量:")
+        self.MulButton.setText("进程间通信")
+
+        self.banklabel.setText("安全序列")
+        self.bankButton.setText("执行检查")
+
         self.CreateProButton.setText(QCoreApplication.translate("Form", u"\u521b\u5efa\u8fdb\u7a0b", None))
         self.StopProButton.setText(QCoreApplication.translate("Form", u"\u7ec8\u6b62\u8fdb\u7a0b", None))
         self.ViewButton.setText(QCoreApplication.translate("Form", u"\u67e5\u770b\u8fdb\u7a0b\u5e76\u53d1", None))
@@ -141,6 +177,7 @@ class ProcessUI():
         self.ui = Ui_Form()
         self.ui.setupUi(self.window)
 
+        # self.output = output
         self.system = system
         self.signal()
 
@@ -154,34 +191,119 @@ class ProcessUI():
         # # 启动定时器
         # self.timer.start()
 
+        # self.outqueue = queue.Queue()
+        # # 定时更新MemoryUI中的内容
+        # self.timer = QTimer(self.window)
+        # self.timer.setInterval(1000)  # 每隔 0.5 秒触发一次定时器
+        # # 将槽函数与定时器的 timeout 信号关联
+        # self.timer.timeout.connect(self.update_cmd)
+        # # # 启动定时器
+        # self.timer.start()
+
+
+    # def update_cmd(self):
+    #     if not self.outqueue.empty():
+    #         text = self.outqueue.get()
+    #         self.ui.Mulout.insertPlainText(text)
+
 
     def signal(self):
         self.ui.ViewButton.clicked.connect(self.show_ganter)
         self.ui.CreateProButton.clicked.connect(self.create_process)
         self.ui.StopProButton.clicked.connect(self.stop_process)
+        self.ui.MulButton.clicked.connect(self.start_mul_pro)
+        self.ui.bankButton.clicked.connect(self.banker)
 
-    def show_ganter_thread(self):
-        # 创建新线程对象
-        # thread = MyThread()
-        # # 启动线程
-        # thread.start()
-        # # 等待线程结束
-        # thread.wait()
+    def banker(self):
+        # 银行家算法测试程序
+        available = [3, 3, 2]  # 可用资源数目
+        print(f"开始时可用资源数目{available}")
+        max_claim = [
+            [7, 5, 3],
+            [3, 2, 2],
+            [9, 0, 2],
+            [2, 2, 2],
+            [4, 3, 3]
+        ]  # 进程对各资源的最大需求
+        print(f"进程对各资源的最大需求{max_claim}")
+        allocation = [
+            [0, 1, 0],
+            [2, 0, 0],
+            [3, 0, 2],
+            [2, 1, 1],
+            [0, 0, 2]
+        ]  # 进程已分配的资源
+        print(f"进程开始时已分配的资源{allocation}")
+        need = [
+            [7, 4, 3],
+            [1, 2, 2],
+            [6, 0, 0],
+            [0, 1, 1],
+            [4, 3, 1]
+        ]  # 进程还需要的资源
+        print(f"进程开始时还需要的资源{need}")
 
-        # 创建新线程对象
-        thread = QThread()
+        banker = BankerAlgorithm(available, max_claim, allocation, need)
+        safe, sequence = banker.is_safe_state()
+        if safe:
+            self.ui.bankEdit.setText(str(sequence))
+            print("系统处于安全状态，安全序列为:", sequence)
+        else:
+            self.ui.bankEdit.setText("无安全序列")
+            print("系统处于不安全状态")
 
-        # 设置自定义线程类为线程对象的父类
-        my_thread = MyThread()
-        my_thread.moveToThread(thread)
+    def start_mul_pro(self):
+        # 信号量测试程序
+        init = self.ui.MulEdit.text()
+        self.semaphore = Semaphore(int(init))
 
-        # 连接启动信号和槽函数
-        thread.started.connect(my_thread.run)
-        # 启动线程
-        thread.start()
+        # 创建多个线程进行测试
+        threads = []
+        for i in range(5):
+            t = threading.Thread(target=self.worker, args=(i,))
+            threads.append(t)
+            t.start()
 
-        # 等待线程结束
-        thread.wait()
+        # 等待所有线程执行完成
+        for t in threads:
+            t.join()
+        
+        print("执行完毕")
+
+
+    def worker(self, id):
+            self.semaphore.wait()
+            print(f'Worker {id} 开始执行')
+            for i in range(5):
+                print(f'Worker {id} 正在执行{i}部分')
+                sleep(1)
+            # 这里可以添加需要执行的代码
+            self.semaphore.signal()
+            print(f'Worker {id} 释放信号量')
+        
+
+    # def show_ganter_thread(self):
+    #     # 创建新线程对象
+    #     # thread = MyThread()
+    #     # # 启动线程
+    #     # thread.start()
+    #     # # 等待线程结束
+    #     # thread.wait()
+
+    #     # 创建新线程对象
+    #     thread = QThread()
+
+    #     # 设置自定义线程类为线程对象的父类
+    #     my_thread = MyThread()
+    #     my_thread.moveToThread(thread)
+
+    #     # 连接启动信号和槽函数
+    #     thread.started.connect(my_thread.run)
+    #     # 启动线程
+    #     thread.start()
+
+    #     # 等待线程结束
+    #     thread.wait()
 
     def show_pro_tree(self):
         """
@@ -200,7 +322,7 @@ class ProcessUI():
             # 判断是不是父节点
             if pro_tree.children(item.identifier):
                 # 创建父节点并添加到模型中
-                mem_rate = item.data.size / 16384
+                mem_rate = item.data.code_size
                 root_item = model.invisibleRootItem()
                 root_item.appendRow([QStandardItem(str(item.data.PID)), QStandardItem(item.data.name)
                                      , QStandardItem(item.data.state), QStandardItem(str(mem_rate)),
@@ -208,7 +330,7 @@ class ProcessUI():
                 # 将子节点全部放入父节点下
                 children_list = pro_tree.children(item.identifier)
                 for child in children_list:
-                    child_mem_rate = child.data.size / 16384
+                    child_mem_rate = child.data.code_size
                     child_item = root_item.child(cnt)
                     child_item.appendRow([QStandardItem(str(child.data.PID)), QStandardItem(child.data.name)
                                      , QStandardItem(child.data.state), QStandardItem(str(child_mem_rate)),
@@ -237,10 +359,9 @@ class ProcessUI():
                     "00000001", "01010001", "00000000","00000000","00000001","00010000","00000000","00001100",
                     "00000010", "00010101", "00000000","00000000","00000000","00000000","00000000","00000000"]
         self.system.container.resolve("memory").load_program(1, instructions)
-        # print("aaa666")
         self.system.os.create_process(name, 0)
         self.show_pro_tree()
-        # print("aaa666")
+
 
     def stop_process(self):
         """
@@ -253,11 +374,11 @@ class ProcessUI():
         self.show_pro_tree()
 
 
-# 自定义线程类
-class MyThread(QThread):
-    def run(self):
-        self.view = GanttChartView()
-        self.view.show()
+# # 自定义线程类
+# class MyThread(QThread):
+#     def run(self):
+#         self.view = GanttChartView()
+#         self.view.show()
 
 
 if __name__ == "__main__":
