@@ -2,7 +2,7 @@ from Memory import *
 class Node:
     value = 0
     next = None
-
+# 666
 
 class linklist:
     head = None
