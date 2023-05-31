@@ -77,6 +77,8 @@ class CPU(threading.Thread):
     def run(self):
         while True:
             if self.force_dispatch_event.is_set():
+                if self.exit_event.is_set():
+                    return
                 continue
             # 如果进程正在运行并且进程结束信号没有发出并且中断信号没有发出
             if (not self.running_event.is_set()) or self.interrupt_event.is_set():
@@ -96,7 +98,7 @@ class CPU(threading.Thread):
             time.sleep(0.003)
             # print(str(self.running_pcb.get_PID()) +" now is " + str(self.IR))
             self.analysis_and_execute_instruction()
-            print(str(self.PID) + ": " + self.IR)
+            # print(str(self.PID) + ": " + self.IR)
             self.atom_lock.release()
             time.sleep(0.1)
 
