@@ -15,7 +15,7 @@ class GanttChartView(QGraphicsView):
     """
     def __init__(self, os):
         super().__init__()
-        self.h = 50 # 每个条高多少
+        self.h = 40 # 每个条高多少
         self.start_x = 120
         self.init_ui()
         
@@ -35,11 +35,18 @@ class GanttChartView(QGraphicsView):
         pid_list = self.os.process_pid
         start_list = self.os.process_start_timer
         stop_list = self.os.process_running_timer
+        # print(pid_list)
+        # print(start_list)
+        # print(stop_list)
         # 运行实例程序
         # pid_list, start_list, stop_list = instance_pro()
+
+        # for i in pid_list:
+        #     self.add_rect(str(pid_list[i]), start_list[i], stop_list[i], i)
         num = len(pid_list)
+        is_first = [True] * num
         for i in range(num):
-            self.add_rect(str(pid_list[i]), start_list[i], stop_list[i], i)
+            self.add_rect(str(pid_list[i]), start_list[i], stop_list[i], i, is_first)
 
     def init_ui(self):
         self.scene = QGraphicsScene(self)
@@ -76,17 +83,24 @@ class GanttChartView(QGraphicsView):
 
         self.setWindowTitle("Gantt Chart")
 
-    def add_rect(self, process_id:str, start_time:int, run_time:int, i:int):
+    def add_rect(self, process_id:str, start_time:int, run_time:int, i:int, is_first:list[bool]):
         """
         向图中添加内容
         """
-        text_item = self.scene.addText(process_id)
-        text_item.setFont(QFont("Arial", 10))
-        text_item.setDefaultTextColor(Qt.GlobalColor.black)
-        text_item.setPos(0, 50 + i * 55)  # 根据需要调整位置
-        # period = start_time - run_time
-        rect1 = self.scene.addRect(start_time + 20, 50 + i * 50, run_time * 10, self.h)
-        rect1.setBrush(QBrush(QColor("green")))
+        if is_first[int(process_id)]:
+            text_item = self.scene.addText(process_id)
+            text_item.setFont(QFont("Arial", 10))
+            text_item.setDefaultTextColor(Qt.GlobalColor.black)
+            text_item.setPos(0, 50 + i * 55)  # 根据需要调整位置
+            # period = start_time - run_time
+            rect1 = self.scene.addRect(start_time * 10 + 15, 25 + int(process_id) * 30, run_time * 10, self.h)
+            # rect1 = self.scene.addRect(start_time + 20, 50 + i * 50, run_time * 10, self.h)
+            rect1.setBrush(QBrush(QColor("green")))
+            is_first[int(process_id)] = False
+        else:
+            rect1 = self.scene.addRect(start_time * 10 + 15, 25 + int(process_id) * 30, run_time * 10, self.h)
+            # rect1 = self.scene.addRect(start_time, 50 + i * 50, run_time * 10, self.h)
+            rect1.setBrush(QBrush(QColor("green")))
 
     # def instance_pro(self):
     #     self.semaphore = Semaphore(3)

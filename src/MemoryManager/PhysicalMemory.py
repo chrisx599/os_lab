@@ -41,7 +41,7 @@ class PhysicalMemory:
     def load_memory(self, instruction_list, location, block_num):
 
         for i in range(PAGE_SIZE):
-            self.memory_space[block_num][i] = instruction_list[location]
+            self.memory_space[block_num][i] = instruction_list[i]
             if i == len(instruction_list) - 1:
                 break
             location = location + 1

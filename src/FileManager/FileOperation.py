@@ -78,10 +78,10 @@ class FileSystem:
             with open('instruction.pkl', 'rb') as file:
                 instruction = pickle.load(file)
             if name == "all":
-                print(instruction)
+                # print(instruction)
                 return instruction
             else:
-                print(instruction[name])
+                # print(instruction[name])
                 return instruction[name]
         else:
             print("please init instruction system")

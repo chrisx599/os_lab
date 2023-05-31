@@ -34,7 +34,7 @@ class CommandLineWindow():
         self.system = System()
         # 创建QT应用
         self.app = QApplication([])
-        print('Power OS start Version:v1.0')
+        print('Power OS starting ^_^ \n Version:v2.0')
 
         # 关机信号
         self.shut = False
@@ -106,9 +106,10 @@ class CommandLineWindow():
             self.system.file_manager.write_instruction()
         elif tokens[0] == "rins":
             if len(tokens) == 1:
-                self.system.file_manager.read_instruction()
+                ins = self.system.file_manager.read_instruction()
             else:
-                self.system.file_manager.read_instruction(tokens[1])
+                ins = self.system.file_manager.read_instruction(tokens[1])
+            print(ins)
         elif tokens[0] == "quit":
             self.shut = True
             self.shutdown()
@@ -169,9 +170,10 @@ class CommandLineWindow():
         # 终止所有线程
         self.system.os.process_exit()
 
+        print("Power OS shuting down T0T")
         sleep(2)
-        for thread in threading.enumerate():
-            print(f"Thread name: {thread.name}")
+        # for thread in threading.enumerate():
+        #     print(f"Thread name: {thread.name}")
         #############################################
 
 

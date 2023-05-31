@@ -104,6 +104,11 @@ class CPU(threading.Thread):
 
 
     def fetch_instruction(self):
+        if self.PC > self.running_pcb.code_size:
+            self.running_pcb.state(self.running_pcb.PROCESS_EXIT)
+            self.force_dispatch_event.set()
+            return
+
         address = self.base_mem_reg + self.PC
         # print("cpU:::::::::::::::base_mem_reg:" + str(self.base_mem_reg) + " PC:" + str(self.PC))
         flag = self.memory.program_check_page_fault(address // 64, self.PID)
@@ -122,6 +127,8 @@ class CPU(threading.Thread):
         self.PC += 4
 
     def analysis_and_execute_instruction(self):
+        if self.force_dispatch_event.is_set():
+            return
         opt = int(self.IR[:8], 2)
         front_obj = int(self.IR[8:12], 2)
         back_obj = int(self.IR[12:16], 2)
