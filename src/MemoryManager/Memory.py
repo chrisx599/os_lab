@@ -61,7 +61,7 @@ class Memory:
 
     def create_program(self,program_num):
         self.program_list[program_num].program_id = program_num
-        if(len(self.program_list[program_num].program_page_table.instruction_list == None)):
+        if(self.program_list[program_num].program_page_table.instruction_list == None):
             return 0
         else:
             return len(self.program_list[program_num].program_page_table.instruction_list)
