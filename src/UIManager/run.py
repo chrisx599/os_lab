@@ -29,29 +29,30 @@ import threading
 
 class CommandLineWindow():
     def __init__(self):
+        # 初始化系统的各个模块
         self.system = System()
+        # 创建QT应用
         self.app = QApplication([])
-        print('Power OS start 版本号:v1.0')
+        print('Power OS start Version:v1.0')
 
+        # 关机信号
         self.shut = False
-
         while not self.shut:
             cmd = input("Command > ")
             self.runCommand(cmd)
-
         self.app.exit()
+
 
     def runCommand(self, cmd):
         print('Result > ' + cmd)
         self.cmd_implement(cmd)
 
 
-
-    def cmd_implement(self, cmd):
+    def cmd_implement(self, cmd:str):
         """
         处理命令输入框输入进的指令
         """
-        cmd = str(cmd)
+        # cmd = str(cmd)
         tokens = cmd.split(" ")
         if tokens[0] == "ls":
             print('')
@@ -129,6 +130,10 @@ class CommandLineWindow():
                                             + cmd + "\" not a available command, use help to check")
 
     def show_log(self, line_limit):
+        """
+        打印日志函数\n
+        line_limit输入接口是一个str字符串
+        """
         lines = deque(maxlen=int(line_limit))  # 创建一个指定长度的 deque
         with open('system.log', 'r') as file:
             for line in file:

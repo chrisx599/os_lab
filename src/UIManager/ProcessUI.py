@@ -153,7 +153,8 @@ class Ui_Form(object):
     # setupUi
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        Form.setWindowTitle("进程界面")
+        # Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         # self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u5740:", None))
         # self.label_2.setText(QCoreApplication.translate("Form", u"\u4e0a\u9650:", None))
         # self.label_3.setText(QCoreApplication.translate("Form", u"\u4ee3\u7801\u5927\u5c0f:", None))
@@ -311,7 +312,7 @@ class ProcessUI():
         """
         model = QStandardItemModel()
         # 设置表头
-        header_labels = ["PID", "进程名称", "状态", "内存占用率", "运行时间"]
+        header_labels = ["PID", "进程名称", "状态", "内存占用", "运行时间"]
         model.setHorizontalHeaderLabels(header_labels)
         # 获取到进程的数据
         # pro_tree = Tree()
@@ -325,7 +326,7 @@ class ProcessUI():
                 mem_rate = item.data.code_size
                 root_item = model.invisibleRootItem()
                 root_item.appendRow([QStandardItem(str(item.data.PID)), QStandardItem(item.data.name)
-                                     , QStandardItem(item.data.state), QStandardItem(str(mem_rate)),
+                                     , QStandardItem(item.data.state), QStandardItem(str(mem_rate)+'B'),
                                      QStandardItem(str(item.data.total_time))])
                 # 将子节点全部放入父节点下
                 children_list = pro_tree.children(item.identifier)
@@ -333,7 +334,7 @@ class ProcessUI():
                     child_mem_rate = child.data.code_size
                     child_item = root_item.child(cnt)
                     child_item.appendRow([QStandardItem(str(child.data.PID)), QStandardItem(child.data.name)
-                                     , QStandardItem(child.data.state), QStandardItem(str(child_mem_rate)),
+                                     , QStandardItem(child.data.state), QStandardItem(str(child_mem_rate)+'B'),
                                      QStandardItem(str(child.data.total_time))])
                 # 父节点数量    
                 cnt += 1
@@ -342,6 +343,9 @@ class ProcessUI():
                 
 
     def show_ganter(self):
+        """
+        打开甘特图窗口界面
+        """
         self.view = GanttChartView(self.system.os)
         self.view.show()
 

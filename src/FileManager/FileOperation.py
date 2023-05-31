@@ -68,6 +68,10 @@ class FileSystem:
     #         message_list = message.split("\n")
     #         return message_list
 
+    def read_instruction(self):
+        pass
+
+
     # 写文件
     def write_File(self, name, content):
         message = self.filecore.pathToObj(name, {"operator": "writeFile", "content": content},
