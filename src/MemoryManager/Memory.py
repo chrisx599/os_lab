@@ -61,7 +61,10 @@ class Memory:
 
     def create_program(self,program_num):
         self.program_list[program_num].program_id = program_num
-        return len(self.program_list[program_num].program_page_table.instruction_list) * 4
+        if(len(self.program_list[program_num].program_page_table.instruction_list)):
+            return 0
+        else:
+            return len(self.program_list[program_num].program_page_table.instruction_list)
     def load_program(self,program_num,instruction_list):
         self.program_list[program_num].program_page_table.__init__()
         self.program_list[program_num].program_page_table.instruction_list = instruction_list
@@ -135,6 +138,10 @@ class Memory:
                 break
         return temp_list
 
+    def read_buffer(self, addr):
+        buffer_page = 0
+        data = self.physical_memory[buffer_page][addr]
+        return int(data)
 
     def program_write_memory(self, program_num, addr, write_str):
         page_num = addr // PAGE_SIZE

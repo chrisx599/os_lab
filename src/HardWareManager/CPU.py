@@ -83,7 +83,9 @@ class CPU(threading.Thread):
                 else:
                     continue
             self.atom_lock.acquire()
+            time.sleep(0.03)
             self.fetch_instruction()
+            # print(str(self.running_pcb.get_PID()) +" now is " + str(self.IR))
             self.analysis_and_execute_instruction()
             self.atom_lock.release()
 
@@ -136,7 +138,10 @@ class CPU(threading.Thread):
 
         if opt == 0:
             # print(self.gen_reg[1])
+            # print("停机了" + str(self.running_pcb.get_PID()))
+
             self.process_over_event.set()
+            time.sleep(0.003)
         elif opt == 1:
             # 立即数放到寄存器中
             if back_obj == 0:
@@ -360,6 +365,7 @@ class CPU(threading.Thread):
             else:
                 self.running_pcb.set_buffer_content(self.running_pcb.get_gen_reg(front_obj))
             self.running_pcb.set_device_id(1 if opt == 11 else 2)
+            self.running_pcb.set_state(self.running_pcb.PROCESS_BLOCK)
             self.interrupt_pcb_queue.put(self.running_pcb)
             self.interrupt_event.set()
 
