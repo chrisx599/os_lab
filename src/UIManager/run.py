@@ -26,6 +26,7 @@ from System import System
 from MemoryUI import MemoryUI
 from ProcessUI import ProcessUI
 import threading
+from time import sleep
 
 class CommandLineWindow():
     def __init__(self):
@@ -101,6 +102,13 @@ class CommandLineWindow():
         elif tokens[0] == "dev":
             self.dev_ui = DeviceManager(self.system.device_st)
             self.dev_ui.window.show()
+        elif tokens[0] == "wins":
+            self.system.file_manager.write_instruction()
+        elif tokens[0] == "rins":
+            if len(tokens) == 1:
+                self.system.file_manager.read_instruction()
+            else:
+                self.system.file_manager.read_instruction(tokens[1])
         elif tokens[0] == "quit":
             self.shut = True
             self.shutdown()
@@ -122,6 +130,8 @@ class CommandLineWindow():
             print('       > dev:open device viewer')
             print('       > mem:open memory viewer')
             print('       > quit:shut down Power OS')
+            print('       > wins:write instruction in file')
+            print('       > rins:read application instruction')
             print('       > jobs:open process viewer')
             print('       > log <numbers>:list last numbers system log')
         else:
@@ -158,6 +168,10 @@ class CommandLineWindow():
         self.system.device_st.save()
         # 终止所有线程
         self.system.os.process_exit()
+
+        sleep(2)
+        for thread in threading.enumerate():
+            print(f"Thread name: {thread.name}")
         #############################################
 
 

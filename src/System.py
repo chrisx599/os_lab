@@ -18,8 +18,8 @@ from OS import OS
 
 class System():
     def __init__(self) -> None:
-        self.device_st = DeviceStatusTable() # 初始化设备表
-        self.device_queue = DeviceRequestQueue() # 初始化设备请求队列
+        # self.device_st = DeviceStatusTable() # 初始化设备表
+        # self.device_queue = DeviceRequestQueue() # 初始化设备请求队列
         self.file_manager = FileSystem() # 初始化文件系统
         # self.memory = Memory()
         #################################################################
@@ -39,10 +39,12 @@ class System():
         exit_pcb_queue = Queue()
         interrupt_event = threading.Event()
         exit_event = threading.Event()
+        force_dispatch_event = threading.Event()
         interrupt_message_queue = Queue()
         id_generator = IDGenerator()
         self.container.register("timeout_event", timeout_event)
         self.container.register("running_event", running_event)
+        self.container.register("force_dispatch_event", force_dispatch_event)
         self.container.register("atom_lock", atom_lock)
         self.container.register("interrupt_event", interrupt_event)
         self.container.register("process_over_event", process_over_event)
@@ -55,6 +57,8 @@ class System():
         self.container.register("block_pcb_queue", block_pcb_queue)
         self.container.register("exit_pcb_queue", exit_pcb_queue)
         self.container.register("exit_event", exit_event)
+        self.device_st = DeviceStatusTable() # 初始化设备表
+        self.device_queue = DeviceRequestQueue() # 初始化设备请求队列
         self.container.register("device_st", self.device_st)
         self.container.register("device_queue", self.device_queue)
         self.container.register("file_manager", self.file_manager)
@@ -66,9 +70,11 @@ class System():
         self.container.register("process", process)
         cpu = CPU()
         self.container.register("cpu", cpu)
+        self.os = OS()
+        self.container.register("os", self.os)
         interrupt = Interrput()
         self.container.register("interrupt", interrupt)
-        self.os = OS()
+        
         cpu.start()
         timer.start()
         interrupt.start()
