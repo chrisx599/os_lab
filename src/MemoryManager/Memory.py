@@ -17,7 +17,7 @@ from DeviceManager.DeviceManager import *
 # MAX_PROGRAM = 100 # 最大程序个数
 # INSTRCUTION_MAX_NUM = 1000  # 程序最多指令条数
 # INSTRCUTION_LENGTH = 4
-
+# 666
 
 
 

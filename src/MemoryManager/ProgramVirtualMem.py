@@ -2,6 +2,7 @@ from constant import *
 from linklist import *
 from PageTableItem import *
 # 页表类，每个程序都一有一个相应的页表
+#666
 real_memory = PhysicalMemory()
 class PageTable:
     page_table_list = ()  # 页表管理虚拟内存
