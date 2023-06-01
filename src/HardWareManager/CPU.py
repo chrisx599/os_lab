@@ -136,6 +136,7 @@ class CPU(threading.Thread):
 
 
         if opt == 0:
+            print("进程" + str(self.running_pcb.PID) + "的寄存器的值为：")
             print(self.gen_reg)
             self.running_pcb.state = self.running_pcb.PROCESS_EXIT
             self.force_dispatch_event.set()
